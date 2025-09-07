@@ -37,6 +37,7 @@ export default function RootLayout() {
           </Link>
           <nav className="hidden gap-6 md:flex">
             {[
+              { href: "/#tools", label: "Tools" },
               { href: "/#solution", label: "Solution" },
               { href: "/#tech", label: "Technical" },
               { href: "/#feasibility", label: "Feasibility" },
@@ -54,10 +55,10 @@ export default function RootLayout() {
           </nav>
           <div className="flex items-center gap-2">
             <a
-              href="#solution"
+              href="#tools"
               className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow hover:brightness-95"
             >
-              Explore
+              Explore Tools
             </a>
           </div>
         </div>
