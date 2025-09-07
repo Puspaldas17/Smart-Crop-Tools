@@ -10,22 +10,38 @@ export default function PestDetector() {
 
   useEffect(() => {
     let mounted = true;
-    mobilenet.load({ version: 2, alpha: 1.0 }).then((m) => {
-      if (mounted) setModel(m);
-    });
+    (async () => {
+      try {
+        const m = await mobilenet.load({ version: 2, alpha: 1.0 });
+        if (mounted) setModel(m);
+      } catch (err) {
+        console.error("Failed to load mobilenet model:", err);
+        setModel(null);
+      }
+    })();
     return () => { mounted = false; };
   }, []);
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (!file || !model) return;
+    if (!file) return;
     const url = URL.createObjectURL(file);
     if (imgRef.current) imgRef.current.src = url;
+    if (!model) {
+      setPreds([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 50));
-    if (imgRef.current) {
-      const res = await model.classify(imgRef.current);
-      setPreds(res.map((r) => ({ className: r.className, probability: r.probability })));
+    try {
+      if (imgRef.current) {
+        const res = await model.classify(imgRef.current);
+        setPreds(res.map((r) => ({ className: r.className, probability: r.probability })));
+      }
+    } catch (err) {
+      console.error("Classification error:", err);
+      setPreds([]);
     }
     setLoading(false);
   }
