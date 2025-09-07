@@ -9,6 +9,9 @@ import {
   Shield,
 } from "lucide-react";
 
+import Chatbot from "@/components/features/Chatbot";
+import MarketWidget from "@/components/features/MarketWidget";
+import PestDetector from "@/components/features/PestDetector";
 import { useState } from "react";
 
 export default function Index() {
