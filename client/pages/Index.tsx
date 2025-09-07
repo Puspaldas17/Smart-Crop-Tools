@@ -297,20 +297,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Demo */}
-      <section id="demo" className="scroll-mt-24">
-        <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">
-            Try a Quick Demo
-          </h2>
-          <p className="mt-2 max-w-prose text-slate-600">
-            Create a farmer profile and generate an advisory using your
-            location.
-          </p>
-        </header>
-        <DemoForm />
-      </section>
-
       {/* AI Chatbot */}
       <section id="chat" className="scroll-mt-24">
         <header className="mb-6">
