@@ -3,14 +3,20 @@ import { AlertTriangle } from "lucide-react";
 
 export default function MarketWidget() {
   const [commodity, setCommodity] = useState("Wheat");
-  const [state, setState] = useState("UP");
+  const state = "Punjab";
   const [items, setItems] = useState<any[]>([]);
   const [weather, setWeather] = useState<any>(null);
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition((p) => setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }));
+    if (!navigator.geolocation) {
+      setCoords({ lat: 31.1471, lon: 75.3412 }); // Punjab centroid fallback
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (p) => setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }),
+      () => setCoords({ lat: 31.1471, lon: 75.3412 })
+    );
   }, []);
 
   async function loadPrices() {
@@ -48,10 +54,10 @@ export default function MarketWidget() {
     <div className="grid gap-6 md:grid-cols-2">
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Market Prices</h3>
+          <h3 className="text-lg font-semibold">Market Prices (Punjab)</h3>
           <div className="flex gap-2">
             <input value={commodity} onChange={(e) => setCommodity(e.target.value)} className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm" />
-            <input value={state} onChange={(e) => setState(e.target.value)} className="w-20 rounded-md border border-slate-300 px-2 py-1 text-sm" />
+            <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600">State: Punjab</span>
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
