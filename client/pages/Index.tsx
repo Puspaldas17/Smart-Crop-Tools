@@ -274,6 +274,33 @@ export default function Index() {
         </header>
         <DemoForm />
       </section>
+
+      {/* AI Chatbot */}
+      <section id="chat" className="scroll-mt-24">
+        <header className="mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">AI Chatbot (Multilingual + Voice)</h2>
+          <p className="mt-2 max-w-prose text-slate-600">Ask in your language; press the mic to speak. Replies are read aloud.</p>
+        </header>
+        <Chatbot />
+      </section>
+
+      {/* Market & Weather */}
+      <section id="market" className="scroll-mt-24">
+        <header className="mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Real-time Market & Weather</h2>
+          <p className="mt-2 max-w-prose text-slate-600">Mandi prices and local weather with risk alerts.</p>
+        </header>
+        <MarketWidget />
+      </section>
+
+      {/* Pest Detector */}
+      <section id="pest" className="scroll-mt-24">
+        <header className="mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Image-based Pest/Disease Detection</h2>
+          <p className="mt-2 max-w-prose text-slate-600">On-device prototype using MobileNet. Upload or capture an image.</p>
+        </header>
+        <PestDetector />
+      </section>
     </div>
   );
 }
