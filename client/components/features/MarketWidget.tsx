@@ -20,22 +20,35 @@ export default function MarketWidget() {
   }, []);
 
   async function loadPrices() {
-    const url = new URL("/api/market", window.location.origin);
-    url.searchParams.set("commodity", commodity);
-    url.searchParams.set("state", state);
-    const r = await fetch(url);
-    const data = await r.json();
-    if (r.ok) setItems(data.items || []);
+    try {
+      const url = new URL("/api/market", window.location.origin);
+      url.searchParams.set("commodity", commodity);
+      url.searchParams.set("state", state);
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`market fetch failed: ${r.status}`);
+      const data = await r.json();
+      setItems(data.items || []);
+    } catch (e) {
+      console.error("Market load error:", e);
+      // keep existing items or empty
+      setItems((prev) => prev || []);
+    }
   }
 
   async function loadWeather() {
-    if (!coords) return;
-    const url = new URL("/api/weather", window.location.origin);
-    url.searchParams.set("lat", String(coords.lat));
-    url.searchParams.set("lon", String(coords.lon));
-    const r = await fetch(url);
-    const data = await r.json();
-    if (r.ok) setWeather(data);
+    try {
+      if (!coords) return;
+      const url = new URL("/api/weather", window.location.origin);
+      url.searchParams.set("lat", String(coords.lat));
+      url.searchParams.set("lon", String(coords.lon));
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`weather fetch failed: ${r.status}`);
+      const data = await r.json();
+      setWeather(data);
+    } catch (e) {
+      console.error("Weather load error:", e);
+      setWeather(null);
+    }
   }
 
   useEffect(() => { loadPrices(); }, [commodity, state]);
