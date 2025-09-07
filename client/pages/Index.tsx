@@ -197,6 +197,114 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Demo */}
+      <section id="demo" className="scroll-mt-24">
+        <header className="mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Try a Quick Demo</h2>
+          <p className="mt-2 max-w-prose text-slate-600">Create a farmer profile and generate an advisory using your location.</p>
+        </header>
+        <DemoForm />
+      </section>
+    </div>
+  );
+}
+
+function DemoForm() {
+  const [farmerId, setFarmerId] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>("");
+  const [advisory, setAdvisory] = useState<any>(null);
+
+  async function createFarmer(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const payload = Object.fromEntries(form.entries());
+    setStatus("Saving farmer...");
+    const res = await fetch("/api/farmers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: payload.name,
+        soilType: payload.soilType,
+        landSize: Number(payload.landSize || 0),
+        language: payload.language,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setFarmerId(data._id);
+      setStatus("Farmer created. Now generate advisory.");
+    } else {
+      setStatus(data.error || "Failed to create farmer");
+    }
+  }
+
+  async function makeAdvisory(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!farmerId) return setStatus("Create farmer first.");
+    const form = new FormData(e.currentTarget);
+    const lat = Number(form.get("lat") || 0);
+    const lon = Number(form.get("lon") || 0);
+    const crop = String(form.get("crop") || "");
+    setStatus("Generating advisory...");
+    const res = await fetch("/api/advisories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ farmerId, crop, lat, lon }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setAdvisory(data);
+      setStatus("Advisory ready.");
+    } else setStatus(data.error || "Failed to generate advisory");
+  }
+
+  return (
+    <div className="grid gap-6 md:grid-cols-2">
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold">1) Create Farmer</h3>
+        <form onSubmit={createFarmer} className="mt-4 grid gap-3">
+          <input name="name" placeholder="Name" required className="rounded-md border border-slate-300 px-3 py-2" />
+          <input name="soilType" placeholder="Soil type" className="rounded-md border border-slate-300 px-3 py-2" />
+          <input name="landSize" placeholder="Land size (acres)" type="number" className="rounded-md border border-slate-300 px-3 py-2" />
+          <input name="language" placeholder="Language" className="rounded-md border border-slate-300 px-3 py-2" />
+          <button className="mt-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Save</button>
+        </form>
+      </div>
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold">2) Generate Advisory</h3>
+        <form onSubmit={makeAdvisory} className="mt-4 grid gap-3">
+          <input name="crop" placeholder="Crop (e.g., paddy)" className="rounded-md border border-slate-300 px-3 py-2" />
+          <div className="grid grid-cols-2 gap-3">
+            <input name="lat" placeholder="Latitude" className="rounded-md border border-slate-300 px-3 py-2" />
+            <input name="lon" placeholder="Longitude" className="rounded-md border border-slate-300 px-3 py-2" />
+          </div>
+          <button className="mt-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">Generate</button>
+        </form>
+      </div>
+      <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="text-sm text-slate-600">{status}</div>
+        {advisory && (
+          <div className="mt-4 grid gap-2">
+            <div className="text-lg font-semibold">Advisory</div>
+            <div className="text-slate-700">{advisory.summary}</div>
+            <div className="grid gap-2 md:grid-cols-3">
+              <Item title="Fertilizer" text={advisory.fertilizer} />
+              <Item title="Irrigation" text={advisory.irrigation} />
+              <Item title="Pest" text={advisory.pest} />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Item({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-lg border border-slate-200 p-4">
+      <div className="text-sm font-semibold text-slate-900">{title}</div>
+      <div className="mt-1 text-sm text-slate-700">{text}</div>
     </div>
   );
 }
