@@ -88,13 +88,13 @@ export default function Index() {
           <h2 className="text-2xl font-bold tracking-tight">Technical Approach</h2>
         </header>
         <div className="grid gap-6 md:grid-cols-2">
-          <Card title="Technologies">
+          <Card title="Technologies (MERN)">
             <List items={[
-              "Frontend: Android app (Flutter / React Native).",
-              "Backend: Node.js or Django with PostgreSQL / Firebase.",
-              "AI/ML: Crop recommendation and CNN-based pest/disease detection (PlantVillage).",
-              "APIs: IMD/OpenWeather for weather, Agri Market/eNAM for prices.",
-              "Language/Voice: Bhashini, Google Speech‑to‑Text, Indic NLP.",
+              "Frontend: React (Vite) + Tailwind; PWA + i18n.",
+              "Backend: Node.js + Express (REST).",
+              "Database: MongoDB (Atlas/local) via Mongoose.",
+              "AI/ML: TFJS/CNN for pest detection; crop recommendation service.",
+              "APIs: IMD/OpenWeather (weather), eNAM/Agri Market (prices); Bhashini/Google STT for voice.",
             ]} />
           </Card>
           <Card title="Methodology & flow">
