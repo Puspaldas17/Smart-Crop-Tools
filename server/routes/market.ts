@@ -1,10 +1,11 @@
 import { RequestHandler } from "express";
 
 const sample = [
-  { commodity: "Wheat", state: "UP", mandi: "Kanpur", unit: "Qtl", price: 2150 },
-  { commodity: "Rice", state: "WB", mandi: "Kolkata", unit: "Qtl", price: 2400 },
-  { commodity: "Potato", state: "WB", mandi: "Hooghly", unit: "Qtl", price: 1200 },
-  { commodity: "Onion", state: "MH", mandi: "Nashik", unit: "Qtl", price: 1600 },
+  { commodity: "Wheat", state: "Punjab", mandi: "Ludhiana", unit: "Qtl", price: 2200 },
+  { commodity: "Wheat", state: "Punjab", mandi: "Amritsar", unit: "Qtl", price: 2180 },
+  { commodity: "Rice", state: "Punjab", mandi: "Ferozepur", unit: "Qtl", price: 2450 },
+  { commodity: "Potato", state: "Punjab", mandi: "Jalandhar", unit: "Qtl", price: 1250 },
+  { commodity: "Onion", state: "Punjab", mandi: "Patiala", unit: "Qtl", price: 1650 },
 ];
 
 export const getMarketPrices: RequestHandler = async (req, res) => {
