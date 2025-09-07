@@ -33,8 +33,16 @@ function ToolsSuite() {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center">
         <h3 className="text-lg font-semibold">Login to use the tools</h3>
-        <p className="mt-1 text-sm text-slate-600">Sign in as a farmer to access chatbot, market & weather, and pest detection.</p>
-        <a href="/login" className="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Go to Login</a>
+        <p className="mt-1 text-sm text-slate-600">
+          Sign in as a farmer to access chatbot, market & weather, and pest
+          detection.
+        </p>
+        <a
+          href="/login"
+          className="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+        >
+          Go to Login
+        </a>
       </div>
     );
   }
@@ -154,7 +162,10 @@ export default function Index() {
       <section id="tools" className="scroll-mt-24">
         <header className="mb-6">
           <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
-          <p className="mt-2 max-w-prose text-slate-600">Chatbot, Market & Weather, Pest Detection, and Advisory demo — all together.</p>
+          <p className="mt-2 max-w-prose text-slate-600">
+            Chatbot, Market & Weather, Pest Detection, and Advisory demo — all
+            together.
+          </p>
         </header>
         <ToolsSuite />
       </section>
@@ -300,8 +311,13 @@ export default function Index() {
       {/* AI Chatbot */}
       <section id="chat" className="scroll-mt-24">
         <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">AI Chatbot (Multilingual + Voice)</h2>
-          <p className="mt-2 max-w-prose text-slate-600">Ask in your language; press the mic to speak. Replies are read aloud.</p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            AI Chatbot (Multilingual + Voice)
+          </h2>
+          <p className="mt-2 max-w-prose text-slate-600">
+            Ask in your language; press the mic to speak. Replies are read
+            aloud.
+          </p>
         </header>
         <Chatbot />
       </section>
@@ -309,8 +325,12 @@ export default function Index() {
       {/* Market & Weather */}
       <section id="market" className="scroll-mt-24">
         <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Real-time Market & Weather</h2>
-          <p className="mt-2 max-w-prose text-slate-600">Mandi prices and local weather with risk alerts.</p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Real-time Market & Weather
+          </h2>
+          <p className="mt-2 max-w-prose text-slate-600">
+            Mandi prices and local weather with risk alerts.
+          </p>
         </header>
         <MarketWidget />
       </section>
@@ -318,15 +338,18 @@ export default function Index() {
       {/* Pest Detector */}
       <section id="pest" className="scroll-mt-24">
         <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Image-based Pest/Disease Detection</h2>
-          <p className="mt-2 max-w-prose text-slate-600">On-device prototype using MobileNet. Upload or capture an image.</p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Image-based Pest/Disease Detection
+          </h2>
+          <p className="mt-2 max-w-prose text-slate-600">
+            On-device prototype using MobileNet. Upload or capture an image.
+          </p>
         </header>
         <PestDetector />
       </section>
     </div>
   );
 }
-
 
 function Item({ title, text }: { title: string; text: string }) {
   return (

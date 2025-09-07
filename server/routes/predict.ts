@@ -14,7 +14,11 @@ export const predictHandler: RequestHandler = async (req, res) => {
   let items: { className: string; probability: number }[] = [];
 
   // Very simple mock prediction logic for demo
-  if (lower.includes("blight") || lower.includes("fungus") || lower.includes("leaf")) {
+  if (
+    lower.includes("blight") ||
+    lower.includes("fungus") ||
+    lower.includes("leaf")
+  ) {
     items = [
       { className: "Leaf blight (approx)", probability: 0.86 },
       { className: "Septoria-like", probability: 0.08 },

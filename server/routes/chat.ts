@@ -2,7 +2,11 @@ import { RequestHandler } from "express";
 
 export const chatHandler: RequestHandler = async (req, res) => {
   try {
-    const { message, lat, lon } = req.body as { message?: string; lat?: number; lon?: number };
+    const { message, lat, lon } = req.body as {
+      message?: string;
+      lat?: number;
+      lon?: number;
+    };
     if (!message) return res.status(400).json({ error: "message required" });
 
     const m = message.toLowerCase();
@@ -35,7 +39,10 @@ export const chatHandler: RequestHandler = async (req, res) => {
       );
     }
 
-    if (!replies.length) replies.push("I can help with weather, market prices, and crop advisory. Ask me about any of these.");
+    if (!replies.length)
+      replies.push(
+        "I can help with weather, market prices, and crop advisory. Ask me about any of these.",
+      );
 
     res.json({ reply: replies.join("\n") });
   } catch (e) {

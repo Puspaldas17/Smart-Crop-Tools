@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const SR: any = typeof window !== "undefined"
-  ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-  : undefined;
+const SR: any =
+  typeof window !== "undefined"
+    ? (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition
+    : undefined;
 
 export function useSpeech(lang: string = "en-IN") {
   const [supported, setSupported] = useState<boolean>(false);
@@ -11,7 +13,9 @@ export function useSpeech(lang: string = "en-IN") {
   const recRef = useRef<any>(null);
 
   useEffect(() => {
-    setSupported(Boolean(typeof window !== "undefined" && (SR || window.speechSynthesis)));
+    setSupported(
+      Boolean(typeof window !== "undefined" && (SR || window.speechSynthesis)),
+    );
   }, []);
 
   const start = useCallback(() => {
@@ -21,7 +25,9 @@ export function useSpeech(lang: string = "en-IN") {
     rec.interimResults = false;
     rec.continuous = false;
     rec.onresult = (e: any) => {
-      const text = Array.from(e.results).map((r: any) => r[0].transcript).join(" ");
+      const text = Array.from(e.results)
+        .map((r: any) => r[0].transcript)
+        .join(" ");
       setTranscript(text);
       setListening(false);
     };
@@ -38,14 +44,25 @@ export function useSpeech(lang: string = "en-IN") {
     setListening(false);
   }, []);
 
-  const speak = useCallback((text: string) => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = lang;
-    window.speechSynthesis.speak(utter);
-  }, [lang]);
+  const speak = useCallback(
+    (text: string) => {
+      if (typeof window === "undefined" || !window.speechSynthesis) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = lang;
+      window.speechSynthesis.speak(utter);
+    },
+    [lang],
+  );
 
-  return { supported, listening, transcript, setTranscript, start, stop, speak };
+  return {
+    supported,
+    listening,
+    transcript,
+    setTranscript,
+    start,
+    stop,
+    speak,
+  };
 }
 
 export const languages = [

@@ -3,13 +3,15 @@ import { RequestHandler } from "express";
 export const getWeather: RequestHandler = async (req, res) => {
   try {
     const { lat, lon } = req.query as { lat?: string; lon?: string };
-    if (!lat || !lon) return res.status(400).json({ error: "lat and lon required" });
+    if (!lat || !lon)
+      return res.status(400).json({ error: "lat and lon required" });
     const key = process.env.OPENWEATHER_API_KEY;
 
     if (key) {
       const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
       const resp = await fetch(url);
-      if (!resp.ok) return res.status(502).json({ error: "Weather API failed" });
+      if (!resp.ok)
+        return res.status(502).json({ error: "Weather API failed" });
       const data = await resp.json();
       return res.json({
         tempC: data.main?.temp,

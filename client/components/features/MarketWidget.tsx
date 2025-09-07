@@ -6,7 +6,9 @@ export default function MarketWidget() {
   const state = "Punjab";
   const [items, setItems] = useState<any[]>([]);
   const [weather, setWeather] = useState<any>(null);
-  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -15,7 +17,7 @@ export default function MarketWidget() {
     }
     navigator.geolocation.getCurrentPosition(
       (p) => setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }),
-      () => setCoords({ lat: 31.1471, lon: 75.3412 })
+      () => setCoords({ lat: 31.1471, lon: 75.3412 }),
     );
   }, []);
 
@@ -51,15 +53,22 @@ export default function MarketWidget() {
     }
   }
 
-  useEffect(() => { loadPrices(); }, [commodity, state]);
-  useEffect(() => { loadWeather(); }, [coords]);
+  useEffect(() => {
+    loadPrices();
+  }, [commodity, state]);
+  useEffect(() => {
+    loadWeather();
+  }, [coords]);
 
   const alertText = useMemo(() => {
     if (!weather) return null;
     const a: string[] = [];
-    if (weather.tempC != null && (weather.tempC < 12 || weather.tempC > 35)) a.push("Extreme temperature alert");
-    if (weather.humidity != null && weather.humidity > 80) a.push("High humidity—risk of fungal disease");
-    if (weather.windKph != null && weather.windKph > 35) a.push("High wind speed—protect crops");
+    if (weather.tempC != null && (weather.tempC < 12 || weather.tempC > 35))
+      a.push("Extreme temperature alert");
+    if (weather.humidity != null && weather.humidity > 80)
+      a.push("High humidity—risk of fungal disease");
+    if (weather.windKph != null && weather.windKph > 35)
+      a.push("High wind speed—protect crops");
     return a.join("; ") || null;
   }, [weather]);
 
@@ -69,8 +78,14 @@ export default function MarketWidget() {
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Market Prices (Punjab)</h3>
           <div className="flex gap-2">
-            <input value={commodity} onChange={(e) => setCommodity(e.target.value)} className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm" />
-            <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600">State: Punjab</span>
+            <input
+              value={commodity}
+              onChange={(e) => setCommodity(e.target.value)}
+              className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm"
+            />
+            <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600">
+              State: Punjab
+            </span>
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
@@ -101,7 +116,12 @@ export default function MarketWidget() {
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Weather</h3>
-          <button onClick={loadWeather} className="rounded-md border border-slate-300 px-3 py-1 text-sm">Refresh</button>
+          <button
+            onClick={loadWeather}
+            className="rounded-md border border-slate-300 px-3 py-1 text-sm"
+          >
+            Refresh
+          </button>
         </div>
         {weather ? (
           <div className="mt-3 space-y-1 text-sm text-slate-700">
@@ -116,7 +136,9 @@ export default function MarketWidget() {
             )}
           </div>
         ) : (
-          <div className="mt-3 text-sm text-slate-500">Allow location to see local weather.</div>
+          <div className="mt-3 text-sm text-slate-500">
+            Allow location to see local weather.
+          </div>
         )}
       </div>
     </div>
