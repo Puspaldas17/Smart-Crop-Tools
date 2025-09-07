@@ -6,6 +6,8 @@ import { connectDB } from "./db";
 import { createFarmer, getFarmer } from "./routes/farmers";
 import { getWeather } from "./routes/weather";
 import { createAdvisory } from "./routes/advisory";
+import { getMarketPrices } from "./routes/market";
+import { chatHandler } from "./routes/chat";
 
 export function createServer() {
   const app = express();
@@ -31,10 +33,7 @@ export function createServer() {
   app.get("/api/farmers/:id", getFarmer);
   app.get("/api/weather", getWeather);
   app.post("/api/advisories", createAdvisory);
-
-  const { getMarketPrices } = await import("./routes/market.js");
   app.get("/api/market", getMarketPrices);
-  const { chatHandler } = await import("./routes/chat.js");
   app.post("/api/chat", chatHandler);
 
   return app;
