@@ -123,6 +123,22 @@ export default function Index() {
         </div>
       </section>
 
+      {/* Tools (All working parts in one place) */}
+      <section id="tools" className="scroll-mt-24">
+        <header className="mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
+          <p className="mt-2 max-w-prose text-slate-600">Chatbot, Market & Weather, Pest Detection, and Advisory demo — all together.</p>
+        </header>
+        <div className="grid gap-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Chatbot />
+            <MarketWidget />
+          </div>
+          <PestDetector />
+          <DemoForm />
+        </div>
+      </section>
+
       {/* Technical Approach */}
       <section id="tech" className="scroll-mt-24">
         <header className="mb-8">
