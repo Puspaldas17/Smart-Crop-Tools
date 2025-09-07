@@ -80,6 +80,9 @@ export default function PestDetector() {
           <div className="mt-3 aspect-video w-full overflow-hidden rounded-lg bg-slate-100">
             <img ref={imgRef} alt="preview" className="h-full w-full object-contain" />
           </div>
+          {serverFallback && (
+            <div className="mt-2 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">Using server-side prediction because on-device model is unavailable.</div>
+          )}
         </div>
         <div className="flex-1">
           {loading && <div className="text-sm text-slate-500">Analyzing…</div>}
