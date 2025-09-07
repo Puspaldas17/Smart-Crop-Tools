@@ -32,5 +32,10 @@ export function createServer() {
   app.get("/api/weather", getWeather);
   app.post("/api/advisories", createAdvisory);
 
+  const { getMarketPrices } = await import("./routes/market.js");
+  app.get("/api/market", getMarketPrices);
+  const { chatHandler } = await import("./routes/chat.js");
+  app.post("/api/chat", chatHandler);
+
   return app;
 }
