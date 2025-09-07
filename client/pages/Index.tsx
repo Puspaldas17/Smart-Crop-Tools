@@ -15,9 +15,14 @@ import PestDetector from "@/components/features/PestDetector";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
+import FeatureTiles from "@/components/features/FeatureTiles";
+import AdvisoryWidget from "@/components/features/AdvisoryWidget";
+
 function ToolsSuiteInner() {
   return (
     <div className="grid gap-6">
+      <FeatureTiles />
+      <AdvisoryWidget />
       <div className="grid gap-6 md:grid-cols-2">
         <Chatbot />
         <MarketWidget />
