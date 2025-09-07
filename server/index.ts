@@ -8,6 +8,7 @@ import { getWeather } from "./routes/weather";
 import { createAdvisory } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
+import { predictHandler, uploadMiddleware } from "./routes/predict";
 
 export function createServer() {
   const app = express();
