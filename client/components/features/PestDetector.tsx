@@ -6,6 +6,7 @@ export default function PestDetector() {
   const [model, setModel] = useState<mobilenet.MobileNet | null>(null);
   const [preds, setPreds] = useState<{ className: string; probability: number }[]>([]);
   const [loading, setLoading] = useState(false);
+  const [serverFallback, setServerFallback] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
@@ -13,23 +14,45 @@ export default function PestDetector() {
     (async () => {
       try {
         const m = await mobilenet.load({ version: 2, alpha: 1.0 });
-        if (mounted) setModel(m);
+        if (mounted) {
+          setModel(m);
+          setServerFallback(false);
+        }
       } catch (err) {
         console.error("Failed to load mobilenet model:", err);
         setModel(null);
+        setServerFallback(true);
       }
     })();
     return () => { mounted = false; };
   }, []);
+
+  async function serverPredict(file: File) {
+    setLoading(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file, file.name);
+      const r = await fetch("/api/predict", { method: "POST", body: fd });
+      const data = await r.json();
+      if (r.ok && data.predictions) {
+        setPreds(data.predictions.map((p: any) => ({ className: p.className, probability: p.probability })));
+      } else {
+        setPreds([]);
+      }
+    } catch (err) {
+      console.error("Server predict error:", err);
+      setPreds([]);
+    }
+    setLoading(false);
+  }
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
     if (imgRef.current) imgRef.current.src = url;
-    if (!model) {
-      setPreds([]);
-      setLoading(false);
+    if (!model || serverFallback) {
+      await serverPredict(file);
       return;
     }
     setLoading(true);
@@ -41,7 +64,8 @@ export default function PestDetector() {
       }
     } catch (err) {
       console.error("Classification error:", err);
-      setPreds([]);
+      // fallback to server
+      await serverPredict(file);
     }
     setLoading(false);
   }
