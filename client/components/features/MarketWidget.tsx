@@ -59,6 +59,11 @@ export default function MarketWidget() {
   useEffect(() => {
     loadWeather();
   }, [coords]);
+  useEffect(() => {
+    const handler = () => loadWeather();
+    window.addEventListener("weather:refresh", handler as any);
+    return () => window.removeEventListener("weather:refresh", handler as any);
+  }, [coords]);
 
   const alertText = useMemo(() => {
     if (!weather) return null;
