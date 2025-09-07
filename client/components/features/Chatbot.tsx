@@ -7,6 +7,7 @@ export default function Chatbot() {
     { role: "user" | "assistant"; content: string }[]
   >([]);
   const [input, setInput] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [lang, setLang] = useState("en-IN");
   const {
     listening,
@@ -33,6 +34,17 @@ export default function Chatbot() {
     navigator.geolocation.getCurrentPosition((p) =>
       setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }),
     );
+  }, []);
+
+  useEffect(() => {
+    const focusHandler = () => inputRef.current?.focus();
+    const langHandler = (e: any) => setLang(e?.detail || "en-IN");
+    window.addEventListener("chat:focus", focusHandler as any);
+    window.addEventListener("chat:set-language", langHandler as any);
+    return () => {
+      window.removeEventListener("chat:focus", focusHandler as any);
+      window.removeEventListener("chat:set-language", langHandler as any);
+    };
   }, []);
 
   async function send() {
@@ -88,6 +100,7 @@ export default function Chatbot() {
       </div>
       <div className="flex items-center gap-2 border-t border-slate-200 p-3">
         <input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your question…"
