@@ -36,6 +36,7 @@ export function createServer() {
   app.post("/api/advisories", createAdvisory);
   app.get("/api/market", getMarketPrices);
   app.post("/api/chat", chatHandler);
+  app.post("/api/predict", uploadMiddleware, predictHandler);
 
   return app;
 }
