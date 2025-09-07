@@ -29,7 +29,8 @@ const farmerSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export const Farmer = mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema);
+export const Farmer =
+  mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema);
 
 const advisorySchema = new mongoose.Schema(
   {

@@ -30,7 +30,9 @@ export default function RootLayout() {
       >
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-semibold">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-[#ff8a00] to-[#2ea043] text-white font-bold">SC</span>
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-[#ff8a00] to-[#2ea043] text-white font-bold">
+              SC
+            </span>
             <span className="text-lg">Smart Crop Advisory</span>
           </Link>
           <nav className="hidden gap-6 md:flex">
@@ -66,11 +68,16 @@ export default function RootLayout() {
       <footer className="border-t border-slate-200/60 bg-white/60 py-8">
         <div className="container flex flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
           <p className="text-sm text-slate-600">
-            © {new Date().getFullYear()} The Compilers — Smart India Hackathon 2025
+            © {new Date().getFullYear()} The Compilers — Smart India Hackathon
+            2025
           </p>
           <div className="flex items-center gap-4 text-sm">
-            <a href="#research" className="text-slate-600 hover:text-slate-900">References</a>
-            <a href="#impact" className="text-slate-600 hover:text-slate-900">Benefits</a>
+            <a href="#research" className="text-slate-600 hover:text-slate-900">
+              References
+            </a>
+            <a href="#impact" className="text-slate-600 hover:text-slate-900">
+              Benefits
+            </a>
           </div>
         </div>
       </footer>

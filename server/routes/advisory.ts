@@ -1,18 +1,38 @@
 import { RequestHandler } from "express";
 import { Advisory, Farmer } from "../db";
 
-function generateAdvice({ tempC, humidity }: { tempC?: number; humidity?: number }) {
+function generateAdvice({
+  tempC,
+  humidity,
+}: {
+  tempC?: number;
+  humidity?: number;
+}) {
   const parts: string[] = [];
   if (tempC !== undefined) {
-    if (tempC < 15) parts.push("Low temperature: prefer wheat/mustard; reduce irrigation.");
-    else if (tempC < 28) parts.push("Moderate temperature: paddy/vegetables suitable; standard irrigation schedule.");
-    else parts.push("High temperature: select drought‑tolerant crops; irrigate in early morning/evening.");
+    if (tempC < 15)
+      parts.push("Low temperature: prefer wheat/mustard; reduce irrigation.");
+    else if (tempC < 28)
+      parts.push(
+        "Moderate temperature: paddy/vegetables suitable; standard irrigation schedule.",
+      );
+    else
+      parts.push(
+        "High temperature: select drought‑tolerant crops; irrigate in early morning/evening.",
+      );
   }
   if (humidity !== undefined) {
-    if (humidity > 80) parts.push("High humidity: monitor fungal diseases; use preventive fungicide when needed.");
-    else if (humidity < 30) parts.push("Low humidity: mulch to retain soil moisture.");
+    if (humidity > 80)
+      parts.push(
+        "High humidity: monitor fungal diseases; use preventive fungicide when needed.",
+      );
+    else if (humidity < 30)
+      parts.push("Low humidity: mulch to retain soil moisture.");
   }
-  return parts.join(" ") || "Provide location to fetch weather for personalized advice.";
+  return (
+    parts.join(" ") ||
+    "Provide location to fetch weather for personalized advice."
+  );
 }
 
 export const createAdvisory: RequestHandler = async (req, res) => {
@@ -35,15 +55,29 @@ export const createAdvisory: RequestHandler = async (req, res) => {
       }
     }
 
-    const summary = generateAdvice({ tempC: weather?.main?.temp, humidity: weather?.main?.humidity });
-    const fertilizer =
-      crop?.toLowerCase().includes("paddy")
-        ? "NPK 10:26:26 at sowing; urea split doses at tillering/PI."
-        : "Balanced NPK based on soil test; apply compost/manure to improve organic matter.";
-    const irrigation = weather?.main?.temp && weather.main.temp > 30 ? "Irrigate 2–3 times/week in short cycles." : "Irrigate weekly based on soil moisture.";
-    const pest = "Scout weekly; use pheromone traps; prefer bio‑control where possible.";
+    const summary = generateAdvice({
+      tempC: weather?.main?.temp,
+      humidity: weather?.main?.humidity,
+    });
+    const fertilizer = crop?.toLowerCase().includes("paddy")
+      ? "NPK 10:26:26 at sowing; urea split doses at tillering/PI."
+      : "Balanced NPK based on soil test; apply compost/manure to improve organic matter.";
+    const irrigation =
+      weather?.main?.temp && weather.main.temp > 30
+        ? "Irrigate 2–3 times/week in short cycles."
+        : "Irrigate weekly based on soil moisture.";
+    const pest =
+      "Scout weekly; use pheromone traps; prefer bio‑control where possible.";
 
-    const doc = await Advisory.create({ farmerId, crop, summary, fertilizer, irrigation, pest, weather });
+    const doc = await Advisory.create({
+      farmerId,
+      crop,
+      summary,
+      fertilizer,
+      irrigation,
+      pest,
+      weather,
+    });
     res.status(201).json(doc);
   } catch (e) {
     console.error(e);

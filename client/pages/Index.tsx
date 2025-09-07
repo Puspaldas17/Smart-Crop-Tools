@@ -1,4 +1,13 @@
-import { CheckCircle2, Sprout, Mic, WifiOff, CloudSun, Languages, Brain, Shield } from "lucide-react";
+import {
+  CheckCircle2,
+  Sprout,
+  Mic,
+  WifiOff,
+  CloudSun,
+  Languages,
+  Brain,
+  Shield,
+} from "lucide-react";
 
 import { useState } from "react";
 
@@ -16,11 +25,23 @@ export default function Index() {
               Smart Crop Advisory System
             </h1>
             <p className="mt-4 max-w-prose text-slate-600 md:text-lg">
-              AI-powered, multilingual guidance for small and marginal farmers—combining soil, weather, market and pest insights into one simple, voice-enabled experience.
+              AI-powered, multilingual guidance for small and marginal
+              farmers—combining soil, weather, market and pest insights into one
+              simple, voice-enabled experience.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#solution" className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:brightness-95">See Solution</a>
-              <a href="#tech" className="rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Technical Approach</a>
+              <a
+                href="#solution"
+                className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:brightness-95"
+              >
+                See Solution
+              </a>
+              <a
+                href="#tech"
+                className="rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                Technical Approach
+              </a>
             </div>
           </div>
           <div className="order-first md:order-none">
@@ -32,9 +53,14 @@ export default function Index() {
                   { icon: Brain, label: "AI insights" },
                   { icon: Languages, label: "Multilingual" },
                 ].map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex items-center gap-3 rounded-lg border border-slate-200 p-4">
+                  <div
+                    key={label}
+                    className="flex items-center gap-3 rounded-lg border border-slate-200 p-4"
+                  >
                     <Icon className="h-5 w-5 text-emerald-600" />
-                    <span className="text-sm font-medium text-slate-700">{label}</span>
+                    <span className="text-sm font-medium text-slate-700">
+                      {label}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -51,35 +77,45 @@ export default function Index() {
       {/* Proposed Solution */}
       <section id="solution" className="scroll-mt-24">
         <header className="mb-8">
-          <h2 className="text-2xl font-bold tracking-tight">Proposed Solution</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Proposed Solution
+          </h2>
           <p className="mt-2 max-w-prose text-slate-600">
-            A mobile app and chatbot that work online and offline to deliver personalized crop, fertilizer, irrigation and pest management—backed by real‑time weather and market data.
+            A mobile app and chatbot that work online and offline to deliver
+            personalized crop, fertilizer, irrigation and pest management—backed
+            by real‑time weather and market data.
           </p>
         </header>
         <div className="grid gap-6 md:grid-cols-2">
           <Card title="Detailed explanation">
-            <List items={[
-              "AI-driven mobile app and chatbot with multilingual and voice support.",
-              "Personalized crop, fertilizer and pest advisory using soil, weather and crop history.",
-              "Real-time market price updates and weather alerts.",
-              "Image-based pest/disease detection.",
-            ]} />
+            <List
+              items={[
+                "AI-driven mobile app and chatbot with multilingual and voice support.",
+                "Personalized crop, fertilizer and pest advisory using soil, weather and crop history.",
+                "Real-time market price updates and weather alerts.",
+                "Image-based pest/disease detection.",
+              ]}
+            />
           </Card>
           <Card title="How it addresses the problem">
-            <List items={[
-              "Enables scientific, data-driven decisions.",
-              "Reduces dependency on middlemen and shopkeepers.",
-              "Accessible in native languages with voice guidance.",
-              "Promotes sustainable farming and cost savings.",
-            ]} />
+            <List
+              items={[
+                "Enables scientific, data-driven decisions.",
+                "Reduces dependency on middlemen and shopkeepers.",
+                "Accessible in native languages with voice guidance.",
+                "Promotes sustainable farming and cost savings.",
+              ]}
+            />
           </Card>
           <Card title="Innovation and uniqueness">
-            <List items={[
-              "Offline mode for low‑internet areas.",
-              "Voice-enabled interface for low literacy users.",
-              "Unified platform: soil, weather, pest and market data.",
-              "Feedback loop for continuous improvement.",
-            ]} />
+            <List
+              items={[
+                "Offline mode for low‑internet areas.",
+                "Voice-enabled interface for low literacy users.",
+                "Unified platform: soil, weather, pest and market data.",
+                "Feedback loop for continuous improvement.",
+              ]}
+            />
           </Card>
         </div>
       </section>
@@ -87,26 +123,32 @@ export default function Index() {
       {/* Technical Approach */}
       <section id="tech" className="scroll-mt-24">
         <header className="mb-8">
-          <h2 className="text-2xl font-bold tracking-tight">Technical Approach</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Technical Approach
+          </h2>
         </header>
         <div className="grid gap-6 md:grid-cols-2">
           <Card title="Technologies (MERN)">
-            <List items={[
-              "Frontend: React (Vite) + Tailwind; PWA + i18n.",
-              "Backend: Node.js + Express (REST).",
-              "Database: MongoDB (Atlas/local) via Mongoose.",
-              "AI/ML: TFJS/CNN for pest detection; crop recommendation service.",
-              "APIs: IMD/OpenWeather (weather), eNAM/Agri Market (prices); Bhashini/Google STT for voice.",
-            ]} />
+            <List
+              items={[
+                "Frontend: React (Vite) + Tailwind; PWA + i18n.",
+                "Backend: Node.js + Express (REST).",
+                "Database: MongoDB (Atlas/local) via Mongoose.",
+                "AI/ML: TFJS/CNN for pest detection; crop recommendation service.",
+                "APIs: IMD/OpenWeather (weather), eNAM/Agri Market (prices); Bhashini/Google STT for voice.",
+              ]}
+            />
           </Card>
           <Card title="Methodology & flow">
-            <List items={[
-              "Farmer registers profile (soil type, land size, language).",
-              "System fetches weather + soil + crop data.",
-              "Generates advisory (fertilizer, crop choice, irrigation).",
-              "Farmer uploads image; ML detects disease and suggests remedies.",
-              "App shows market prices and alerts; feedback refines advice.",
-            ]} />
+            <List
+              items={[
+                "Farmer registers profile (soil type, land size, language).",
+                "System fetches weather + soil + crop data.",
+                "Generates advisory (fertilizer, crop choice, irrigation).",
+                "Farmer uploads image; ML detects disease and suggests remedies.",
+                "App shows market prices and alerts; feedback refines advice.",
+              ]}
+            />
           </Card>
         </div>
       </section>
@@ -114,29 +156,37 @@ export default function Index() {
       {/* Feasibility */}
       <section id="feasibility" className="scroll-mt-24">
         <header className="mb-8">
-          <h2 className="text-2xl font-bold tracking-tight">Feasibility and Viability</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Feasibility and Viability
+          </h2>
         </header>
         <div className="grid gap-6 md:grid-cols-3">
           <Card title="Feasibility">
-            <List items={[
-              "Readily available APIs (weather, mandi rates).",
-              "Open-source datasets (soil, crop, pest).",
-              "Scalable cloud backend; mobile‑first and low cost.",
-            ]} />
+            <List
+              items={[
+                "Readily available APIs (weather, mandi rates).",
+                "Open-source datasets (soil, crop, pest).",
+                "Scalable cloud backend; mobile‑first and low cost.",
+              ]}
+            />
           </Card>
           <Card title="Risks">
-            <List items={[
-              "Limited digital literacy.",
-              "Patchy internet in rural areas.",
-              "Regional language diversity and adoption trust.",
-            ]} />
+            <List
+              items={[
+                "Limited digital literacy.",
+                "Patchy internet in rural areas.",
+                "Regional language diversity and adoption trust.",
+              ]}
+            />
           </Card>
           <Card title="Mitigation">
-            <List items={[
-              "Govt tie‑ups for credibility; community demos via NGOs.",
-              "Offline features with SMS fallback.",
-              "Voice‑first UX in native languages.",
-            ]} />
+            <List
+              items={[
+                "Govt tie‑ups for credibility; community demos via NGOs.",
+                "Offline features with SMS fallback.",
+                "Voice‑first UX in native languages.",
+              ]}
+            />
           </Card>
         </div>
       </section>
@@ -144,23 +194,29 @@ export default function Index() {
       {/* Impact */}
       <section id="impact" className="scroll-mt-24">
         <header className="mb-8">
-          <h2 className="text-2xl font-bold tracking-tight">Impact and Benefits</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Impact and Benefits
+          </h2>
         </header>
         <div className="grid gap-6 md:grid-cols-2">
           <Card title="Impact on audience">
-            <List items={[
-              "Saves cost and reduces crop failures.",
-              "Delivers scientific, personalized advice.",
-              "Directly benefits small & marginal farmers (86% in India).",
-            ]} />
+            <List
+              items={[
+                "Saves cost and reduces crop failures.",
+                "Delivers scientific, personalized advice.",
+                "Directly benefits small & marginal farmers (86% in India).",
+              ]}
+            />
           </Card>
           <Card title="Benefits">
-            <List items={[
-              "Government/NGO: actionable data for policy.",
-              "Environmental: prevents chemical overuse, supports sustainability.",
-              "Economic: 20–30% yield increase; reduced input cost.",
-              "Social: empowers rural farmers; improves food security.",
-            ]} />
+            <List
+              items={[
+                "Government/NGO: actionable data for policy.",
+                "Environmental: prevents chemical overuse, supports sustainability.",
+                "Economic: 20–30% yield increase; reduced input cost.",
+                "Social: empowers rural farmers; improves food security.",
+              ]}
+            />
           </Card>
         </div>
       </section>
@@ -168,17 +224,21 @@ export default function Index() {
       {/* Research */}
       <section id="research" className="scroll-mt-24">
         <header className="mb-8">
-          <h2 className="text-2xl font-bold tracking-tight">Research and References</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Research and References
+          </h2>
         </header>
         <div className="grid gap-6 md:grid-cols-2">
           <Card title="Sources">
-            <List items={[
-              "IMD / OpenWeather API – forecasts.",
-              "Indian Govt APIs – eNAM, Agri Market, Bhashini.",
-              "PlantVillage dataset – pest/disease recognition.",
-              "FAO & ICAR studies – ICT advisories improve yield by 20–30%.",
-              "NABARD 2022 – 86% of Indian farmers are small/marginal.",
-            ]} />
+            <List
+              items={[
+                "IMD / OpenWeather API – forecasts.",
+                "Indian Govt APIs – eNAM, Agri Market, Bhashini.",
+                "PlantVillage dataset – pest/disease recognition.",
+                "FAO & ICAR studies – ICT advisories improve yield by 20–30%.",
+                "NABARD 2022 – 86% of Indian farmers are small/marginal.",
+              ]}
+            />
           </Card>
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h3 className="text-lg font-semibold">Key Capabilities</h3>
@@ -201,8 +261,13 @@ export default function Index() {
       {/* Demo */}
       <section id="demo" className="scroll-mt-24">
         <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Try a Quick Demo</h2>
-          <p className="mt-2 max-w-prose text-slate-600">Create a farmer profile and generate an advisory using your location.</p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Try a Quick Demo
+          </h2>
+          <p className="mt-2 max-w-prose text-slate-600">
+            Create a farmer profile and generate an advisory using your
+            location.
+          </p>
         </header>
         <DemoForm />
       </section>
@@ -264,22 +329,56 @@ function DemoForm() {
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="text-lg font-semibold">1) Create Farmer</h3>
         <form onSubmit={createFarmer} className="mt-4 grid gap-3">
-          <input name="name" placeholder="Name" required className="rounded-md border border-slate-300 px-3 py-2" />
-          <input name="soilType" placeholder="Soil type" className="rounded-md border border-slate-300 px-3 py-2" />
-          <input name="landSize" placeholder="Land size (acres)" type="number" className="rounded-md border border-slate-300 px-3 py-2" />
-          <input name="language" placeholder="Language" className="rounded-md border border-slate-300 px-3 py-2" />
-          <button className="mt-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Save</button>
+          <input
+            name="name"
+            placeholder="Name"
+            required
+            className="rounded-md border border-slate-300 px-3 py-2"
+          />
+          <input
+            name="soilType"
+            placeholder="Soil type"
+            className="rounded-md border border-slate-300 px-3 py-2"
+          />
+          <input
+            name="landSize"
+            placeholder="Land size (acres)"
+            type="number"
+            className="rounded-md border border-slate-300 px-3 py-2"
+          />
+          <input
+            name="language"
+            placeholder="Language"
+            className="rounded-md border border-slate-300 px-3 py-2"
+          />
+          <button className="mt-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+            Save
+          </button>
         </form>
       </div>
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="text-lg font-semibold">2) Generate Advisory</h3>
         <form onSubmit={makeAdvisory} className="mt-4 grid gap-3">
-          <input name="crop" placeholder="Crop (e.g., paddy)" className="rounded-md border border-slate-300 px-3 py-2" />
+          <input
+            name="crop"
+            placeholder="Crop (e.g., paddy)"
+            className="rounded-md border border-slate-300 px-3 py-2"
+          />
           <div className="grid grid-cols-2 gap-3">
-            <input name="lat" placeholder="Latitude" className="rounded-md border border-slate-300 px-3 py-2" />
-            <input name="lon" placeholder="Longitude" className="rounded-md border border-slate-300 px-3 py-2" />
+            <input
+              name="lat"
+              placeholder="Latitude"
+              className="rounded-md border border-slate-300 px-3 py-2"
+            />
+            <input
+              name="lon"
+              placeholder="Longitude"
+              className="rounded-md border border-slate-300 px-3 py-2"
+            />
           </div>
-          <button className="mt-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">Generate</button>
+          <button className="mt-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">
+            Generate
+          </button>
         </form>
       </div>
       <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -309,7 +408,13 @@ function Item({ title, text }: { title: string; text: string }) {
   );
 }
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
+function Card({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
