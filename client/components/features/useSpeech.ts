@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type SR = typeof window !== "undefined" && (window as any).SpeechRecognition
-  ? (window as any).SpeechRecognition
-  : typeof window !== "undefined" && (window as any).webkitSpeechRecognition
-    ? (window as any).webkitSpeechRecognition
-    : undefined;
+const SR: any = typeof window !== "undefined"
+  ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+  : undefined;
 
 export function useSpeech(lang: string = "en-IN") {
   const [supported, setSupported] = useState<boolean>(false);
@@ -18,7 +16,7 @@ export function useSpeech(lang: string = "en-IN") {
 
   const start = useCallback(() => {
     if (!SR) return;
-    const rec = new (SR as any)();
+    const rec = new SR();
     rec.lang = lang;
     rec.interimResults = false;
     rec.continuous = false;
