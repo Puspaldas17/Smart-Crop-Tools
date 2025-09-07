@@ -13,6 +13,33 @@ import Chatbot from "@/components/features/Chatbot";
 import MarketWidget from "@/components/features/MarketWidget";
 import PestDetector from "@/components/features/PestDetector";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+
+function ToolsSuiteInner() {
+  return (
+    <div className="grid gap-6">
+      <div className="grid gap-6 md:grid-cols-2">
+        <Chatbot />
+        <MarketWidget />
+      </div>
+      <PestDetector />
+    </div>
+  );
+}
+
+function ToolsSuite() {
+  const { farmer } = useAuth();
+  if (!farmer) {
+    return (
+      <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center">
+        <h3 className="text-lg font-semibold">Login to use the tools</h3>
+        <p className="mt-1 text-sm text-slate-600">Sign in as a farmer to access chatbot, market & weather, and pest detection.</p>
+        <a href="/login" className="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Go to Login</a>
+      </div>
+    );
+  }
+  return <ToolsSuiteInner />;
+}
 
 export default function Index() {
   return (
@@ -129,14 +156,7 @@ export default function Index() {
           <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
           <p className="mt-2 max-w-prose text-slate-600">Chatbot, Market & Weather, Pest Detection, and Advisory demo — all together.</p>
         </header>
-        <div className="grid gap-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <Chatbot />
-            <MarketWidget />
-          </div>
-          <PestDetector />
-          <DemoForm />
-        </div>
+        <ToolsSuite />
       </section>
 
       {/* Technical Approach */}

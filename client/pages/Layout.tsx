@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 function useScrollTop(offset = 8) {
   const [scrolled, setScrolled] = useState(false);
@@ -10,6 +11,23 @@ function useScrollTop(offset = 8) {
     return () => window.removeEventListener("scroll", onScroll);
   }, [offset]);
   return scrolled;
+}
+
+function HeaderAuth() {
+  const { farmer, logout } = useAuth();
+  return farmer ? (
+    <div className="flex items-center gap-2">
+      <span className="hidden text-sm text-slate-600 md:inline">Farmer:</span>
+      <span className="rounded-md bg-slate-100 px-2 py-1 text-sm font-medium text-slate-800">{farmer.name}</span>
+      <a href="#tools" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow hover:brightness-95">Open Tools</a>
+      <button onClick={logout} className="rounded-md border border-slate-300 px-3 py-2 text-sm">Logout</button>
+    </div>
+  ) : (
+    <div className="flex items-center gap-2">
+      <Link to="/login" className="rounded-md border border-slate-300 px-3 py-2 text-sm">Farmer Login</Link>
+      <Link to="/login" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow hover:brightness-95">Get Started</Link>
+    </div>
+  );
 }
 
 export default function RootLayout() {
@@ -53,13 +71,8 @@ export default function RootLayout() {
               </a>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
-            <a
-              href="#tools"
-              className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow hover:brightness-95"
-            >
-              Explore Tools
-            </a>
+          <div className="flex items-center gap-3">
+            <HeaderAuth />
           </div>
         </div>
       </header>

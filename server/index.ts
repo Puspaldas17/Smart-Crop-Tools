@@ -9,6 +9,7 @@ import { createAdvisory } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
+import { upsertFarmer } from "./routes/auth";
 
 export function createServer() {
   const app = express();
@@ -37,6 +38,7 @@ export function createServer() {
   app.get("/api/market", getMarketPrices);
   app.post("/api/chat", chatHandler);
   app.post("/api/predict", uploadMiddleware, predictHandler);
+  app.post("/api/auth/farmer", upsertFarmer);
 
   return app;
 }
