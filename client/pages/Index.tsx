@@ -1,5 +1,7 @@
 import { CheckCircle2, Sprout, Mic, WifiOff, CloudSun, Languages, Brain, Shield } from "lucide-react";
 
+import { useState } from "react";
+
 export default function Index() {
   return (
     <div className="space-y-24">
