@@ -65,18 +65,31 @@ export default function MarketWidget() {
   }
 
   async function loadWeather() {
+    setWeatherError(null);
     try {
       if (!coords) return;
-      const url = new URL("/api/weather", window.location.origin);
-      url.searchParams.set("lat", String(coords.lat));
-      url.searchParams.set("lon", String(coords.lon));
-      const r = await fetch(url);
-      if (!r.ok) throw new Error(`weather fetch failed: ${r.status}`);
-      const data = await r.json();
-      setWeather(data);
-    } catch (e) {
-      console.error("Weather load error:", e);
-      setWeather(null);
+      const path = `/api/weather?lat=${encodeURIComponent(String(coords.lat))}&lon=${encodeURIComponent(String(coords.lon))}`;
+
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 7000);
+      try {
+        const r = await fetch(path, { signal: controller.signal });
+        clearTimeout(id);
+        if (r && r.ok) {
+          const data = await r.json();
+          setWeather(data);
+          setWeatherError(null);
+          return;
+        }
+        setWeatherError("Weather unavailable");
+        setWeather(null);
+      } catch (err) {
+        // Suppress noisy stack traces from the environment and show friendly message
+        setWeatherError("Weather unavailable");
+        setWeather(null);
+      }
+    } finally {
+      // noop
     }
   }
 
