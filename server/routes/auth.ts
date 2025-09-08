@@ -8,7 +8,7 @@ export const upsertFarmer: RequestHandler = async (req, res) => {
     if (!name || !phone)
       return res.status(400).json({ error: "name and phone required" });
 
-    const farmer = await Farmer.findOneAndUpdate(
+    const farmer = await (Farmer as any).findOneAndUpdate(
       { phone },
       {
         $setOnInsert: { createdAt: new Date() },
