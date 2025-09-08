@@ -21,19 +21,43 @@ export default function MarketWidget() {
     );
   }, []);
 
+  async function fetchWithTimeout(input: RequestInfo, init?: RequestInit, timeout = 8000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+      const res = await fetch(input, { ...(init || {}), signal: controller.signal });
+      clearTimeout(id);
+      return res;
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
   async function loadPrices() {
     try {
       const url = new URL("/api/market", window.location.origin);
       url.searchParams.set("commodity", commodity);
       url.searchParams.set("state", state);
-      const r = await fetch(url);
+      const r = await fetchWithTimeout(url.toString(), undefined, 7000);
       if (!r.ok) throw new Error(`market fetch failed: ${r.status}`);
       const data = await r.json();
       setItems(data.items || []);
+      setError(null);
     } catch (e) {
       console.error("Market load error:", e);
-      // keep existing items or empty
-      setItems((prev) => prev || []);
+      setError("Network unavailable — showing sample data");
+      // fallback to server-provided sample by calling the API without timeout (server will return sample)
+      try {
+        const fallback = await fetch("/api/market");
+        const data = await fallback.json();
+        setItems(data.items || []);
+      } catch (e2) {
+        // Last resort: local client-side sample
+        setItems([
+          { commodity: "Wheat", state: "Punjab", mandi: "Ludhiana", unit: "Qtl", price: 2200 },
+        ]);
+      }
     }
   }
 
