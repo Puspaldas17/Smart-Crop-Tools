@@ -91,20 +91,47 @@ export default function Index() {
             <div className="mx-auto aspect-[4/3] w-full max-w-lg rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { icon: Sprout, label: "Crop advice" },
-                  { icon: CloudSun, label: "Weather alerts" },
-                  { icon: Brain, label: "AI insights" },
-                  { icon: Languages, label: "Multilingual" },
-                ].map(({ icon: Icon, label }) => (
-                  <div
+                  {
+                    icon: Sprout,
+                    label: "Crop advice",
+                    action: () => document.getElementById("advisory")?.scrollIntoView({ behavior: "smooth" }),
+                  },
+                  {
+                    icon: CloudSun,
+                    label: "Weather alerts",
+                    action: () => {
+                      document.getElementById("market")?.scrollIntoView({ behavior: "smooth" });
+                      window.dispatchEvent(new Event("weather:refresh"));
+                    },
+                  },
+                  {
+                    icon: Brain,
+                    label: "AI insights",
+                    action: () => {
+                      document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
+                      window.dispatchEvent(new Event("chat:focus"));
+                    },
+                  },
+                  {
+                    icon: Languages,
+                    label: "Multilingual",
+                    action: () => {
+                      document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
+                      const evt = new CustomEvent("chat:set-language", { detail: "hi-IN" });
+                      window.dispatchEvent(evt);
+                    },
+                  },
+                ].map(({ icon: Icon, label, action }) => (
+                  <button
                     key={label}
-                    className="flex items-center gap-3 rounded-lg border border-slate-200 p-4"
+                    onClick={action}
+                    className="flex items-center gap-3 rounded-lg border border-slate-200 p-4 text-left hover:bg-slate-50"
                   >
                     <Icon className="h-5 w-5 text-emerald-600" />
                     <span className="text-sm font-medium text-slate-700">
                       {label}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
               <div className="mt-4 rounded-lg bg-gradient-to-r from-[#ff8a00] to-[#2ea043] p-3 text-center text-sm font-semibold text-white">
