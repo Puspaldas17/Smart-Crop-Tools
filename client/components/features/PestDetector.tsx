@@ -37,7 +37,7 @@ export default function PestDetector() {
           try {
             const fallbackUrl =
               "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v2_1.0_224/model.json";
-            m = await mobilenet.load({ modelUrl: fallbackUrl });
+            m = await mobilenet.load({ version: 2, alpha: 1.0, modelUrl: fallbackUrl });
           } catch (err) {
             console.error("CDN mobilenet load failed:", err);
           }
