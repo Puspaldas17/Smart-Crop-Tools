@@ -94,13 +94,18 @@ export default function Index() {
                   {
                     icon: Sprout,
                     label: "Crop advice",
-                    action: () => document.getElementById("advisory")?.scrollIntoView({ behavior: "smooth" }),
+                    action: () =>
+                      document
+                        .getElementById("advisory")
+                        ?.scrollIntoView({ behavior: "smooth" }),
                   },
                   {
                     icon: CloudSun,
                     label: "Weather alerts",
                     action: () => {
-                      document.getElementById("market")?.scrollIntoView({ behavior: "smooth" });
+                      document
+                        .getElementById("market")
+                        ?.scrollIntoView({ behavior: "smooth" });
                       window.dispatchEvent(new Event("weather:refresh"));
                     },
                   },
@@ -108,7 +113,9 @@ export default function Index() {
                     icon: Brain,
                     label: "AI insights",
                     action: () => {
-                      document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
+                      document
+                        .getElementById("chat")
+                        ?.scrollIntoView({ behavior: "smooth" });
                       window.dispatchEvent(new Event("chat:focus"));
                     },
                   },
@@ -116,8 +123,12 @@ export default function Index() {
                     icon: Languages,
                     label: "Multilingual",
                     action: () => {
-                      document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
-                      const evt = new CustomEvent("chat:set-language", { detail: "hi-IN" });
+                      document
+                        .getElementById("chat")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                      const evt = new CustomEvent("chat:set-language", {
+                        detail: "hi-IN",
+                      });
                       window.dispatchEvent(evt);
                     },
                   },
@@ -413,7 +424,9 @@ function List({ items }: { items: string[] }) {
       {items.map((t) => (
         <li key={t} className="flex items-start gap-3">
           <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-          <span className="text-sm md:text-base leading-relaxed break-words">{t}</span>
+          <span className="text-sm md:text-base leading-relaxed break-words">
+            {t}
+          </span>
         </li>
       ))}
     </ul>

@@ -28,7 +28,8 @@ export default function MarketWidget() {
       const params = new URLSearchParams();
       if (commodity) params.set("commodity", commodity);
       if (state) params.set("state", state);
-      const path = "/api/market" + (params.toString() ? `?${params.toString()}` : "");
+      const path =
+        "/api/market" + (params.toString() ? `?${params.toString()}` : "");
 
       const r = await fetch(path);
       if (r.ok) {
@@ -51,7 +52,13 @@ export default function MarketWidget() {
       setItems(data.items || []);
     } catch (e2) {
       setItems([
-        { commodity: "Wheat", state: "Punjab", mandi: "Ludhiana", unit: "Qtl", price: 2200 },
+        {
+          commodity: "Wheat",
+          state: "Punjab",
+          mandi: "Ludhiana",
+          unit: "Qtl",
+          price: 2200,
+        },
       ]);
     }
   }
@@ -113,7 +120,11 @@ export default function MarketWidget() {
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
-          {error && <div className="mb-2 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">{error}</div>}
+          {error && (
+            <div className="mb-2 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">
+              {error}
+            </div>
+          )}
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="text-slate-500">
