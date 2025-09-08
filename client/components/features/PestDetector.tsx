@@ -62,12 +62,9 @@ export default function PestDetector() {
               className="h-full w-full object-contain"
             />
           </div>
-          {serverFallback && (
-            <div className="mt-2 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">
-              Using server-side prediction because on-device model is
-              unavailable.
-            </div>
-          )}
+          <div className="mt-2 rounded-md bg-emerald-50 p-2 text-sm text-emerald-800">
+            Using server-side prediction for reliability.
+          </div>
         </div>
         <div className="flex-1">
           {loading && <div className="text-sm text-slate-500">Analyzing…</div>}
