@@ -187,7 +187,7 @@ export default function MarketWidget() {
           </div>
         ) : (
           <div className="mt-3 text-sm text-slate-500">
-            Allow location to see local weather.
+            {weatherError ? weatherError : "Allow location to see local weather."}
           </div>
         )}
       </div>
