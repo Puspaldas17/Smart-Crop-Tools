@@ -50,18 +50,33 @@ export const getMarketPrices: RequestHandler = async (req, res) => {
   const apiKey = process.env.MARKET_API_KEY; // optional header key
 
   // Cache for 5 minutes by commodity/state
-  const cacheKey = makeKey(["market", (commodity || "").toLowerCase(), (state || "").toLowerCase()]);
+  const cacheKey = makeKey([
+    "market",
+    (commodity || "").toLowerCase(),
+    (state || "").toLowerCase(),
+  ]);
   const cached = getCache<any>(cacheKey);
-  if (cached) return res.json({ source: cached.source, items: cached.items, cached: true });
+  if (cached)
+    return res.json({
+      source: cached.source,
+      items: cached.items,
+      cached: true,
+    });
 
   try {
     if (apiUrl) {
       const url = new URL(apiUrl);
       if (commodity) url.searchParams.set("commodity", commodity);
       if (state) url.searchParams.set("state", state);
-      const r = await retry(() => fetchWithTimeout(url.toString(), {
-        headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : undefined,
-      }, 7000));
+      const r = await retry(() =>
+        fetchWithTimeout(
+          url.toString(),
+          {
+            headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : undefined,
+          },
+          7000,
+        ),
+      );
       if (r.ok) {
         const data = await r.json();
         const payload = { source: "live" as const, items: data };
