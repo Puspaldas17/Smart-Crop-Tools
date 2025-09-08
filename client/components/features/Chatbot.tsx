@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSpeech, languages } from "./useSpeech";
 import { Mic, StopCircle, Send } from "lucide-react";
