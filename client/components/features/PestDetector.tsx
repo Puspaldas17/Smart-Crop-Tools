@@ -43,8 +43,8 @@ export default function PestDetector() {
         Image-based Pest/Disease Detection
       </h3>
       <p className="mt-1 text-sm text-slate-600">
-        Upload a leaf/crop image. The on-device model will classify visible
-        objects (prototype).
+        Upload a leaf/crop image. Analysis runs on the server for maximum
+        compatibility in this preview.
       </p>
       <div className="mt-3 flex flex-col gap-3 md:flex-row">
         <div className="flex-1">
