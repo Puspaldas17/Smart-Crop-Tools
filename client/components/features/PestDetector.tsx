@@ -23,40 +23,36 @@ export default function PestDetector() {
         }
         await tf.ready();
 
-        // primary load (uses default hosted model)
+        // Instead of calling mobilenet.load() without a modelUrl (which triggers default remote fetches
+        // that may be blocked in restricted preview environments), probe the CDN model URL first and
+        // only attempt an on-device load if the model is reachable. Otherwise use server fallback.
         let m: mobilenet.MobileNet | null = null;
         try {
-          m = await mobilenet.load({ version: 2, alpha: 1.0 });
-        } catch (err) {
-          console.warn("Primary mobilenet load failed, attempting CDN fallback:", err);
-        }
-
-        // fallback to known CDN-hosted model JSON if default fails
-        if (!m) {
+          const fallbackUrl =
+            "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v2_1.0_224/model.json";
+          // quick availability check before attempting to load the model to avoid noisy TFJS fetch errors
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          let ok = false;
           try {
-            const fallbackUrl =
-              "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v2_1.0_224/model.json";
-            // quick availability check before passing to mobilenet.load to avoid noisy stack traces
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 5000);
-            let ok = false;
-            try {
-              const probe = await fetch(fallbackUrl, { method: "GET", signal: controller.signal });
-              ok = probe.ok;
-            } catch (probeErr) {
-              console.warn("Model probe failed:", probeErr);
-            } finally {
-              clearTimeout(timer);
-            }
-
-            if (ok) {
-              m = await mobilenet.load({ version: 2, alpha: 1.0, modelUrl: fallbackUrl });
-            } else {
-              console.warn("CDN model not reachable, will use server fallback");
-            }
-          } catch (err) {
-            console.error("CDN mobilenet load failed:", err);
+            const probe = await fetch(fallbackUrl, { method: "GET", signal: controller.signal });
+            ok = probe && probe.ok;
+          } catch (probeErr) {
+            // probe failed - likely network/CORS restriction
+            ok = false;
+          } finally {
+            clearTimeout(timer);
           }
+
+          if (ok) {
+            m = await mobilenet.load({ version: 2, alpha: 1.0, modelUrl: fallbackUrl });
+          } else {
+            // network restricted - do not attempt default TFJS loads which will log errors; fallback to server
+            m = null;
+          }
+        } catch (err) {
+          // any error here indicates we should fallback to server-side prediction
+          m = null;
         }
 
         if (mounted && m) {
