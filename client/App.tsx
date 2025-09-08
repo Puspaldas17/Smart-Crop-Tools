@@ -22,18 +22,16 @@ if (typeof window !== "undefined") {
     const origFetch = g.fetch && g.fetch.bind(g);
     if (origFetch) {
       g.fetch = (...args: any[]) => {
-        try {
-          const res = origFetch(...args);
-          if (res && typeof res.catch === "function") {
-            return res.catch((err: any) => {
-              // swallow and return a harmless response-like object
-              return Promise.resolve({ ok: false, status: 502, json: async () => ({}), text: async () => "" });
-            });
+        // Always return a promise; await origFetch inside to catch async rejections
+        return (async () => {
+          try {
+            const res = await origFetch(...args);
+            return res;
+          } catch (err) {
+            // Swallow error and return a harmless non-ok response
+            return { ok: false, status: 502, json: async () => ({}), text: async () => "" } as any;
           }
-          return Promise.resolve(res);
-        } catch (e) {
-          return Promise.resolve({ ok: false, status: 502, json: async () => ({}), text: async () => "" });
-        }
+        })();
       };
     }
     g.__fetchSafePatched = true;
