@@ -24,7 +24,10 @@ export default function MarketWidget() {
   }, []);
 
   // Safe fetch helper: returns Response or null on error/timeout
-  async function fetchSafe(path: string, timeout = 7000): Promise<Response | null> {
+  async function fetchSafe(
+    path: string,
+    timeout = 7000,
+  ): Promise<Response | null> {
     try {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), timeout);
@@ -42,7 +45,8 @@ export default function MarketWidget() {
     const params = new URLSearchParams();
     if (commodity) params.set("commodity", commodity);
     if (state) params.set("state", state);
-    const path = "/api/market" + (params.toString() ? `?${params.toString()}` : "");
+    const path =
+      "/api/market" + (params.toString() ? `?${params.toString()}` : "");
 
     const r = await fetchSafe(path, 7000);
     if (r && r.ok) {

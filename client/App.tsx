@@ -29,7 +29,12 @@ if (typeof window !== "undefined") {
             return res;
           } catch (err) {
             // Swallow error and return a harmless non-ok response
-            return { ok: false, status: 502, json: async () => ({}), text: async () => "" } as any;
+            return {
+              ok: false,
+              status: 502,
+              json: async () => ({}),
+              text: async () => "",
+            } as any;
           }
         })();
       };
@@ -37,7 +42,6 @@ if (typeof window !== "undefined") {
     g.__fetchSafePatched = true;
   }
 }
-
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
