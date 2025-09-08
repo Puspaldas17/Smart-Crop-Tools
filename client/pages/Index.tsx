@@ -386,7 +386,7 @@ function List({ items }: { items: string[] }) {
       {items.map((t) => (
         <li key={t} className="flex items-start gap-3">
           <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-          <span>{t}</span>
+          <span className="text-sm md:text-base leading-relaxed break-words">{t}</span>
         </li>
       ))}
     </ul>
