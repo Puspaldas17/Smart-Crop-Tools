@@ -1,77 +1,10 @@
 import * as React from "react";
-import * as mobilenet from "@tensorflow-models/mobilenet";
-import * as tf from "@tensorflow/tfjs";
-
 export default function PestDetector() {
-  const [model, setModel] = React.useState<mobilenet.MobileNet | null>(null);
   const [preds, setPreds] = React.useState<
     { className: string; probability: number }[]
   >([]);
   const [loading, setLoading] = React.useState(false);
-  const [serverFallback, setServerFallback] = React.useState(false);
   const imgRef = React.useRef<HTMLImageElement | null>(null);
-
-  React.useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        // initialize tf backend and try webgl for best perf
-        try {
-          await tf.setBackend("webgl");
-        } catch (e) {
-          // ignore if webgl not available
-        }
-        await tf.ready();
-
-        // Instead of calling mobilenet.load() without a modelUrl (which triggers default remote fetches
-        // that may be blocked in restricted preview environments), probe the CDN model URL first and
-        // only attempt an on-device load if the model is reachable. Otherwise use server fallback.
-        let m: mobilenet.MobileNet | null = null;
-        try {
-          const fallbackUrl =
-            "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v2_1.0_224/model.json";
-          // quick availability check before attempting to load the model to avoid noisy TFJS fetch errors
-          const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 5000);
-          let ok = false;
-          try {
-            const probe = await fetch(fallbackUrl, { method: "GET", signal: controller.signal });
-            ok = probe && probe.ok;
-          } catch (probeErr) {
-            // probe failed - likely network/CORS restriction
-            ok = false;
-          } finally {
-            clearTimeout(timer);
-          }
-
-          if (ok) {
-            m = await mobilenet.load({ version: 2, alpha: 1.0, modelUrl: fallbackUrl });
-          } else {
-            // network restricted - do not attempt default TFJS loads which will log errors; fallback to server
-            m = null;
-          }
-        } catch (err) {
-          // any error here indicates we should fallback to server-side prediction
-          m = null;
-        }
-
-        if (mounted && m) {
-          setModel(m);
-          setServerFallback(false);
-        } else if (!m) {
-          setModel(null);
-          setServerFallback(true);
-        }
-      } catch (err) {
-        console.error("Failed to load mobilenet model:", err);
-        setModel(null);
-        setServerFallback(true);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   async function serverPredict(file: File) {
     setLoading(true);
@@ -91,7 +24,6 @@ export default function PestDetector() {
         setPreds([]);
       }
     } catch (err) {
-      console.error("Server predict error:", err);
       setPreds([]);
     }
     setLoading(false);
@@ -102,28 +34,7 @@ export default function PestDetector() {
     if (!file) return;
     const url = URL.createObjectURL(file);
     if (imgRef.current) imgRef.current.src = url;
-    if (!model || serverFallback) {
-      await serverPredict(file);
-      return;
-    }
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 50));
-    try {
-      if (imgRef.current) {
-        const res = await model.classify(imgRef.current);
-        setPreds(
-          res.map((r) => ({
-            className: r.className,
-            probability: r.probability,
-          })),
-        );
-      }
-    } catch (err) {
-      console.error("Classification error:", err);
-      // fallback to server
-      await serverPredict(file);
-    }
-    setLoading(false);
+    await serverPredict(file);
   }
 
   return (
