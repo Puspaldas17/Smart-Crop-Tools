@@ -23,74 +23,80 @@ export default function MarketWidget() {
     );
   }, []);
 
-  async function loadPrices() {
+  // Safe fetch helper: returns Response or null on error/timeout
+  async function fetchSafe(path: string, timeout = 7000): Promise<Response | null> {
     try {
-      // If offline, skip remote fetch and let server return sample data
-      const params = new URLSearchParams();
-      if (commodity) params.set("commodity", commodity);
-      if (state) params.set("state", state);
-      const path =
-        "/api/market" + (params.toString() ? `?${params.toString()}` : "");
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      const res = await fetch(path, { signal: controller.signal });
+      clearTimeout(id);
+      return res;
+    } catch (e) {
+      // Do not rethrow - return null so callers can fallback gracefully
+      return null;
+    }
+  }
 
-      const r = await fetch(path);
-      if (r.ok) {
-        const data = await r.json();
-        setItems(data.items || []);
-        setError(null);
-        return;
-      }
-      // non-ok response -> fallback to sample
-      setError("Network unavailable — showing sample data");
-    } catch (err) {
-      // suppress noisy stack traces from the environment; set user-friendly error
-      setError("Network unavailable — showing sample data");
+  async function loadPrices() {
+    // Try primary market API
+    const params = new URLSearchParams();
+    if (commodity) params.set("commodity", commodity);
+    if (state) params.set("state", state);
+    const path = "/api/market" + (params.toString() ? `?${params.toString()}` : "");
+
+    const r = await fetchSafe(path, 7000);
+    if (r && r.ok) {
+      const data = await r.json();
+      setItems(data.items || []);
+      setError(null);
+      return;
     }
 
-    // final fallback: try to fetch without params, then local sample
-    try {
-      const fallback = await fetch("/api/market");
+    // Fallback path
+    setError("Network unavailable — showing sample data");
+    const fallback = await fetchSafe("/api/market", 7000);
+    if (fallback && fallback.ok) {
       const data = await fallback.json();
       setItems(data.items || []);
-    } catch (e2) {
-      setItems([
-        {
-          commodity: "Wheat",
-          state: "Punjab",
-          mandi: "Ludhiana",
-          unit: "Qtl",
-          price: 2200,
-        },
-      ]);
+      return;
     }
+
+    // Last-resort local sample
+    setItems([
+      {
+        commodity: "Wheat",
+        state: "Punjab",
+        mandi: "Ludhiana",
+        unit: "Qtl",
+        price: 2200,
+      },
+    ]);
   }
 
   async function loadWeather() {
     setWeatherError(null);
-    try {
-      if (!coords) return;
-      const path = `/api/weather?lat=${encodeURIComponent(String(coords.lat))}&lon=${encodeURIComponent(String(coords.lon))}`;
+    if (!coords) return;
 
-      const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), 7000);
+    const path = `/api/weather?lat=${encodeURIComponent(String(coords.lat))}&lon=${encodeURIComponent(
+      String(coords.lon),
+    )}`;
+
+    const r = await fetchSafe(path, 7000);
+    if (r && r.ok) {
       try {
-        const r = await fetch(path, { signal: controller.signal });
-        clearTimeout(id);
-        if (r && r.ok) {
-          const data = await r.json();
-          setWeather(data);
-          setWeatherError(null);
-          return;
-        }
+        const data = await r.json();
+        setWeather(data);
+        setWeatherError(null);
+        return;
+      } catch (e) {
         setWeatherError("Weather unavailable");
         setWeather(null);
-      } catch (err) {
-        // Suppress noisy stack traces from the environment and show friendly message
-        setWeatherError("Weather unavailable");
-        setWeather(null);
+        return;
       }
-    } finally {
-      // noop
     }
+
+    setWeatherError("Weather unavailable");
+    setWeather(null);
   }
 
   useEffect(() => {
