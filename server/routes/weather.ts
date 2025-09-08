@@ -1,44 +1,59 @@
 import { RequestHandler } from "express";
 
+import { getCache, setCache, makeKey } from "../utils/cache";
+import { fetchWithTimeout, retry } from "../utils/http";
+
 export const getWeather: RequestHandler = async (req, res) => {
   try {
     const { lat, lon } = req.query as { lat?: string; lon?: string };
     if (!lat || !lon)
       return res.status(400).json({ error: "lat and lon required" });
+
+    // Cache by rounded coords (≈1km granularity) for 10 minutes
+    const latR = Math.round(Number(lat) * 100) / 100;
+    const lonR = Math.round(Number(lon) * 100) / 100;
+    const cacheKey = makeKey(["weather", latR, lonR]);
+    const cached = getCache<any>(cacheKey);
+    if (cached) return res.json({ ...cached, cached: true });
+
     const key = process.env.OPENWEATHER_API_KEY;
 
     if (key) {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
-      const resp = await fetch(url);
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latR}&lon=${lonR}&appid=${key}&units=metric`;
+      const resp = await retry(() => fetchWithTimeout(url, {}, 7000));
       if (!resp.ok)
         return res.status(502).json({ error: "Weather API failed" });
       const data = await resp.json();
-      return res.json({
+      const payload = {
         tempC: data.main?.temp,
         humidity: data.main?.humidity,
         windKph: data.wind?.speed ? data.wind.speed * 3.6 : undefined,
         conditions: data.weather?.[0]?.description,
         raw: data,
         source: "openweather",
-      });
+      };
+      setCache(cacheKey, payload, 10 * 60 * 1000);
+      return res.json(payload);
     }
 
     // Fallback to Open-Meteo (no API key required)
-    const omUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`;
-    const r = await fetch(omUrl);
+    const omUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latR}&longitude=${lonR}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`;
+    const r = await retry(() => fetchWithTimeout(omUrl, {}, 7000));
     if (!r.ok) return res.status(502).json({ error: "Weather API failed" });
     const w = await r.json();
     const cur = w.current || {};
     const code = cur.weather_code as number | undefined;
     const description = weatherCodeToText(code);
-    return res.json({
+    const payload = {
       tempC: cur.temperature_2m,
       humidity: cur.relative_humidity_2m,
       windKph: cur.wind_speed_10m,
       conditions: description,
       raw: w,
       source: "open-meteo",
-    });
+    };
+    setCache(cacheKey, payload, 10 * 60 * 1000);
+    return res.json(payload);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Internal error" });
