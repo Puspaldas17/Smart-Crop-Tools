@@ -76,13 +76,13 @@ export default function RootLayout() {
             <span className="text-lg">Smart Crop Advisory</span>
           </Link>
           <nav className="hidden gap-6 md:flex">
-            {[
-              { href: "/#tools", label: "Tools" },
+            {[{ href: "/#tools", label: "Tools" },
               { href: "/#solution", label: "Solution" },
               { href: "/#tech", label: "Technical" },
               { href: "/#feasibility", label: "Feasibility" },
               { href: "/#impact", label: "Impact" },
               { href: "/#research", label: "Research" },
+              { href: "/docs", label: "Docs" },
             ].map((i) => (
               <a
                 key={i.href}
