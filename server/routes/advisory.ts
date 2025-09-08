@@ -69,7 +69,7 @@ export const createAdvisory: RequestHandler = async (req, res) => {
     const pest =
       "Scout weekly; use pheromone traps; prefer bio‑control where possible.";
 
-    const doc = await Advisory.create({
+    const doc = await (Advisory as any).create({
       farmerId,
       crop,
       summary,
