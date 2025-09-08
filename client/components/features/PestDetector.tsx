@@ -15,10 +15,39 @@ export default function PestDetector() {
     let mounted = true;
     (async () => {
       try {
-        const m = await mobilenet.load({ version: 2, alpha: 1.0 });
-        if (mounted) {
+        // initialize tf backend and try webgl for best perf
+        try {
+          await tf.setBackend("webgl");
+        } catch (e) {
+          // ignore if webgl not available
+        }
+        await tf.ready();
+
+        // primary load (uses default hosted model)
+        let m: mobilenet.MobileNet | null = null;
+        try {
+          m = await mobilenet.load({ version: 2, alpha: 1.0 });
+        } catch (err) {
+          console.warn("Primary mobilenet load failed, attempting CDN fallback:", err);
+        }
+
+        // fallback to known CDN-hosted model JSON if default fails
+        if (!m) {
+          try {
+            const fallbackUrl =
+              "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v2_1.0_224/model.json";
+            m = await mobilenet.load({ modelUrl: fallbackUrl });
+          } catch (err) {
+            console.error("CDN mobilenet load failed:", err);
+          }
+        }
+
+        if (mounted && m) {
           setModel(m);
           setServerFallback(false);
+        } else if (!m) {
+          setModel(null);
+          setServerFallback(true);
         }
       } catch (err) {
         console.error("Failed to load mobilenet model:", err);
