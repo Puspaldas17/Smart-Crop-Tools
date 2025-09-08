@@ -36,7 +36,24 @@ export default function PestDetector() {
           try {
             const fallbackUrl =
               "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v2_1.0_224/model.json";
-            m = await mobilenet.load({ version: 2, alpha: 1.0, modelUrl: fallbackUrl });
+            // quick availability check before passing to mobilenet.load to avoid noisy stack traces
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 5000);
+            let ok = false;
+            try {
+              const probe = await fetch(fallbackUrl, { method: "GET", signal: controller.signal });
+              ok = probe.ok;
+            } catch (probeErr) {
+              console.warn("Model probe failed:", probeErr);
+            } finally {
+              clearTimeout(timer);
+            }
+
+            if (ok) {
+              m = await mobilenet.load({ version: 2, alpha: 1.0, modelUrl: fallbackUrl });
+            } else {
+              console.warn("CDN model not reachable, will use server fallback");
+            }
           } catch (err) {
             console.error("CDN mobilenet load failed:", err);
           }
