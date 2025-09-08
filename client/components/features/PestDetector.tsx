@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as mobilenet from "@tensorflow-models/mobilenet";
-import "@tensorflow/tfjs";
+import * as tf from "@tensorflow/tfjs";
 
 export default function PestDetector() {
   const [model, setModel] = useState<mobilenet.MobileNet | null>(null);
