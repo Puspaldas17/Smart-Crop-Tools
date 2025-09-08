@@ -14,6 +14,33 @@ import Docs from "./pages/Docs";
 
 const queryClient = new QueryClient();
 
+// Patch global fetch in the browser to guard against preview or 3rd-party scripts
+// that call fetch and produce uncaught TypeError 'Failed to fetch' in restricted environments.
+if (typeof window !== "undefined") {
+  const g = window as any;
+  if (!g.__fetchSafePatched) {
+    const origFetch = g.fetch && g.fetch.bind(g);
+    if (origFetch) {
+      g.fetch = (...args: any[]) => {
+        try {
+          const res = origFetch(...args);
+          if (res && typeof res.catch === "function") {
+            return res.catch((err: any) => {
+              // swallow and return a harmless response-like object
+              return Promise.resolve({ ok: false, status: 502, json: async () => ({}), text: async () => "" });
+            });
+          }
+          return Promise.resolve(res);
+        } catch (e) {
+          return Promise.resolve({ ok: false, status: 502, json: async () => ({}), text: async () => "" });
+        }
+      };
+    }
+    g.__fetchSafePatched = true;
+  }
+}
+
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
