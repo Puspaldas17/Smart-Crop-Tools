@@ -5,11 +5,19 @@ export default {
   content: ["./client/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
+    screens: {
+      xs: "480px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1440px",
+      "2xl": "1920px",
+    },
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        xl: "1440px",
+        "2xl": "1920px",
       },
     },
     extend: {
