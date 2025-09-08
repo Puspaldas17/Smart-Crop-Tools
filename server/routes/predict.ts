@@ -15,7 +15,7 @@ async function runHuggingFace(image: Buffer) {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/octet-stream",
   };
-  const res = await retry(() => fetchWithTimeout(url, { method: "POST", headers, body: image }, 12000), 2, 500);
+  const res = await retry(() => fetchWithTimeout(url, { method: "POST", headers, body: image as any }, 12000), 2, 500);
   if (!res.ok) return null;
   try {
     const data = await res.json();
