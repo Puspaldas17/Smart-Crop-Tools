@@ -5,6 +5,7 @@ export default function MarketWidget() {
   const [commodity, setCommodity] = useState("Wheat");
   const state = "Punjab";
   const [items, setItems] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [weather, setWeather] = useState<any>(null);
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
     null,
