@@ -77,24 +77,29 @@ postcss.config.js         # Tailwind/PostCSS
 
 ## Run locally in VS Code (step‑by‑step)
 
-1) Get the code
+1. Get the code
+
 - Option A: Download Project (#project-download) and extract
 - Option B: Clone with Git in VS Code (Command Palette → Git: Clone…) and select the repo URL
 
-2) Install dependencies
+2. Install dependencies
+
 - `pnpm install --no-frozen-lockfile`
 
-3) Configure environment (optional)
+3. Configure environment (optional)
+
 - Create `.env` at repo root if needed:
   - `MONGODB_URI=...` (Mongo connection string)
   - `OPENWEATHER_API_KEY=...` (optional)
   - `MARKET_API_URL=...` (optional external market API)
 
-4) Start the app
+4. Start the app
+
 - `pnpm dev`
 - Open http://localhost:8080
 
-5) Open in VS Code
+5. Open in VS Code
+
 - From a terminal: `code .` (or File → Open Folder…)
 - Recommended extensions: ESLint, Tailwind CSS IntelliSense
 
