@@ -94,20 +94,20 @@ Create a `.env` at repo root for local development if you need real services:
 
 ## Getting Started (VS Code)
 
-1) Clone the repository
+1. Clone the repository
 
 ```
 git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
 cd Smart-Crop-Tools
 ```
 
-2) Install dependencies (pnpm)
+2. Install dependencies (pnpm)
 
 ```
 pnpm install --no-frozen-lockfile
 ```
 
-3) (Optional) Configure `.env`
+3. (Optional) Configure `.env`
 
 ```
 MONGODB_URI=your-mongodb-uri
@@ -115,7 +115,7 @@ OPENWEATHER_API_KEY=your-openweather-key
 MARKET_API_URL=your-market-api-url
 ```
 
-4) Run the app
+4. Run the app
 
 ```
 pnpm dev
@@ -124,7 +124,7 @@ pnpm dev
 - Open http://localhost:8080
 - Login (top‑right) to access the Working Suite (Chatbot, Market & Weather, Pest Detector, Advisory)
 
-5) Open in VS Code
+5. Open in VS Code
 
 ```
 code .
@@ -157,4 +157,5 @@ Recommended extensions: ESLint, Tailwind CSS IntelliSense.
 - Minimal PII (farmer name/phone) for demos; adapt to your data policies before production.
 
 ---
+
 Maintained by The Compilers — Smart India Hackathon 2025.
