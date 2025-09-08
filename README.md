@@ -3,12 +3,14 @@
 A production-ready, responsive web app for farmers: AI chatbot with multilingual voice, personalized crop/fertilizer/pest advisory, real-time Punjab market prices and local weather alerts, and image-based pest detection (with server fallback).
 
 ## Highlights
+
 - Fully responsive: xs 480, md 768, lg 1024, xl 1440, 2xl 1920+ (Tailwind custom screens)
 - MERN-ready backend: Express + MongoDB (Mongoose)
 - Shared types between client and server
 - Offline-friendly patterns and graceful fallbacks
 
 ## Tech Stack
+
 - Frontend: React 18, Vite, TailwindCSS
 - UI: Radix primitives + custom components
 - Backend: Express (integrated with Vite dev server)
@@ -16,6 +18,7 @@ A production-ready, responsive web app for farmers: AI chatbot with multilingual
 - AI: TFJS MobileNet (client) with server-side fallback
 
 ## Features
+
 - Farmer auth: POST /api/auth/farmer upserts by phone; session stored locally
 - Tools Suite (requires login)
   - AI Chatbot: voice input + TTS; weather-aware responses
@@ -24,6 +27,7 @@ A production-ready, responsive web app for farmers: AI chatbot with multilingual
   - Quick Crop Advisory: weather-informed advisory summary
 
 ## Project Structure
+
 ```
 client/                   # React SPA
   App.tsx                # Router + providers
@@ -64,10 +68,12 @@ postcss.config.js        # Tailwind/PostCSS
 ```
 
 ## Prerequisites
+
 - Node.js 18+
 - pnpm (preferred) — project ships with packageManager metadata
 
 ## Local Setup (VS Code)
+
 1. Clone
    - Using GitHub: `git clone <your-repo-url>`
    - Or download the zip from Builder and extract
@@ -86,16 +92,19 @@ postcss.config.js        # Tailwind/PostCSS
    - Recommended extensions: ESLint, Tailwind CSS IntelliSense
 
 ## Build & Run (Production)
+
 - Build: `pnpm build`
 - Start: `pnpm start`
 
 ## Responsive Design
+
 - Tailwind custom screens (tailwind.config.ts):
   - xs: 480px, md: 768px, lg: 1024px, xl: 1440px, 2xl: 1920px
 - Global typography clamps in `client/global.css` ensure readable text across devices
 - All media are responsive (`max-width:100%; height:auto`)
 
 ## API Endpoints
+
 - POST `/api/auth/farmer` → upsert farmer { name, phone, soilType?, landSize?, language?, location? }
 - GET `/api/weather?lat&lon` → weather with Open-Meteo fallback
 - GET `/api/market?commodity&state` → prices (Punjab sample if no external API)
@@ -103,17 +112,21 @@ postcss.config.js        # Tailwind/PostCSS
 - POST `/api/predict` (multipart form-data: image) → server-side prediction fallback
 
 ## Notes on AI Models
+
 - Client TFJS model fetch may be restricted by CSP/CDN. The app falls back to `/api/predict` so the UI keeps working.
 - For higher accuracy, replace server mock with a real model service.
 
 ## Environment & Secrets
+
 - Do not commit secrets.
 - Use Builder Settings to set environment variables in cloud previews.
 
 ## Deployment
+
 - Netlify or Vercel via MCP (Builder). Connect MCP and trigger deploy.
 
 ## Troubleshooting
+
 - If weather fails without OPENWEATHER_API_KEY, Open‑Meteo fallback is used.
 - If TFJS model fails to fetch, server fallback is used automatically.
 - Merge conflicts: this repo resolved to the Fusion starter layout and paths (`client/*`).
