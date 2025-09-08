@@ -3,15 +3,15 @@ import * as mobilenet from "@tensorflow-models/mobilenet";
 import * as tf from "@tensorflow/tfjs";
 
 export default function PestDetector() {
-  const [model, setModel] = useState<mobilenet.MobileNet | null>(null);
-  const [preds, setPreds] = useState<
+  const [model, setModel] = React.useState<mobilenet.MobileNet | null>(null);
+  const [preds, setPreds] = React.useState<
     { className: string; probability: number }[]
   >([]);
-  const [loading, setLoading] = useState(false);
-  const [serverFallback, setServerFallback] = useState(false);
-  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [serverFallback, setServerFallback] = React.useState(false);
+  const imgRef = React.useRef<HTMLImageElement | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     let mounted = true;
     (async () => {
       try {
