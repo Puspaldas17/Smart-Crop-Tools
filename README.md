@@ -1,132 +1,128 @@
 # Smart Crop Advisory (MERN + Vite + Express)
 
-A production-ready, responsive web app for farmers: AI chatbot with multilingual voice, personalized crop/fertilizer/pest advisory, real-time Punjab market prices and local weather alerts, and image-based pest detection (with server fallback).
+# Smart Crop Advisory System
+
+AI‑powered, multilingual guidance for farmers: chatbot with voice, market prices, local weather alerts, crop advisory, and image‑based pest detection. Fully responsive and production‑ready.
 
 ## Highlights
 
-- Fully responsive: xs 480, md 768, lg 1024, xl 1440, 2xl 1920+ (Tailwind custom screens)
-- MERN-ready backend: Express + MongoDB (Mongoose)
-- Shared types between client and server
-- Offline-friendly patterns and graceful fallbacks
+- Responsive Tailwind breakpoints: xs 480 • md 768 • lg 1024 • xl 1440 • 2xl 1920+
+- MERN architecture: React + Vite + Tailwind, Express backend, MongoDB via Mongoose
+- Graceful offline/network fallbacks; smooth scrolling; accessibility‑minded UI
+
+## How it works (features)
+
+- Login/Identity: minimal farmer profile is stored client‑side; server exposes `/api/auth/farmer` upsert for persistence.
+- Chatbot (client/components/features/Chatbot.tsx): multilingual + voice I/O; geolocation augments prompts (weather‑aware);
+  responds via `/api/chat`.
+- Market & Weather (…/MarketWidget.tsx): fetches `/api/market` and `/api/weather`. If the network is restricted, it shows
+  a warning and seamlessly falls back to sample data (no UI breakage).
+- Quick Crop Advisory (…/AdvisoryWidget.tsx): posts crop + location to `/api/advisories` and renders a concise plan
+  (summary, fertilizer, irrigation, pest).
+- Pest Detector (…/PestDetector.tsx): server‑only prediction in this preview for maximum reliability. Uploads an
+  image to `/api/predict` and renders top classes. This avoids TFJS model fetches that can be blocked by CSP/CDN.
 
 ## Tech Stack
 
-- Frontend: React 18, Vite, TailwindCSS
-- UI: Radix primitives + custom components
-- Backend: Express (integrated with Vite dev server)
-- DB: MongoDB via Mongoose
-- AI: TFJS MobileNet (client) with server-side fallback
+- Frontend: React 18, Vite, TailwindCSS, Radix primitives
+- Backend: Express (mounted inside Vite dev server)
+- Database: MongoDB (Mongoose)
+- AI: server‑side prediction endpoint (can be upgraded to a real model service)
 
-## Features
-
-- Farmer auth: POST /api/auth/farmer upserts by phone; session stored locally
-- Tools Suite (requires login)
-  - AI Chatbot: voice input + TTS; weather-aware responses
-  - Market & Weather: Punjab mandi prices + local weather alerts
-  - Pest Detector: client TFJS; server fallback /api/predict
-  - Quick Crop Advisory: weather-informed advisory summary
-
-## Project Structure
+## File structure
 
 ```
-client/                   # React SPA
-  App.tsx                # Router + providers
+client/
+  App.tsx
   pages/
-    Layout.tsx           # Header/Footer layout
-    Index.tsx            # Landing + Tools Suite
-    Login.tsx            # Farmer login/registration
+    Layout.tsx            # Header, nav, footer, container
+    Index.tsx             # Landing + Proposed Solution + Tools Suite
+    Login.tsx             # Farmer login/registration
   components/
     features/
-      Chatbot.tsx
-      MarketWidget.tsx
-      PestDetector.tsx
-      FeatureTiles.tsx
-      AdvisoryWidget.tsx
-    ui/                  # Shadcn components
-  hooks/                 # useAuth, useSpeech
-  lib/                   # utils
-  global.css             # Tailwind theme + responsive base
+      Chatbot.tsx         # Multilingual + voice chatbot
+      MarketWidget.tsx    # Market table + weather panel with alerts
+      PestDetector.tsx    # Server‑only image prediction in preview
+      FeatureTiles.tsx    # Quick actions (scroll + events)
+      AdvisoryWidget.tsx  # Weather‑aware advisory form
+    ui/                   # Shadcn UI building blocks
+  hooks/                  # useAuth, useSpeech, etc.
+  lib/                    # utils
+  global.css              # Tailwind theme + responsive base
 
-server/                   # Express API
-  index.ts               # Express setup + routes
-  db.ts                  # Mongoose connection + models (Farmer, Advisory)
+server/
+  index.ts                # Express app; routes registration
+  db.ts                   # Mongo connection + Farmer/Advisory models
   routes/
-    auth.ts              # POST /api/auth/farmer
-    farmers.ts           # CRUD example
-    advisory.ts          # POST /api/advisories
-    weather.ts           # GET /api/weather (Open-Meteo fallback)
-    market.ts            # GET /api/market (Punjab sample or proxy)
-    predict.ts           # POST /api/predict (server fallback)
+    auth.ts               # POST /api/auth/farmer
+    farmers.ts            # Example CRUD
+    advisory.ts           # POST /api/advisories
+    weather.ts            # GET /api/weather (Open‑Meteo fallback)
+    market.ts             # GET /api/market (sample/proxy)
+    predict.ts            # POST /api/predict (server prediction)
 
 shared/
-  api.ts                 # Shared DTOs
+  api.ts                  # Shared DTOs
 
-vite.config.ts           # Vite + Express integration
-vite.config.server.ts    # Server build config
-postcss.config.js        # Tailwind/PostCSS
- tailwind.config.ts      # Custom breakpoints + tokens
+vite.config.ts            # Vite + Express integration (dev port 8080)
+vite.config.server.ts     # Server build config
+postcss.config.js         # Tailwind/PostCSS
+ tailwind.config.ts       # Custom screens + tokens
 ```
 
 ## Prerequisites
 
 - Node.js 18+
-- pnpm (preferred) — project ships with packageManager metadata
+- pnpm (project specifies the version via packageManager)
 
-## Local Setup (VS Code)
+## Run locally in VS Code (step‑by‑step)
 
-1. Clone
-   - Using GitHub: `git clone <your-repo-url>`
-   - Or download the zip from Builder and extract
-2. Install deps
-   - `pnpm install --no-frozen-lockfile`
-3. Configure environment (optional but recommended)
-   - Create a `.env` file at repo root and set:
-     - `MONGODB_URI=<your mongodb connection string>`
-     - `OPENWEATHER_API_KEY=<optional openweather key>`
-     - `MARKET_API_URL=<optional market api proxy>`
-4. Run dev server
-   - `pnpm dev`
-   - App available at: http://localhost:8080
-5. Open in VS Code
-   - `code .`
-   - Recommended extensions: ESLint, Tailwind CSS IntelliSense
+1) Get the code
+- Option A: Download Project (#project-download) and extract
+- Option B: Clone with Git in VS Code (Command Palette → Git: Clone…) and select the repo URL
 
-## Build & Run (Production)
+2) Install dependencies
+- `pnpm install --no-frozen-lockfile`
+
+3) Configure environment (optional)
+- Create `.env` at repo root if needed:
+  - `MONGODB_URI=...` (Mongo connection string)
+  - `OPENWEATHER_API_KEY=...` (optional)
+  - `MARKET_API_URL=...` (optional external market API)
+
+4) Start the app
+- `pnpm dev`
+- Open http://localhost:8080
+
+5) Open in VS Code
+- From a terminal: `code .` (or File → Open Folder…)
+- Recommended extensions: ESLint, Tailwind CSS IntelliSense
+
+## Production build
 
 - Build: `pnpm build`
-- Start: `pnpm start`
+- Start (server bundle): `pnpm start`
 
-## Responsive Design
-
-- Tailwind custom screens (tailwind.config.ts):
-  - xs: 480px, md: 768px, lg: 1024px, xl: 1440px, 2xl: 1920px
-- Global typography clamps in `client/global.css` ensure readable text across devices
-- All media are responsive (`max-width:100%; height:auto`)
-
-## API Endpoints
+## API summary
 
 - POST `/api/auth/farmer` → upsert farmer { name, phone, soilType?, landSize?, language?, location? }
-- GET `/api/weather?lat&lon` → weather with Open-Meteo fallback
-- GET `/api/market?commodity&state` → prices (Punjab sample if no external API)
-- POST `/api/advisories` → generates weather-informed advisory
-- POST `/api/predict` (multipart form-data: image) → server-side prediction fallback
+- GET `/api/weather?lat&lon` → weather (Open‑Meteo fallback if no key)
+- GET `/api/market?commodity&state` → market prices (Punjab sample if offline)
+- POST `/api/advisories` → generate advisory
+- POST `/api/predict` (form‑data: image) → server prediction
 
-## Notes on AI Models
+## Responsiveness
 
-- Client TFJS model fetch may be restricted by CSP/CDN. The app falls back to `/api/predict` so the UI keeps working.
-- For higher accuracy, replace server mock with a real model service.
+- Tailwind screens: xs 480 • md 768 • lg 1024 • xl 1440 • 2xl 1920+
+- Fluid typography via clamp() in `client/global.css`; media are max‑width:100%
 
-## Environment & Secrets
+## Deployment (MCP)
 
-- Do not commit secrets.
-- Use Builder Settings to set environment variables in cloud previews.
-
-## Deployment
-
-- Netlify or Vercel via MCP (Builder). Connect MCP and trigger deploy.
+- Netlify or Vercel: click [Open MCP popover](#open-mcp-popover) and connect the provider, then deploy.
+- Tip: previews are not production URLs; use MCP deploys for live links.
 
 ## Troubleshooting
 
-- If weather fails without OPENWEATHER_API_KEY, Open‑Meteo fallback is used.
-- If TFJS model fails to fetch, server fallback is used automatically.
-- Merge conflicts: this repo resolved to the Fusion starter layout and paths (`client/*`).
+- Network‑restricted environments: the app auto‑falls back (e.g., server prediction, sample market data).
+- Mongo not configured: APIs still work with in‑memory/sample behavior where applicable.
+- Port conflicts: update `server.port` in `vite.config.ts`.
