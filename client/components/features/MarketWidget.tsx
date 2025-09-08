@@ -22,43 +22,37 @@ export default function MarketWidget() {
     );
   }, []);
 
-  async function fetchWithTimeout(input: RequestInfo, init?: RequestInit, timeout = 8000) {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    try {
-      const res = await fetch(input, { ...(init || {}), signal: controller.signal });
-      clearTimeout(id);
-      return res;
-    } catch (e) {
-      clearTimeout(id);
-      throw e;
-    }
-  }
-
   async function loadPrices() {
     try {
-      const url = new URL("/api/market", window.location.origin);
-      url.searchParams.set("commodity", commodity);
-      url.searchParams.set("state", state);
-      const r = await fetchWithTimeout(url.toString(), undefined, 7000);
-      if (!r.ok) throw new Error(`market fetch failed: ${r.status}`);
-      const data = await r.json();
-      setItems(data.items || []);
-      setError(null);
-    } catch (e) {
-      console.error("Market load error:", e);
-      setError("Network unavailable — showing sample data");
-      // fallback to server-provided sample by calling the API without timeout (server will return sample)
-      try {
-        const fallback = await fetch("/api/market");
-        const data = await fallback.json();
+      // If offline, skip remote fetch and let server return sample data
+      const params = new URLSearchParams();
+      if (commodity) params.set("commodity", commodity);
+      if (state) params.set("state", state);
+      const path = "/api/market" + (params.toString() ? `?${params.toString()}` : "");
+
+      const r = await fetch(path);
+      if (r.ok) {
+        const data = await r.json();
         setItems(data.items || []);
-      } catch (e2) {
-        // Last resort: local client-side sample
-        setItems([
-          { commodity: "Wheat", state: "Punjab", mandi: "Ludhiana", unit: "Qtl", price: 2200 },
-        ]);
+        setError(null);
+        return;
       }
+      // non-ok response -> fallback to sample
+      setError("Network unavailable — showing sample data");
+    } catch (err) {
+      // suppress noisy stack traces from the environment; set user-friendly error
+      setError("Network unavailable — showing sample data");
+    }
+
+    // final fallback: try to fetch without params, then local sample
+    try {
+      const fallback = await fetch("/api/market");
+      const data = await fallback.json();
+      setItems(data.items || []);
+    } catch (e2) {
+      setItems([
+        { commodity: "Wheat", state: "Punjab", mandi: "Ludhiana", unit: "Qtl", price: 2200 },
+      ]);
     }
   }
 
