@@ -118,6 +118,7 @@ export default function MarketWidget() {
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
+          {error && <div className="mb-2 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">{error}</div>}
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="text-slate-500">
