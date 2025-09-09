@@ -66,7 +66,7 @@ export default function Chatbot() {
   return (
     <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between border-b border-slate-200 p-3">
-        <div className="text-sm font-semibold">AI Chatbot</div>
+        <div className="text-sm font-semibold">Chatbot</div>
         <select
           value={lang}
           onChange={(e) => setLang(e.target.value)}
