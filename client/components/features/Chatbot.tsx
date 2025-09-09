@@ -52,15 +52,24 @@ export default function Chatbot() {
     const msg = input.trim();
     setMessages((m) => [...m, { role: "user", content: msg }]);
     setInput("");
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: msg, ...(coords || {}) }),
-    });
-    const data = await res.json();
-    const reply = res.ok ? data.reply : data.error || "Error";
-    setMessages((m) => [...m, { role: "assistant", content: reply }]);
-    speak(reply);
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg, ...(coords || {}) }),
+        signal: controller.signal,
+      });
+      clearTimeout(id);
+      const data = await res.json().catch(() => ({}));
+      const reply = res.ok ? data.reply : data.error || "Sorry, I couldn't process that.";
+      setMessages((m) => [...m, { role: "assistant", content: reply }]);
+      speak(reply);
+    } catch (e) {
+      const reply = "Network unavailable — please try again later.";
+      setMessages((m) => [...m, { role: "assistant", content: reply }]);
+    }
   }
 
   return (
