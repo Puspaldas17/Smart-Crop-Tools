@@ -21,13 +21,23 @@ const AdvisoryWidget = React.lazy(() => import("@/components/features/AdvisoryWi
 function ToolsSuiteInner() {
   return (
     <div className="grid gap-6">
-      <FeatureTiles />
-      <AdvisoryWidget />
+      <Suspense fallback={<div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Loading…</div>}>
+        <FeatureTiles />
+      </Suspense>
+      <Suspense fallback={<div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Loading…</div>}>
+        <AdvisoryWidget />
+      </Suspense>
       <div className="grid gap-6 md:grid-cols-2">
-        <Chatbot />
-        <MarketWidget />
+        <Suspense fallback={<div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Loading chat…</div>}>
+          <Chatbot />
+        </Suspense>
+        <Suspense fallback={<div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Loading market & weather…</div>}>
+          <MarketWidget />
+        </Suspense>
       </div>
-      <PestDetector />
+      <Suspense fallback={<div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Loading detector…</div>}>
+        <PestDetector />
+      </Suspense>
     </div>
   );
 }
