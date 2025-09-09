@@ -178,7 +178,7 @@ export default function Index() {
           <Card title="Detailed explanation">
             <List
               items={[
-                "AI-driven mobile app and chatbot with multilingual and voice support.",
+                "Intelligent mobile app and chatbot with multilingual and voice support.",
                 "Personalized crop, fertilizer and pest advisory using soil, weather and crop history.",
                 "Real-time market price updates and weather alerts.",
                 "Image-based pest/disease detection.",
