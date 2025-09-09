@@ -1,7 +1,7 @@
 import path from "path";
 import { createServer } from "./index";
 import express from "express";
-import path from "path";
+import * as Path from "path";
 import { fileURLToPath } from "url";
 
 const app = createServer();
