@@ -78,12 +78,12 @@ export default function RootLayout() {
           <nav className="hidden gap-6 md:flex">
             {[
               { href: "/#tools", label: "Tools" },
+              { href: "/#about", label: "About" },
               { href: "/#solution", label: "Solution" },
               { href: "/#tech", label: "Technical" },
               { href: "/#feasibility", label: "Feasibility" },
               { href: "/#impact", label: "Impact" },
               { href: "/#research", label: "Research" },
-              { href: "/docs", label: "Docs" },
             ].map((i) => (
               <a
                 key={i.href}
