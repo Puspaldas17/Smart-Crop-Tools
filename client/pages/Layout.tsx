@@ -79,11 +79,6 @@ export default function RootLayout() {
             {[
               { href: "/#tools", label: "Tools" },
               { href: "/#about", label: "About" },
-              { href: "/#solution", label: "Solution" },
-              { href: "/#tech", label: "Technical" },
-              { href: "/#feasibility", label: "Feasibility" },
-              { href: "/#impact", label: "Impact" },
-              { href: "/#research", label: "Research" },
             ].map((i) => (
               <a
                 key={i.href}
