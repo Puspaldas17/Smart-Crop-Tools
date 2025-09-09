@@ -358,11 +358,11 @@ export default function Index() {
         </div>
       </section>
 
-      {/* AI Chatbot */}
+      {/* Chatbot */}
       <section id="chat" className="scroll-mt-24">
         <header className="mb-6">
           <h2 className="text-2xl font-bold tracking-tight">
-            AI Chatbot (Multilingual + Voice)
+            Chatbot (Multilingual + Voice)
           </h2>
           <p className="mt-2 max-w-prose text-slate-600">
             Ask in your language; press the mic to speak. Replies are read
