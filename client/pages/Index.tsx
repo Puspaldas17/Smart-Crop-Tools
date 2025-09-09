@@ -118,7 +118,7 @@ export default function Index() {
                   },
                   {
                     icon: Brain,
-                    label: "AI insights",
+                    label: "Insights",
                     action: () => {
                       document
                         .getElementById("chat")
