@@ -105,8 +105,7 @@ export default function RootLayout() {
       <footer className="border-t border-slate-200/60 bg-white/60 py-8">
         <div className="container flex flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
           <p className="text-sm text-slate-600">
-            © {new Date().getFullYear()} The Compilers — Smart India Hackathon
-            2025
+            © {new Date().getFullYear()} Smart Crop Advisory
           </p>
           <div className="flex items-center gap-4 text-sm">
             <a href="#research" className="text-slate-600 hover:text-slate-900">
