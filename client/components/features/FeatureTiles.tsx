@@ -4,7 +4,7 @@ export default function FeatureTiles() {
   const tiles = [
     { icon: Sprout, label: "Crop advice", action: () => document.getElementById("advisory")?.scrollIntoView({ behavior: "smooth" }) },
     { icon: CloudSun, label: "Weather alerts", action: () => { document.getElementById("market")?.scrollIntoView({ behavior: "smooth" }); window.dispatchEvent(new Event("weather:refresh")); } },
-    { icon: Brain, label: "AI insights", action: () => { document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" }); window.dispatchEvent(new Event("chat:focus")); } },
+    { icon: Brain, label: "Insights", action: () => { document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" }); window.dispatchEvent(new Event("chat:focus")); } },
     { icon: Languages, label: "Multilingual", action: () => { document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" }); const evt = new CustomEvent("chat:set-language", { detail: "hi-IN" }); window.dispatchEvent(evt); } },
   ];
   return (
