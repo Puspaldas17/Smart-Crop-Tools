@@ -9,14 +9,14 @@ import {
   Shield,
 } from "lucide-react";
 
-import Chatbot from "@/components/features/Chatbot";
-import MarketWidget from "@/components/features/MarketWidget";
-import PestDetector from "@/components/features/PestDetector";
-import { useState } from "react";
+import React, { useState, Suspense } from "react";
+const Chatbot = React.lazy(() => import("@/components/features/Chatbot"));
+const MarketWidget = React.lazy(() => import("@/components/features/MarketWidget"));
+const PestDetector = React.lazy(() => import("@/components/features/PestDetector"));
 import { useAuth } from "@/hooks/useAuth";
 
-import FeatureTiles from "@/components/features/FeatureTiles";
-import AdvisoryWidget from "@/components/features/AdvisoryWidget";
+const FeatureTiles = React.lazy(() => import("@/components/features/FeatureTiles"));
+const AdvisoryWidget = React.lazy(() => import("@/components/features/AdvisoryWidget"));
 
 function ToolsSuiteInner() {
   return (
