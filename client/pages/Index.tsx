@@ -162,8 +162,10 @@ export default function Index() {
         <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-400/20 blur-3xl" />
       </section>
 
-      {/* Proposed Solution */}
-      <section id="solution" className="scroll-mt-24">
+      {/* About */}
+      <section id="about" className="scroll-mt-24">
+        {/* Proposed Solution */}
+        <section id="solution" className="scroll-mt-24">
         <header className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">
             Proposed Solution
@@ -356,6 +358,7 @@ export default function Index() {
             </div>
           </div>
         </div>
+      </section>
       </section>
 
       {/* Chatbot */}
