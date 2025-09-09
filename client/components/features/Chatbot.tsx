@@ -63,7 +63,9 @@ export default function Chatbot() {
       });
       clearTimeout(id);
       const data = await res.json().catch(() => ({}));
-      const reply = res.ok ? data.reply : data.error || "Sorry, I couldn't process that.";
+      const reply = res.ok
+        ? data.reply
+        : data.error || "Sorry, I couldn't process that.";
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
       speak(reply);
     } catch (e) {
