@@ -71,14 +71,11 @@ export default function Index() {
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ffedd5] via-white to-[#dcfce7] p-8 md:p-12">
         <div className="relative z-10 grid items-center gap-8 md:grid-cols-2">
           <div>
-            <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-              Smart India Hackathon 2025 • Team: The Compilers • PS: SIH25010
-            </p>
             <h1 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
               Smart Crop Advisory System
             </h1>
             <p className="mt-4 max-w-prose text-slate-600 md:text-lg">
-              AI-powered, multilingual guidance for small and marginal
+              Data‑driven, multilingual guidance for small and marginal
               farmers—combining soil, weather, market and pest insights into one
               simple, voice-enabled experience.
             </p>
