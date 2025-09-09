@@ -234,7 +234,7 @@ export default function Index() {
                 "Frontend: React (Vite) + Tailwind; PWA + i18n.",
                 "Backend: Node.js + Express (REST).",
                 "Database: MongoDB (Atlas/local) via Mongoose.",
-                "AI/ML: TFJS/CNN for pest detection; crop recommendation service.",
+                "Machine Learning: TFJS/CNN for pest detection; crop recommendation service.",
                 "APIs: IMD/OpenWeather (weather), eNAM/Agri Market (prices); Bhashini/Google STT for voice.",
               ]}
             />
