@@ -124,10 +124,10 @@ importers:
         specifier: ^5.84.2
         version: 5.84.2(react@18.3.1)
       '@tensorflow-models/mobilenet':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: 2.1.1(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)
       '@tensorflow/tfjs':
-        specifier: ^4.21.0
+        specifier: ^4.22.0
         version: 4.22.0(seedrandom@3.0.5)
       '@types/cors':
         specifier: ^2.8.19
