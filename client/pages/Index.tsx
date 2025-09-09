@@ -165,7 +165,7 @@ export default function Index() {
       {/* About */}
       <section id="about" className="scroll-mt-24">
         {/* Proposed Solution */}
-        <section id="solution" className="scroll-mt-24">
+      <div className="scroll-mt-24">
         <header className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">
             Proposed Solution
@@ -208,7 +208,7 @@ export default function Index() {
             />
           </Card>
         </div>
-      </section>
+      </div>
 
       {/* Tools (All working parts in one place) */}
       <section id="tools" className="scroll-mt-24">
@@ -223,7 +223,7 @@ export default function Index() {
       </section>
 
       {/* Technical Approach */}
-      <section id="tech" className="scroll-mt-24">
+      <div className="scroll-mt-24">
         <header className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">
             Technical Approach
@@ -253,10 +253,10 @@ export default function Index() {
             />
           </Card>
         </div>
-      </section>
+      </div>
 
       {/* Feasibility */}
-      <section id="feasibility" className="scroll-mt-24">
+      <div className="scroll-mt-24">
         <header className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">
             Feasibility and Viability
@@ -291,10 +291,10 @@ export default function Index() {
             />
           </Card>
         </div>
-      </section>
+      </div>
 
       {/* Impact */}
-      <section id="impact" className="scroll-mt-24">
+      <div className="scroll-mt-24">
         <header className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">
             Impact and Benefits
@@ -321,10 +321,10 @@ export default function Index() {
             />
           </Card>
         </div>
-      </section>
+      </div>
 
       {/* Research */}
-      <section id="research" className="scroll-mt-24">
+      <div className="scroll-mt-24">
         <header className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">
             Research and References
@@ -358,7 +358,7 @@ export default function Index() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       </section>
 
       {/* Chatbot */}
