@@ -160,12 +160,12 @@ export default function Index() {
                   {
                     icon: CloudSun,
                     label: "Weather alerts",
-                    action: () => {
+                    action: () => startTransition(() => {
                       document
                         .getElementById("market")
                         ?.scrollIntoView({ behavior: "smooth" });
                       window.dispatchEvent(new Event("weather:refresh"));
-                    },
+                    }),
                   },
                   {
                     icon: Brain,
