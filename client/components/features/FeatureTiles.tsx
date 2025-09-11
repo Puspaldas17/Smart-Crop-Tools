@@ -42,10 +42,10 @@ export default function FeatureTiles() {
     {
       icon: Mic,
       label: "Voice Mode",
-      action: () => {
+      action: () => startTransition(() => {
         document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
         window.dispatchEvent(new Event("chat:voice-mode"));
-      },
+      }),
     },
   ];
   return (
