@@ -9,7 +9,7 @@ import {
   Shield,
 } from "lucide-react";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, startTransition } from "react";
 const Chatbot = React.lazy(() => import("@/components/features/Chatbot"));
 const MarketWidget = React.lazy(
   () => import("@/components/features/MarketWidget"),
