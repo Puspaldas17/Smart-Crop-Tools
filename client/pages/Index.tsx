@@ -151,44 +151,48 @@ export default function Index() {
                   {
                     icon: Sprout,
                     label: "Crop advice",
-                    action: () => startTransition(() =>
-                      document
-                        .getElementById("advisory")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    ),
+                    action: () =>
+                      startTransition(() =>
+                        document
+                          .getElementById("advisory")
+                          ?.scrollIntoView({ behavior: "smooth" }),
+                      ),
                   },
                   {
                     icon: CloudSun,
                     label: "Weather alerts",
-                    action: () => startTransition(() => {
-                      document
-                        .getElementById("market")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      window.dispatchEvent(new Event("weather:refresh"));
-                    }),
+                    action: () =>
+                      startTransition(() => {
+                        document
+                          .getElementById("market")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                        window.dispatchEvent(new Event("weather:refresh"));
+                      }),
                   },
                   {
                     icon: Brain,
                     label: "Insights",
-                    action: () => startTransition(() => {
-                      document
-                        .getElementById("chat")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      window.dispatchEvent(new Event("chat:focus"));
-                    }),
+                    action: () =>
+                      startTransition(() => {
+                        document
+                          .getElementById("chat")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                        window.dispatchEvent(new Event("chat:focus"));
+                      }),
                   },
                   {
                     icon: Languages,
                     label: "Multilingual",
-                    action: () => startTransition(() => {
-                      document
-                        .getElementById("chat")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      const evt = new CustomEvent("chat:set-language", {
-                        detail: "hi-IN",
-                      });
-                      window.dispatchEvent(evt);
-                    }),
+                    action: () =>
+                      startTransition(() => {
+                        document
+                          .getElementById("chat")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                        const evt = new CustomEvent("chat:set-language", {
+                          detail: "hi-IN",
+                        });
+                        window.dispatchEvent(evt);
+                      }),
                   },
                 ].map(({ icon: Icon, label, action }) => (
                   <button
