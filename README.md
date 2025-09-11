@@ -10,6 +10,7 @@ A production‑ready, full‑stack MERN application that delivers data‑driven,
 ---
 
 ## Table of Contents
+
 - Features
 - Architecture & Project Structure
 - Requirements
@@ -24,6 +25,7 @@ A production‑ready, full‑stack MERN application that delivers data‑driven,
 ---
 
 ## Features
+
 - Multilingual, voice‑enabled chatbot (geolocation‑aware responses)
 - Market Prices (Punjab) with robust offline/sample fallbacks
 - Local Weather with safety alerts (temperature, humidity, wind)
@@ -33,6 +35,7 @@ A production‑ready, full‑stack MERN application that delivers data‑driven,
 - Smooth scrolling, fluid typography, and responsive layout across devices
 
 ## Architecture & Project Structure
+
 - Single repo with SPA (client), API (server), and shared types.
 - Vite serves React and mounts Express middleware for APIs during development (single port).
 - Production build emits:
@@ -73,29 +76,36 @@ netlify.toml              # Build + redirects to `/.netlify/functions/api`
 ```
 
 ## Requirements
+
 - Node.js 18+ (or 20+ recommended)
 - pnpm 8+ (preferred) or npm
 - VS Code (recommended)
 
 ## Quick Start (VS Code)
-1) Clone and install
+
+1. Clone and install
+
 ```
 git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
 cd Smart-Crop-Tools
 pnpm install
 ```
 
-2) Run the app (dev)
+2. Run the app (dev)
+
 ```
 pnpm dev
 ```
+
 - Open http://localhost:8080
 - Login (top‑right) to access the Working Suite (Chatbot, Market & Weather, Pest Detector, Advisory)
 
-3) Open and debug in VS Code
+3. Open and debug in VS Code
+
 ```
 code .
 ```
+
 - Use “JavaScript Debug Terminal” and run `pnpm dev`, or use this launch config to debug the production server:
 
 ```jsonc
@@ -110,13 +120,14 @@ code .
       "program": "${workspaceFolder}/dist/server/node-build.mjs",
       "cwd": "${workspaceFolder}",
       "env": { "PORT": "3000" },
-      "skipFiles": ["<node_internals>/**"]
-    }
-  ]
+      "skipFiles": ["<node_internals>/**"],
+    },
+  ],
 }
 ```
 
 ## Environment Variables
+
 All are optional for local development; sensible fallbacks are included.
 
 - MONGODB_URI — enables persistence (without it, an in‑memory store is used)
@@ -127,6 +138,7 @@ All are optional for local development; sensible fallbacks are included.
 - HF_MODEL — optional, defaults to `microsoft/resnet-50`
 
 Create a `.env` file at the repo root if desired:
+
 ```
 MONGODB_URI=...
 OPENWEATHER_API_KEY=...
@@ -137,6 +149,7 @@ HF_MODEL=microsoft/resnet-50
 ```
 
 ## Scripts
+
 - `pnpm dev` — Vite dev server (Express middleware) at http://localhost:8080
 - `pnpm build` — Build client and server bundles
 - `pnpm start` — Start the built server (`dist/server/node-build.mjs`)
@@ -144,6 +157,7 @@ HF_MODEL=microsoft/resnet-50
 - `pnpm test` — Run Vitest tests
 
 ## API Reference (selected)
+
 - `POST /api/auth/farmer` — upsert farmer
   - body: `{ name, phone, soilType?, landSize?, language?, location? }`
 - `GET /api/market?commodity&state` — market prices (live or sample)
@@ -154,9 +168,11 @@ HF_MODEL=microsoft/resnet-50
 ## Deployment
 
 ### Option A: Netlify (recommended)
+
 This repository is already configured for Netlify via `netlify.toml` and `netlify/functions/api.ts`.
 
 Steps:
+
 1. Push your code to GitHub/GitLab.
 2. In Netlify, “Add new site” → “Import from Git”. Select this repository.
 3. Build settings (auto‑detected from `netlify.toml`):
@@ -167,28 +183,36 @@ Steps:
 5. Deploy. Your SPA is served from `dist/spa`, and all `/api/*` routes are redirected to `/.netlify/functions/api` (Express wrapped by `serverless-http`).
 
 ### Option B: Self‑host (Node server)
+
 1. Build:
+
 ```
 pnpm build
 ```
+
 2. Set environment variables on the host (as needed).
 3. Start the server:
+
 ```
 node dist/server/node-build.mjs
 ```
+
 4. Serve behind a reverse proxy (e.g., Nginx) and terminate TLS there if desired.
 
 ### Option C: Builder MCP one‑click deploys (Netlify or Vercel)
+
 - In Builder.io Projects, click [Open MCP popover], connect Netlify or Vercel, and trigger a deploy.
 - For Vercel, ensure your project includes serverless wiring for Express. This repo ships first‑class Netlify support; Vercel may require adding a serverless function that wraps `createServer()`.
 
 ## Troubleshooting
+
 - Dev server/port: Default dev URL is http://localhost:8080 (configured in `vite.config.ts`).
 - No MongoDB configured: the app falls back to in‑memory storage so you can demo all flows.
 - Weather blocked/slow: the app automatically uses Open‑Meteo; the UI shows a friendly status.
 - Large bundles: consider dynamic imports or `manualChunks` if you need smaller chunks for production.
 
 ## Security
+
 - Never commit secrets. Use environment variables in your hosting provider.
 - Only minimal PII (name/phone) is collected in the demo. Review and harden before production.
 - Add monitoring (e.g., Sentry) and WAF/Rate limits on `/api/*` in production.
