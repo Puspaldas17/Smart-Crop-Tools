@@ -1,3 +1,4 @@
+import React, { startTransition } from "react";
 import { CloudSun, Languages, Brain, Sprout, Mic } from "lucide-react";
 
 export default function FeatureTiles() {
