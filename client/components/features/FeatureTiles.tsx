@@ -33,11 +33,11 @@ export default function FeatureTiles() {
     {
       icon: Languages,
       label: "Multilingual",
-      action: () => {
+      action: () => startTransition(() => {
         document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
         const evt = new CustomEvent("chat:set-language", { detail: "hi-IN" });
         window.dispatchEvent(evt);
-      },
+      }),
     },
     {
       icon: Mic,
