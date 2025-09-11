@@ -1,4 +1,4 @@
-import { CloudSun, Languages, Brain, Sprout } from "lucide-react";
+import { CloudSun, Languages, Brain, Sprout, Mic } from "lucide-react";
 
 export default function FeatureTiles() {
   const tiles = [
