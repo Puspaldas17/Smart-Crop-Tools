@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const USE_MEMORY = !process.env.MONGODB_URI;
 
-type AnyDoc = Record<string, any> & { _id?: string; createdAt?: Date; updatedAt?: Date };
+type AnyDoc = Record<string, any> & {
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
 
 class InMemoryCollection<T extends AnyDoc> {
   private items: T[] = [];
@@ -16,7 +20,12 @@ class InMemoryCollection<T extends AnyDoc> {
 
   async create(doc: Partial<T>): Promise<T> {
     const now = new Date();
-    const out = { ...(doc as T), _id: this.genId(), createdAt: now, updatedAt: now } as T;
+    const out = {
+      ...(doc as T),
+      _id: this.genId(),
+      createdAt: now,
+      updatedAt: now,
+    } as T;
     this.items.push(out);
     return structuredClone(out);
   }
