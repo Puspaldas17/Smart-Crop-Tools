@@ -42,7 +42,9 @@ export default function Chatbot() {
     const langHandler = (e: any) => setLang(e?.detail || "en-IN");
     const voiceHandler = () => {
       setVoiceMode(true);
-      try { speak("Tap the big mic and speak your question."); } catch {}
+      try {
+        speak("Tap the big mic and speak your question.");
+      } catch {}
       const el = document.getElementById("chat");
       el?.scrollIntoView({ behavior: "smooth" });
     };
@@ -89,7 +91,11 @@ export default function Chatbot() {
         <div className="text-sm font-semibold">Chatbot</div>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-1 text-xs text-slate-600">
-            <input type="checkbox" checked={voiceMode} onChange={(e)=>setVoiceMode(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={voiceMode}
+              onChange={(e) => setVoiceMode(e.target.checked)}
+            />
             Voice‑First Mode
           </label>
           <select
@@ -107,14 +113,22 @@ export default function Chatbot() {
       </div>
       {voiceMode && (
         <div className="p-4">
-          <div className="mb-3 text-center text-sm text-slate-600">Tap the big mic and speak your question</div>
+          <div className="mb-3 text-center text-sm text-slate-600">
+            Tap the big mic and speak your question
+          </div>
           <div className="flex justify-center">
             {listening ? (
-              <button onClick={stop} className="h-24 w-24 rounded-full border-4 border-rose-300 bg-rose-500 text-white shadow">
+              <button
+                onClick={stop}
+                className="h-24 w-24 rounded-full border-4 border-rose-300 bg-rose-500 text-white shadow"
+              >
                 <StopCircle className="mx-auto h-10 w-10" />
               </button>
             ) : (
-              <button onClick={start} className="h-24 w-24 rounded-full border-4 border-emerald-300 bg-emerald-500 text-white shadow">
+              <button
+                onClick={start}
+                className="h-24 w-24 rounded-full border-4 border-emerald-300 bg-emerald-500 text-white shadow"
+              >
                 <Mic className="mx-auto h-10 w-10" />
               </button>
             )}
@@ -150,7 +164,8 @@ export default function Chatbot() {
             className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
           />
         )}
-        {supported && !voiceMode &&
+        {supported &&
+          !voiceMode &&
           (listening ? (
             <button
               onClick={stop}
