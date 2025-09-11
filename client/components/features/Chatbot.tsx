@@ -21,6 +21,7 @@ export default function Chatbot() {
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
     null,
   );
+  const [voiceMode, setVoiceMode] = useState(false);
 
   useEffect(() => {
     if (transcript) {
@@ -39,13 +40,23 @@ export default function Chatbot() {
   useEffect(() => {
     const focusHandler = () => inputRef.current?.focus();
     const langHandler = (e: any) => setLang(e?.detail || "en-IN");
+    const voiceHandler = () => {
+      setVoiceMode(true);
+      try {
+        speak("Tap the big mic and speak your question.");
+      } catch {}
+      const el = document.getElementById("chat");
+      el?.scrollIntoView({ behavior: "smooth" });
+    };
     window.addEventListener("chat:focus", focusHandler as any);
     window.addEventListener("chat:set-language", langHandler as any);
+    window.addEventListener("chat:voice-mode", voiceHandler as any);
     return () => {
       window.removeEventListener("chat:focus", focusHandler as any);
       window.removeEventListener("chat:set-language", langHandler as any);
+      window.removeEventListener("chat:voice-mode", voiceHandler as any);
     };
-  }, []);
+  }, [speak]);
 
   async function send() {
     if (!input.trim()) return;
@@ -78,20 +89,54 @@ export default function Chatbot() {
     <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between border-b border-slate-200 p-3">
         <div className="text-sm font-semibold">Chatbot</div>
-        <select
-          value={lang}
-          onChange={(e) => setLang(e.target.value)}
-          className="rounded-md border border-slate-300 px-2 py-1 text-sm"
-        >
-          {languages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.label}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2">
+          <label className="flex items-center gap-1 text-xs text-slate-600">
+            <input
+              type="checkbox"
+              checked={voiceMode}
+              onChange={(e) => setVoiceMode(e.target.checked)}
+            />
+            Voice‑First Mode
+          </label>
+          <select
+            value={lang}
+            onChange={(e) => setLang(e.target.value)}
+            className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+          >
+            {languages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
+      {voiceMode && (
+        <div className="p-4">
+          <div className="mb-3 text-center text-sm text-slate-600">
+            Tap the big mic and speak your question
+          </div>
+          <div className="flex justify-center">
+            {listening ? (
+              <button
+                onClick={stop}
+                className="h-24 w-24 rounded-full border-4 border-rose-300 bg-rose-500 text-white shadow"
+              >
+                <StopCircle className="mx-auto h-10 w-10" />
+              </button>
+            ) : (
+              <button
+                onClick={start}
+                className="h-24 w-24 rounded-full border-4 border-emerald-300 bg-emerald-500 text-white shadow"
+              >
+                <Mic className="mx-auto h-10 w-10" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
       <div className="scrollbar-thin flex-1 space-y-3 overflow-y-auto p-4">
-        {messages.length === 0 && (
+        {messages.length === 0 && !voiceMode && (
           <div className="text-sm text-slate-500">
             Ask about weather, market prices, crop/fertilizer advice…
           </div>
@@ -110,14 +155,17 @@ export default function Chatbot() {
         ))}
       </div>
       <div className="flex items-center gap-2 border-t border-slate-200 p-3">
-        <input
-          ref={inputRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your question…"
-          className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
-        />
+        {!voiceMode && (
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your question…"
+            className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+          />
+        )}
         {supported &&
+          !voiceMode &&
           (listening ? (
             <button
               onClick={stop}

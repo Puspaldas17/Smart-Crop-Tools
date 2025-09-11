@@ -1,4 +1,4 @@
-import { CloudSun, Languages, Brain, Sprout } from "lucide-react";
+import { CloudSun, Languages, Brain, Sprout, Mic } from "lucide-react";
 
 export default function FeatureTiles() {
   const tiles = [
@@ -35,6 +35,14 @@ export default function FeatureTiles() {
         document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
         const evt = new CustomEvent("chat:set-language", { detail: "hi-IN" });
         window.dispatchEvent(evt);
+      },
+    },
+    {
+      icon: Mic,
+      label: "Voice Mode",
+      action: () => {
+        document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
+        window.dispatchEvent(new Event("chat:voice-mode"));
       },
     },
   ];
