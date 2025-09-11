@@ -37,6 +37,14 @@ export default function FeatureTiles() {
         window.dispatchEvent(evt);
       },
     },
+    {
+      icon: Mic,
+      label: "Voice Mode",
+      action: () => {
+        document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
+        window.dispatchEvent(new Event("chat:voice-mode"));
+      },
+    },
   ];
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
