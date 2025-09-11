@@ -6,10 +6,11 @@ export default function FeatureTiles() {
     {
       icon: Sprout,
       label: "Crop advice",
-      action: () =>
+      action: () => startTransition(() =>
         document
           .getElementById("advisory")
           ?.scrollIntoView({ behavior: "smooth" }),
+      ),
     },
     {
       icon: CloudSun,
