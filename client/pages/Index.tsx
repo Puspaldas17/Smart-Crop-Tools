@@ -151,10 +151,11 @@ export default function Index() {
                   {
                     icon: Sprout,
                     label: "Crop advice",
-                    action: () =>
+                    action: () => startTransition(() =>
                       document
                         .getElementById("advisory")
-                        ?.scrollIntoView({ behavior: "smooth" }),
+                        ?.scrollIntoView({ behavior: "smooth" })
+                    ),
                   },
                   {
                     icon: CloudSun,
