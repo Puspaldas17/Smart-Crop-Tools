@@ -180,7 +180,7 @@ export default function Index() {
                   {
                     icon: Languages,
                     label: "Multilingual",
-                    action: () => {
+                    action: () => startTransition(() => {
                       document
                         .getElementById("chat")
                         ?.scrollIntoView({ behavior: "smooth" });
@@ -188,7 +188,7 @@ export default function Index() {
                         detail: "hi-IN",
                       });
                       window.dispatchEvent(evt);
-                    },
+                    }),
                   },
                 ].map(({ icon: Icon, label, action }) => (
                   <button
