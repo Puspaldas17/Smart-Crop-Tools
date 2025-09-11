@@ -9,7 +9,7 @@ import {
   Shield,
 } from "lucide-react";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, startTransition } from "react";
 const Chatbot = React.lazy(() => import("@/components/features/Chatbot"));
 const MarketWidget = React.lazy(
   () => import("@/components/features/MarketWidget"),
@@ -152,42 +152,47 @@ export default function Index() {
                     icon: Sprout,
                     label: "Crop advice",
                     action: () =>
-                      document
-                        .getElementById("advisory")
-                        ?.scrollIntoView({ behavior: "smooth" }),
+                      startTransition(() =>
+                        document
+                          .getElementById("advisory")
+                          ?.scrollIntoView({ behavior: "smooth" }),
+                      ),
                   },
                   {
                     icon: CloudSun,
                     label: "Weather alerts",
-                    action: () => {
-                      document
-                        .getElementById("market")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      window.dispatchEvent(new Event("weather:refresh"));
-                    },
+                    action: () =>
+                      startTransition(() => {
+                        document
+                          .getElementById("market")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                        window.dispatchEvent(new Event("weather:refresh"));
+                      }),
                   },
                   {
                     icon: Brain,
                     label: "Insights",
-                    action: () => {
-                      document
-                        .getElementById("chat")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      window.dispatchEvent(new Event("chat:focus"));
-                    },
+                    action: () =>
+                      startTransition(() => {
+                        document
+                          .getElementById("chat")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                        window.dispatchEvent(new Event("chat:focus"));
+                      }),
                   },
                   {
                     icon: Languages,
                     label: "Multilingual",
-                    action: () => {
-                      document
-                        .getElementById("chat")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      const evt = new CustomEvent("chat:set-language", {
-                        detail: "hi-IN",
-                      });
-                      window.dispatchEvent(evt);
-                    },
+                    action: () =>
+                      startTransition(() => {
+                        document
+                          .getElementById("chat")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                        const evt = new CustomEvent("chat:set-language", {
+                          detail: "hi-IN",
+                        });
+                        window.dispatchEvent(evt);
+                      }),
                   },
                 ].map(({ icon: Icon, label, action }) => (
                   <button

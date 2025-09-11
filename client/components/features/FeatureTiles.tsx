@@ -1,3 +1,4 @@
+import React, { startTransition } from "react";
 import { CloudSun, Languages, Brain, Sprout, Mic } from "lucide-react";
 
 export default function FeatureTiles() {
@@ -6,44 +7,56 @@ export default function FeatureTiles() {
       icon: Sprout,
       label: "Crop advice",
       action: () =>
-        document
-          .getElementById("advisory")
-          ?.scrollIntoView({ behavior: "smooth" }),
+        startTransition(() =>
+          document
+            .getElementById("advisory")
+            ?.scrollIntoView({ behavior: "smooth" }),
+        ),
     },
     {
       icon: CloudSun,
       label: "Weather alerts",
-      action: () => {
-        document
-          .getElementById("market")
-          ?.scrollIntoView({ behavior: "smooth" });
-        window.dispatchEvent(new Event("weather:refresh"));
-      },
+      action: () =>
+        startTransition(() => {
+          document
+            .getElementById("market")
+            ?.scrollIntoView({ behavior: "smooth" });
+          window.dispatchEvent(new Event("weather:refresh"));
+        }),
     },
     {
       icon: Brain,
       label: "Insights",
-      action: () => {
-        document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
-        window.dispatchEvent(new Event("chat:focus"));
-      },
+      action: () =>
+        startTransition(() => {
+          document
+            .getElementById("chat")
+            ?.scrollIntoView({ behavior: "smooth" });
+          window.dispatchEvent(new Event("chat:focus"));
+        }),
     },
     {
       icon: Languages,
       label: "Multilingual",
-      action: () => {
-        document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
-        const evt = new CustomEvent("chat:set-language", { detail: "hi-IN" });
-        window.dispatchEvent(evt);
-      },
+      action: () =>
+        startTransition(() => {
+          document
+            .getElementById("chat")
+            ?.scrollIntoView({ behavior: "smooth" });
+          const evt = new CustomEvent("chat:set-language", { detail: "hi-IN" });
+          window.dispatchEvent(evt);
+        }),
     },
     {
       icon: Mic,
       label: "Voice Mode",
-      action: () => {
-        document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
-        window.dispatchEvent(new Event("chat:voice-mode"));
-      },
+      action: () =>
+        startTransition(() => {
+          document
+            .getElementById("chat")
+            ?.scrollIntoView({ behavior: "smooth" });
+          window.dispatchEvent(new Event("chat:voice-mode"));
+        }),
     },
   ];
   return (
