@@ -25,6 +25,9 @@ const FeatureTiles = React.lazy(
 const AdvisoryWidget = React.lazy(
   () => import("@/components/features/AdvisoryWidget"),
 );
+const UnifiedOverview = React.lazy(
+  () => import("@/components/features/UnifiedOverview"),
+);
 
 function ToolsSuiteInner() {
   return (
@@ -37,6 +40,15 @@ function ToolsSuiteInner() {
         }
       >
         <FeatureTiles />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+            Loading overview…
+          </div>
+        }
+      >
+        <UnifiedOverview />
       </Suspense>
       <Suspense
         fallback={
@@ -376,7 +388,7 @@ export default function Index() {
                   "Indian Govt APIs – eNAM, Agri Market, Bhashini.",
                   "PlantVillage dataset – pest/disease recognition.",
                   "FAO & ICAR studies – ICT advisories improve yield by 20–30%.",
-                  "NABARD 2022 – 86% of Indian farmers are small/marginal.",
+                  "NABARD 2022 �� 86% of Indian farmers are small/marginal.",
                 ]}
               />
             </Card>
