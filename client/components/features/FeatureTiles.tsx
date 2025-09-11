@@ -25,10 +25,10 @@ export default function FeatureTiles() {
     {
       icon: Brain,
       label: "Insights",
-      action: () => {
+      action: () => startTransition(() => {
         document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" });
         window.dispatchEvent(new Event("chat:focus"));
-      },
+      }),
     },
     {
       icon: Languages,
