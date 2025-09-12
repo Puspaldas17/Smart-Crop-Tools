@@ -50,44 +50,52 @@ function ToolsSuiteInner() {
       >
         <UnifiedOverview />
       </Suspense>
-      <Suspense
-        fallback={
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-            Loading…
-          </div>
-        }
-      >
-        <AdvisoryWidget />
-      </Suspense>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div id="advisory">
         <Suspense
           fallback={
             <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-              Loading chat…
+              Loading…
             </div>
           }
         >
-          <Chatbot />
-        </Suspense>
-        <Suspense
-          fallback={
-            <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-              Loading market & weather…
-            </div>
-          }
-        >
-          <MarketWidget />
+          <AdvisoryWidget />
         </Suspense>
       </div>
-      <Suspense
-        fallback={
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-            Loading detector…
-          </div>
-        }
-      >
-        <PestDetector />
-      </Suspense>
+      <div className="grid gap-6 md:grid-cols-2">
+        <div id="chat">
+          <Suspense
+            fallback={
+              <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+                Loading chat…
+              </div>
+            }
+          >
+            <Chatbot />
+          </Suspense>
+        </div>
+        <div id="market">
+          <Suspense
+            fallback={
+              <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+                Loading market & weather…
+              </div>
+            }
+          >
+            <MarketWidget />
+          </Suspense>
+        </div>
+      </div>
+      <div id="pest">
+        <Suspense
+          fallback={
+            <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+              Loading detector…
+            </div>
+          }
+        >
+          <PestDetector />
+        </Suspense>
+      </div>
     </div>
   );
 }
@@ -407,48 +415,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Chatbot */}
-      <section id="chat" className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}>
-        <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">
-            Chatbot (Multilingual + Voice)
-          </h2>
-          <p className="mt-2 max-w-prose text-slate-600">
-            Ask in your language; press the mic to speak. Replies are read
-            aloud.
-          </p>
-        </header>
-        <Chatbot />
-      </section>
 
-      {/* Market & Weather */}
-      <section
-        id="market"
-        className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}
-      >
-        <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">
-            Real-time Market & Weather
-          </h2>
-          <p className="mt-2 max-w-prose text-slate-600">
-            Mandi prices and local weather with risk alerts.
-          </p>
-        </header>
-        <MarketWidget />
-      </section>
 
-      {/* Pest Detector */}
-      <section id="pest" className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}>
-        <header className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">
-            Image-based Pest/Disease Detection
-          </h2>
-          <p className="mt-2 max-w-prose text-slate-600">
-            On-device prototype using MobileNet. Upload or capture an image.
-          </p>
-        </header>
-        <PestDetector />
-      </section>
     </div>
   );
 }
