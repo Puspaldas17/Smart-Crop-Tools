@@ -25,7 +25,8 @@
     "express": "^5.1.0",
     "mongoose": "^8.8.0",
     "zod": "^3.25.76",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "@netlify/neon": "^0.1.0"
   },
   "devDependencies": {
     "@hookform/resolvers": "^5.2.1",

@@ -5,9 +5,9 @@
 
 
 [functions]
-  external_node_modules = ["express"]
+  external_node_modules = ["express", "@netlify/neon"]
   node_bundler = "esbuild"
-  
+
 [[redirects]]
   force = true
   from = "/api/*"

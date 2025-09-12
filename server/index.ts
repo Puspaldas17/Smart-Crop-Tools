@@ -10,6 +10,7 @@ import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
 import { upsertFarmer } from "./routes/auth";
+import { getPostById } from "./routes/neon";
 
 export function createServer() {
   const app = express();
@@ -39,6 +40,9 @@ export function createServer() {
   app.post("/api/chat", chatHandler);
   app.post("/api/predict", uploadMiddleware, predictHandler);
   app.post("/api/auth/farmer", upsertFarmer);
+
+  // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
+  app.get("/api/neon/posts/:id", getPostById);
 
   return app;
 }
