@@ -42,10 +42,7 @@ export function createServer() {
   app.post("/api/auth/farmer", upsertFarmer);
 
   // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
-  try {
-    const { getPostById } = await import("./routes/neon");
-    app.get("/api/neon/posts/:id", getPostById);
-  } catch {}
+  app.get("/api/neon/posts/:id", getPostById);
 
   return app;
 }
