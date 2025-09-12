@@ -54,6 +54,7 @@ function HeaderAuth() {
 
 export default function RootLayout() {
   const scrolled = useScrollTop(10);
+  const { farmer } = useAuth();
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-slate-100 text-slate-900">
       <a
