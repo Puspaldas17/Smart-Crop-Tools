@@ -8,9 +8,7 @@ export const getPostById: RequestHandler = async (req, res) => {
     if (!id) return res.status(400).json({ error: "id required" });
 
     // Lazy import to avoid local dev dependency if not needed
-    const { neon, neonConfig } = await import("@netlify/neon");
-    // Recommended for serverless to reuse connections
-    (neonConfig as any).fetchConnectionCache = true;
+    const { neon } = await import("@netlify/neon");
 
     const sql = neon(); // uses env NETLIFY_DATABASE_URL
     const rows = await sql`SELECT * FROM posts WHERE id = ${id}`;
