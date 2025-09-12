@@ -251,7 +251,10 @@ export default function Index() {
         </div>
 
         {/* Tools (All working parts in one place) */}
-        <section id="tools" className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}>
+        <section
+          id="tools"
+          className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}
+        >
           <header className="mb-6">
             <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
             <p className="mt-2 max-w-prose text-slate-600">
@@ -419,7 +422,10 @@ export default function Index() {
       </section>
 
       {/* Market & Weather */}
-      <section id="market" className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}>
+      <section
+        id="market"
+        className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}
+      >
         <header className="mb-6">
           <h2 className="text-2xl font-bold tracking-tight">
             Real-time Market & Weather

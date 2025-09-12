@@ -13,7 +13,8 @@ export const getPostById: RequestHandler = async (req, res) => {
     const sql = neon(); // uses env NETLIFY_DATABASE_URL
     const rows = await sql`SELECT * FROM posts WHERE id = ${id}`;
 
-    if (!rows || rows.length === 0) return res.status(404).json({ error: "not found" });
+    if (!rows || rows.length === 0)
+      return res.status(404).json({ error: "not found" });
     return res.json({ rows });
   } catch (e: any) {
     const msg = typeof e?.message === "string" ? e.message : "query failed";
