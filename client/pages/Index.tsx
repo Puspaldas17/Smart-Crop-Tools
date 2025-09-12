@@ -205,7 +205,7 @@ export default function Index() {
       {/* About */}
       <section id="about" className="scroll-mt-24">
         {/* Proposed Solution */}
-        <div className="scroll-mt-24">
+        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Proposed Solution
@@ -266,7 +266,7 @@ export default function Index() {
         </section>
 
         {/* Technical Approach */}
-        <div className="scroll-mt-24">
+        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Technical Approach
@@ -299,7 +299,7 @@ export default function Index() {
         </div>
 
         {/* Feasibility */}
-        <div className="scroll-mt-24">
+        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Feasibility and Viability
@@ -337,7 +337,7 @@ export default function Index() {
         </div>
 
         {/* Impact */}
-        <div className="scroll-mt-24">
+        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Impact and Benefits
@@ -367,7 +367,7 @@ export default function Index() {
         </div>
 
         {/* Research */}
-        <div className="scroll-mt-24">
+        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Research and References
