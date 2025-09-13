@@ -2,9 +2,21 @@ import { Sprout, CloudSun, Brain } from "lucide-react";
 
 export default function Features() {
   const features = [
-    { icon: Sprout, title: "Smart advisory", desc: "Guidance for crop, fertilizer and irrigation." },
-    { icon: CloudSun, title: "Weather aware", desc: "Localized forecasts and timely alerts." },
-    { icon: Brain, title: "Quick insights", desc: "Ask questions via chat and get answers fast." },
+    {
+      icon: Sprout,
+      title: "Smart advisory",
+      desc: "Guidance for crop, fertilizer and irrigation.",
+    },
+    {
+      icon: CloudSun,
+      title: "Weather aware",
+      desc: "Localized forecasts and timely alerts.",
+    },
+    {
+      icon: Brain,
+      title: "Quick insights",
+      desc: "Ask questions via chat and get answers fast.",
+    },
   ];
   return (
     <section
