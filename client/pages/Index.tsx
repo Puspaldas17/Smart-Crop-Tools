@@ -32,6 +32,7 @@ import Hero from "@/components/home/Hero";
 import Stats from "@/components/home/Stats";
 import Features from "@/components/home/Features";
 import HowItWorks from "@/components/home/HowItWorks";
+import Highlight from "@/components/home/Highlight";
 import CTA from "@/components/home/CTA";
 
 function ToolsSuiteInner() {
@@ -119,6 +120,7 @@ export default function Index() {
       <Stats />
       <Features />
       <HowItWorks />
+      <Highlight />
       <CTA />
 
       {/* About */}
