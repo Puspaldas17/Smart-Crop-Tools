@@ -213,7 +213,7 @@ export default function Index() {
       {/* About */}
       <section id="about" className="scroll-mt-24">
         {/* Proposed Solution */}
-        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
+        <div id="solution" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Proposed Solution
@@ -274,7 +274,7 @@ export default function Index() {
         </section>
 
         {/* Technical Approach */}
-        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
+        <div id="tech" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Technical Approach
@@ -345,7 +345,7 @@ export default function Index() {
         </div>
 
         {/* Impact */}
-        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
+        <div id="impact" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Impact and Benefits
@@ -375,7 +375,7 @@ export default function Index() {
         </div>
 
         {/* Research */}
-        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
+        <div id="research" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
               Research and References
@@ -389,7 +389,7 @@ export default function Index() {
                   "Indian Govt APIs – eNAM, Agri Market, Bhashini.",
                   "PlantVillage dataset – pest/disease recognition.",
                   "FAO & ICAR studies – ICT advisories improve yield by 20–30%.",
-                  "NABARD 2022 �� 86% of Indian farmers are small/marginal.",
+                  "NABARD 2022 — 86% of Indian farmers are small/marginal.",
                 ]}
               />
             </Card>
