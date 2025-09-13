@@ -1,5 +1,4 @@
 import { ArrowRight, Sprout, CloudSun, Bot } from "lucide-react";
-import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
@@ -42,22 +41,7 @@ export default function Hero() {
         </div>
         <div className="order-first md:order-none">
           <div className="mx-auto w-full max-w-lg rounded-2xl bg-white/80 p-6 shadow-sm ring-1 ring-slate-200 backdrop-blur">
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: "Crop advice", icon: Sprout },
-                { label: "Weather", icon: CloudSun },
-                { label: "Insights", icon: Bot },
-                { label: "Multilingual", icon: ArrowRight },
-              ].map(({ label, icon: Icon }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-3 rounded-lg border border-slate-200 p-4 text-left hover:bg-slate-50"
-                >
-                  <Icon className="h-5 w-5 text-emerald-600" />
-                  <span className="text-sm font-medium text-slate-700">{label}</span>
-                </div>
-              ))}
-            </div>
+            <div className="h-44 rounded-xl bg-gradient-to-br from-emerald-50 to-amber-50 ring-1 ring-slate-200/60" />
             <div className="mt-4 rounded-lg bg-gradient-to-r from-[#ff8a00] to-[#2ea043] p-3 text-center text-sm font-semibold text-white">
               Personalized, data‑driven farming
             </div>
