@@ -1,44 +1,10 @@
-import {
-  Sprout,
-  CloudSun,
-  Brain,
-  Languages,
-  Shield,
-  Camera,
-} from "lucide-react";
+import { Sprout, CloudSun, Brain } from "lucide-react";
 
 export default function Features() {
   const features = [
-    {
-      icon: Sprout,
-      title: "Crop advisory",
-      desc: "Fertilizer, irrigation and crop selection guidance.",
-    },
-    {
-      icon: CloudSun,
-      title: "Weather alerts",
-      desc: "Localized forecasts and actionable notifications.",
-    },
-    {
-      icon: Brain,
-      title: "Insights",
-      desc: "Chatbot for quick answers and best practices.",
-    },
-    {
-      icon: Languages,
-      title: "Multilingual",
-      desc: "Voice‑first UX in native languages.",
-    },
-    {
-      icon: Camera,
-      title: "Pest detection",
-      desc: "On‑device image analysis for pests and diseases.",
-    },
-    {
-      icon: Shield,
-      title: "Privacy by design",
-      desc: "Secure handling of farmer data and preferences.",
-    },
+    { icon: Sprout, title: "Smart advisory", desc: "Guidance for crop, fertilizer and irrigation." },
+    { icon: CloudSun, title: "Weather aware", desc: "Localized forecasts and timely alerts." },
+    { icon: Brain, title: "Quick insights", desc: "Ask questions via chat and get answers fast." },
   ];
   return (
     <section
@@ -46,9 +12,9 @@ export default function Features() {
       className="rounded-2xl bg-white p-8 ring-1 ring-slate-200"
     >
       <h2 id="features-title" className="text-2xl font-bold tracking-tight">
-        What you get
+        Highlights
       </h2>
-      <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
         {features.map(({ icon: Icon, title, desc }) => (
           <div
             key={title}
