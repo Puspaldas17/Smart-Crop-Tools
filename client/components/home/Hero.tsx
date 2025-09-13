@@ -16,8 +16,8 @@ export default function Hero() {
             Smart Crop Advisory
           </h1>
           <p className="mt-4 max-w-prose text-slate-600 md:text-lg">
-            One unified platform for crop advice, market prices, weather alerts and
-            pest detection — multilingual and voice‑enabled.
+            One unified platform for crop advice, market prices, weather alerts
+            and pest detection — multilingual and voice‑enabled.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <a
@@ -35,32 +35,72 @@ export default function Hero() {
             </a>
           </div>
           <div className="mt-6 flex flex-wrap gap-4 text-sm text-slate-600">
-            <span className="inline-flex items-center gap-2"><CloudSun className="h-4 w-4 text-emerald-600"/> Weather aware</span>
-            <span className="inline-flex items-center gap-2"><Bot className="h-4 w-4 text-emerald-600"/> Voice & chat</span>
+            <span className="inline-flex items-center gap-2">
+              <CloudSun className="h-4 w-4 text-emerald-600" /> Weather aware
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Bot className="h-4 w-4 text-emerald-600" /> Voice & chat
+            </span>
           </div>
         </div>
         <div className="order-first md:order-none">
           <div className="mx-auto w-full max-w-lg rounded-2xl bg-white/80 p-6 shadow-sm ring-1 ring-slate-200 backdrop-blur">
             <div className="relative aspect-[16/10] overflow-hidden rounded-xl ring-1 ring-slate-200/60">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-amber-50" />
-              <svg viewBox="0 0 800 500" className="absolute inset-0 h-full w-full" aria-label="Illustration of smart farming dashboard" role="img">
+              <svg
+                viewBox="0 0 800 500"
+                className="absolute inset-0 h-full w-full"
+                aria-label="Illustration of smart farming dashboard"
+                role="img"
+              >
                 <defs>
                   <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0%" stopColor="#34d399" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.25" />
+                    <stop
+                      offset="100%"
+                      stopColor="#f59e0b"
+                      stopOpacity="0.25"
+                    />
                   </linearGradient>
                 </defs>
                 <rect x="0" y="0" width="800" height="500" fill="url(#g1)" />
                 <circle cx="650" cy="90" r="40" fill="#fde68a" />
-                <path d="M0 360 C200 300, 300 420, 500 360 C650 320, 700 380, 800 340 L800 500 L0 500 Z" fill="#dcfce7" />
+                <path
+                  d="M0 360 C200 300, 300 420, 500 360 C650 320, 700 380, 800 340 L800 500 L0 500 Z"
+                  fill="#dcfce7"
+                />
                 <g stroke="#86efac" strokeWidth="2" opacity="0.8">
                   <line x1="40" y1="390" x2="760" y2="390" />
                   <line x1="40" y1="420" x2="760" y2="420" />
                   <line x1="40" y1="450" x2="760" y2="450" />
                 </g>
-                <rect x="60" y="60" width="240" height="120" rx="14" fill="#ffffff" opacity="0.8" />
-                <rect x="330" y="60" width="180" height="80" rx="14" fill="#ffffff" opacity="0.8" />
-                <rect x="540" y="160" width="200" height="90" rx="14" fill="#ffffff" opacity="0.8" />
+                <rect
+                  x="60"
+                  y="60"
+                  width="240"
+                  height="120"
+                  rx="14"
+                  fill="#ffffff"
+                  opacity="0.8"
+                />
+                <rect
+                  x="330"
+                  y="60"
+                  width="180"
+                  height="80"
+                  rx="14"
+                  fill="#ffffff"
+                  opacity="0.8"
+                />
+                <rect
+                  x="540"
+                  y="160"
+                  width="200"
+                  height="90"
+                  rx="14"
+                  fill="#ffffff"
+                  opacity="0.8"
+                />
               </svg>
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.6),transparent_60%)]" />
               <div className="absolute bottom-3 left-3 flex gap-2">

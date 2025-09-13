@@ -10,8 +10,13 @@ export default function CTA() {
       <div className="absolute -inset-12 opacity-20 [background:radial-gradient(circle_at_center,white_0,transparent_60%)]" />
       <div className="relative z-10 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight">Ready to try Smart Crop Advisory?</h3>
-          <p className="mt-1 text-white/90">Personalized guidance, market prices and weather alerts at your fingertips.</p>
+          <h3 className="text-2xl font-bold tracking-tight">
+            Ready to try Smart Crop Advisory?
+          </h3>
+          <p className="mt-1 text-white/90">
+            Personalized guidance, market prices and weather alerts at your
+            fingertips.
+          </p>
         </div>
         <a
           href={href}

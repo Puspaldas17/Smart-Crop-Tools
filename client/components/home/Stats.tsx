@@ -6,7 +6,10 @@ export default function Stats() {
     { value: "Real‑time", label: "weather & prices" },
   ];
   return (
-    <section aria-label="Key stats" className="rounded-2xl border border-slate-200 bg-white/70 p-5 backdrop-blur">
+    <section
+      aria-label="Key stats"
+      className="rounded-2xl border border-slate-200 bg-white/70 p-5 backdrop-blur"
+    >
       <div className="grid gap-6 text-center sm:grid-cols-4">
         {items.map((it) => (
           <div key={it.label} className="space-y-1">

@@ -104,7 +104,10 @@ export default function RootLayout() {
             © {new Date().getFullYear()} Smart Crop Advisory
           </p>
           <div className="flex items-center gap-4 text-sm">
-            <a href="/#research" className="text-slate-600 hover:text-slate-900">
+            <a
+              href="/#research"
+              className="text-slate-600 hover:text-slate-900"
+            >
               References
             </a>
             <a href="/#impact" className="text-slate-600 hover:text-slate-900">
