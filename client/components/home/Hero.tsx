@@ -2,7 +2,7 @@ import { ArrowRight, Sprout, CloudSun, Bot } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-white to-emerald-50 p-10 md:p-16">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-white to-emerald-50 p-10 md:p-16 ring-1 ring-slate-200/60">
       <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-amber-200/40 blur-3xl" />
       <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
 
@@ -22,14 +22,14 @@ export default function Hero() {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <a
               href="/#solution"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:brightness-95"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
               See Solution
               <ArrowRight className="h-4 w-4" />
             </a>
             <a
               href="/#tech"
-              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
               Technical Approach
             </a>
@@ -44,7 +44,7 @@ export default function Hero() {
           </div>
         </div>
         <div className="order-first md:order-none">
-          <div className="mx-auto w-full max-w-lg rounded-2xl bg-white/80 p-6 shadow-sm ring-1 ring-slate-200 backdrop-blur">
+          <div className="mx-auto w-full max-w-lg rounded-2xl bg-white/80 p-6 shadow-md ring-1 ring-slate-200 backdrop-blur">
             <div className="relative aspect-[16/10] overflow-hidden rounded-xl ring-1 ring-slate-200/60">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-amber-50" />
               <svg
@@ -103,14 +103,14 @@ export default function Hero() {
                 />
               </svg>
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.6),transparent_60%)]" />
-              <div className="absolute bottom-3 left-3 flex gap-2">
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
+              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200 shadow-sm">
                   <CloudSun className="h-4 w-4 text-emerald-600" /> Weather
                 </span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200 shadow-sm">
                   <Sprout className="h-4 w-4 text-emerald-600" /> Advisory
                 </span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200 shadow-sm">
                   <Bot className="h-4 w-4 text-emerald-600" /> Chat
                 </span>
               </div>
