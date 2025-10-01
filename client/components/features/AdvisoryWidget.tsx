@@ -37,13 +37,13 @@ export default function AdvisoryWidget() {
   }
 
   return (
-    <div id="advisory" className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold">Quick Crop Advisory</h3>
+    <div id="advisory" className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <h3 className="text-xl font-semibold">Quick Crop Advisory</h3>
       <form onSubmit={onSubmit} className="mt-3 flex gap-3">
-        <input name="crop" placeholder="Crop (e.g., wheat)" className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm" />
-        <button className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">Get Advice</button>
+        <input name="crop" placeholder="Crop (e.g., wheat)" className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm" />
+        <button className="rounded-md bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white">Get Advice</button>
       </form>
-      <div className="mt-2 text-sm text-slate-600">{status}</div>
+      <div className="mt-3 text-sm text-slate-600">{status}</div>
       {advisory && (
         <div className="mt-3 grid gap-2 text-sm text-slate-700">
           <div className="font-semibold">Summary</div>
