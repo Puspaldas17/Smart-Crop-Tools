@@ -120,7 +120,7 @@ export default function RootLayout() {
           </div>
         </div>
       </header>
-      <main id="content" className="container py-10 md:py-14">
+      <main id="content" className="container max-w-screen-2xl py-10 md:py-16">
         <Outlet />
       </main>
       <footer className="border-t border-slate-200/60 bg-white/60 py-8">
