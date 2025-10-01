@@ -38,15 +38,15 @@ export default function PestDetector() {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold">
+    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <h3 className="text-xl font-semibold">
         Image-based Pest/Disease Detection
       </h3>
       <p className="mt-1 text-sm text-slate-600">
         Upload a leaf/crop image. Analysis runs on the server for maximum
         compatibility in this preview.
       </p>
-      <div className="mt-3 flex flex-col gap-3 md:flex-row">
+      <div className="mt-4 flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
           <input
             type="file"

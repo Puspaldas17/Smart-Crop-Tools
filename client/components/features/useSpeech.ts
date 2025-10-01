@@ -72,4 +72,11 @@ export const languages = [
   { code: "mr-IN", label: "Marathi" },
   { code: "ta-IN", label: "Tamil" },
   { code: "te-IN", label: "Telugu" },
+  { code: "gu-IN", label: "Gujarati" },
+  { code: "kn-IN", label: "Kannada" },
+  { code: "ml-IN", label: "Malayalam" },
+  { code: "pa-IN", label: "Punjabi" },
+  { code: "as-IN", label: "Assamese" },
+  { code: "or-IN", label: "Odia" },
+  { code: "ur-IN", label: "Urdu" },
 ];

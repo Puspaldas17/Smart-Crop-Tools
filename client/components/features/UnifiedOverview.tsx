@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { AlertTriangle, CloudSun, Sprout, Bug, Store } from "lucide-react";
+import { INDIA_CENTROID } from "@/lib/geo";
 
 export default function UnifiedOverview() {
   const { farmer } = useAuth();
@@ -13,12 +14,12 @@ export default function UnifiedOverview() {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setCoords({ lat: 31.1471, lon: 75.3412 });
+      setCoords(INDIA_CENTROID);
       return;
     }
     navigator.geolocation.getCurrentPosition(
       (p) => setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }),
-      () => setCoords({ lat: 31.1471, lon: 75.3412 }),
+      () => setCoords(INDIA_CENTROID),
     );
   }, []);
 
@@ -59,10 +60,7 @@ export default function UnifiedOverview() {
 
   useEffect(() => {
     (async () => {
-      const params = new URLSearchParams({
-        commodity: "Wheat",
-        state: "Punjab",
-      });
+      const params = new URLSearchParams({ commodity: "Wheat" });
       const r = await fetchSafe(`/api/market?${params.toString()}`, 7000);
       if (r && r.ok) {
         const data = await r.json();
@@ -83,8 +81,8 @@ export default function UnifiedOverview() {
   }, [weather]);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold">Unified Overview</h3>
+    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <h3 className="text-xl font-semibold">Unified Overview</h3>
       <p className="mt-1 text-sm text-slate-600">
         Soil, weather, pest and market — all in one place.
       </p>

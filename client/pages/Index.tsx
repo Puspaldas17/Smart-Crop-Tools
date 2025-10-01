@@ -36,7 +36,7 @@ import CTA from "@/components/home/CTA";
 
 function ToolsSuiteInner() {
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-8">
       <Suspense
         fallback={
           <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
@@ -66,7 +66,7 @@ function ToolsSuiteInner() {
           <AdvisoryWidget />
         </Suspense>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2">
         <div id="chat">
           <Suspense
             fallback={

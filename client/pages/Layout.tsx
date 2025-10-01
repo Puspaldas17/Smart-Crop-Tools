@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 
 function useScrollTop(offset = 8) {
   const [scrolled, setScrolled] = useState(false);
@@ -91,11 +94,37 @@ export default function RootLayout() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" aria-label="Open menu">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-4/5 sm:max-w-sm">
+                  <nav className="mt-8 grid gap-4">
+                    {[
+                      ...(farmer ? [{ href: "/#tools", label: "Tools" }] : []),
+                      { href: "/#about", label: "About" },
+                      { href: "/login", label: farmer ? "Profile" : "Login" },
+                    ].map((i) => (
+                      <a
+                        key={i.href}
+                        href={i.href}
+                        className="text-base font-medium text-slate-800"
+                      >
+                        {i.label}
+                      </a>
+                    ))}
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            </div>
             <HeaderAuth />
           </div>
         </div>
       </header>
-      <main id="content" className="container py-10 md:py-14">
+      <main id="content" className="container max-w-screen-2xl py-10 md:py-16">
         <Outlet />
       </main>
       <footer className="border-t border-slate-200/60 bg-white/60 py-8">

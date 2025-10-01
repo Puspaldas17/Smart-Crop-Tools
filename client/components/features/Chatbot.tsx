@@ -87,7 +87,7 @@ export default function Chatbot() {
 
   return (
     <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white">
-      <div className="flex items-center justify-between border-b border-slate-200 p-3">
+      <div className="flex items-center justify-between border-b border-slate-200 p-4">
         <div className="text-sm font-semibold">Chatbot</div>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-1 text-xs text-slate-600">
@@ -135,7 +135,7 @@ export default function Chatbot() {
           </div>
         </div>
       )}
-      <div className="scrollbar-thin flex-1 space-y-3 overflow-y-auto p-4">
+      <div className="scrollbar-thin flex-1 space-y-3 overflow-y-auto p-5">
         {messages.length === 0 && !voiceMode && (
           <div className="text-sm text-slate-500">
             Ask about weather, market prices, crop/fertilizer advice…
@@ -147,21 +147,21 @@ export default function Chatbot() {
             className={`${m.role === "user" ? "justify-end" : "justify-start"} flex`}
           >
             <div
-              className={`${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-slate-100 text-slate-800"} max-w-[80%] rounded-lg px-3 py-2 text-sm`}
+              className={`${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-slate-100 text-slate-800"} max-w-[80%] rounded-lg px-4 py-2.5 text-sm`}
             >
               {m.content}
             </div>
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-2 border-t border-slate-200 p-3">
+      <div className="flex items-center gap-2 border-t border-slate-200 p-4">
         {!voiceMode && (
           <input
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your question…"
-            className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm"
           />
         )}
         {supported &&
