@@ -31,7 +31,7 @@ export default function HowItWorks() {
       <h2 id="how-title" className="text-2xl font-bold tracking-tight">
         How it works
       </h2>
-      <ol className="mt-6 grid gap-6 sm:gap-7 md:gap-8 md:grid-cols-4">
+      <ol className="mt-6 grid gap-6 sm:gap-7 md:gap-8 min-[577px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {steps.map(({ icon: Icon, title, desc }, i) => (
           <li
             key={title}
