@@ -6,7 +6,7 @@ export default function CTA() {
   const href = farmer ? "/#tools" : "/login";
   const label = farmer ? "Open Tools" : "Get Started";
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-amber-500 p-8 text-white">
+    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-amber-500 p-6 sm:p-8 md:p-10 text-white">
       <div className="absolute -inset-12 opacity-20 [background:radial-gradient(circle_at_center,white_0,transparent_60%)]" />
       <div className="relative z-10 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
         <div>
