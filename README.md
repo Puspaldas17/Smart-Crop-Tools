@@ -98,7 +98,7 @@ netlify.toml              # Build + redirects to `/.netlify/functions/api`
 
 ## Quick Start (VS Code)
 
-1) Install and run (dev)
+1. Install and run (dev)
 
 ```
 pnpm install
@@ -108,7 +108,7 @@ pnpm dev
 - Open http://localhost:8080
 - Login (top‑right) to access the Working Suite (Chatbot, Market & Weather, Pest Detector, Advisory)
 
-2) Run in VS Code
+2. Run in VS Code
 
 - Open the folder in VS Code
 - Option A: Use “JavaScript Debug Terminal”, run `pnpm dev` and navigate to http://localhost:8080
@@ -126,9 +126,9 @@ pnpm dev
       "program": "${workspaceFolder}/dist/server/node-build.mjs",
       "cwd": "${workspaceFolder}",
       "env": { "PORT": "3000" },
-      "skipFiles": ["<node_internals>/**"]
-    }
-  ]
+      "skipFiles": ["<node_internals>/**"],
+    },
+  ],
 }
 ```
 
