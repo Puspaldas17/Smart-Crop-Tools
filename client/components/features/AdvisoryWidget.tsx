@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { INDIA_CENTROID } from "@/lib/geo";
 
 export default function AdvisoryWidget() {
   const [status, setStatus] = useState("");
@@ -7,12 +8,12 @@ export default function AdvisoryWidget() {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setCoords({ lat: 31.1471, lon: 75.3412 });
+      setCoords(INDIA_CENTROID);
       return;
     }
     navigator.geolocation.getCurrentPosition(
       (p) => setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }),
-      () => setCoords({ lat: 31.1471, lon: 75.3412 })
+      () => setCoords(INDIA_CENTROID)
     );
   }, []);
 
