@@ -19,7 +19,7 @@ export default function Hero() {
             One unified platform for crop advice, market prices, weather alerts
             and pest detection — multilingual and voice‑enabled.
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <a
               href="/#solution"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:brightness-95"
