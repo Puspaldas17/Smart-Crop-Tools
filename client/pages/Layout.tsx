@@ -108,7 +108,11 @@ export default function RootLayout() {
                       { href: "/#about", label: "About" },
                       { href: "/login", label: farmer ? "Profile" : "Login" },
                     ].map((i) => (
-                      <a key={i.href} href={i.href} className="text-base font-medium text-slate-800">
+                      <a
+                        key={i.href}
+                        href={i.href}
+                        className="text-base font-medium text-slate-800"
+                      >
                         {i.label}
                       </a>
                     ))}

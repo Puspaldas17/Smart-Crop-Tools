@@ -67,9 +67,27 @@ export default function MarketWidget() {
 
     // Last-resort local sample
     setItems([
-      { commodity: "Wheat", state: "Uttar Pradesh", mandi: "Kanpur", unit: "Qtl", price: 2210 },
-      { commodity: "Rice", state: "West Bengal", mandi: "Kolkata", unit: "Qtl", price: 2460 },
-      { commodity: "Onion", state: "Maharashtra", mandi: "Nashik", unit: "Qtl", price: 1700 },
+      {
+        commodity: "Wheat",
+        state: "Uttar Pradesh",
+        mandi: "Kanpur",
+        unit: "Qtl",
+        price: 2210,
+      },
+      {
+        commodity: "Rice",
+        state: "West Bengal",
+        mandi: "Kolkata",
+        unit: "Qtl",
+        price: 2460,
+      },
+      {
+        commodity: "Onion",
+        state: "Maharashtra",
+        mandi: "Nashik",
+        unit: "Qtl",
+        price: 1700,
+      },
     ]);
   }
 

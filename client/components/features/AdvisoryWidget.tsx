@@ -4,7 +4,9 @@ import { INDIA_CENTROID } from "@/lib/geo";
 export default function AdvisoryWidget() {
   const [status, setStatus] = useState("");
   const [advisory, setAdvisory] = useState<any>(null);
-  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -13,7 +15,7 @@ export default function AdvisoryWidget() {
     }
     navigator.geolocation.getCurrentPosition(
       (p) => setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }),
-      () => setCoords(INDIA_CENTROID)
+      () => setCoords(INDIA_CENTROID),
     );
   }, []);
 
@@ -30,18 +32,30 @@ export default function AdvisoryWidget() {
         body: JSON.stringify({ crop, lat: coords.lat, lon: coords.lon }),
       });
       const data = await r.json();
-      if (r.ok) { setAdvisory(data); setStatus("Ready."); } else setStatus(data.error || "Failed");
+      if (r.ok) {
+        setAdvisory(data);
+        setStatus("Ready.");
+      } else setStatus(data.error || "Failed");
     } catch (e) {
       setStatus("Network error");
     }
   }
 
   return (
-    <div id="advisory" className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div
+      id="advisory"
+      className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+    >
       <h3 className="text-xl font-semibold">Quick Crop Advisory</h3>
       <form onSubmit={onSubmit} className="mt-3 flex gap-3">
-        <input name="crop" placeholder="Crop (e.g., wheat)" className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm" />
-        <button className="rounded-md bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white">Get Advice</button>
+        <input
+          name="crop"
+          placeholder="Crop (e.g., wheat)"
+          className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm"
+        />
+        <button className="rounded-md bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white">
+          Get Advice
+        </button>
       </form>
       <div className="mt-3 text-sm text-slate-600">{status}</div>
       {advisory && (
@@ -49,9 +63,18 @@ export default function AdvisoryWidget() {
           <div className="font-semibold">Summary</div>
           <div>{advisory.summary}</div>
           <div className="grid gap-2 md:grid-cols-3">
-            <div className="rounded-md border border-slate-200 p-3"><div className="text-xs font-semibold">Fertilizer</div><div>{advisory.fertilizer}</div></div>
-            <div className="rounded-md border border-slate-200 p-3"><div className="text-xs font-semibold">Irrigation</div><div>{advisory.irrigation}</div></div>
-            <div className="rounded-md border border-slate-200 p-3"><div className="text-xs font-semibold">Pest</div><div>{advisory.pest}</div></div>
+            <div className="rounded-md border border-slate-200 p-3">
+              <div className="text-xs font-semibold">Fertilizer</div>
+              <div>{advisory.fertilizer}</div>
+            </div>
+            <div className="rounded-md border border-slate-200 p-3">
+              <div className="text-xs font-semibold">Irrigation</div>
+              <div>{advisory.irrigation}</div>
+            </div>
+            <div className="rounded-md border border-slate-200 p-3">
+              <div className="text-xs font-semibold">Pest</div>
+              <div>{advisory.pest}</div>
+            </div>
           </div>
         </div>
       )}
