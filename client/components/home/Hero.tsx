@@ -8,7 +8,7 @@ export default function Hero() {
 
       <div className="relative z-10 grid items-center gap-10 md:grid-cols-2">
         <div className="mx-auto max-w-[min(70vw,800px)] text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/70 px-3 py-1 text-xs font-medium text-amber-700 shadow-sm backdrop-blur-sm">
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/70 px-3 py-1 text-xs font-medium text-amber-700 shadow-sm backdrop-blur-sm">
             <Sprout className="h-4 w-4" />
             Built for small & marginal farmers
           </div>
