@@ -9,6 +9,21 @@ A production‑ready, full‑stack MERN application that delivers data‑driven,
 
 ---
 
+## TL;DR (Run it)
+
+- Install: `pnpm install`
+- Dev: `pnpm dev` → http://localhost:8080
+- Build: `pnpm build`
+- Start (after build): `node dist/server/node-build.mjs` → http://localhost:3000 (override with `PORT`)
+
+## Ports
+
+- Dev (Vite + Express middleware): http://localhost:8080
+- API in dev: same origin, path‑prefixed `/api/*`
+- Production server: defaults to http://localhost:3000 (set `PORT` to change)
+
+---
+
 ## Table of Contents
 
 - Features
@@ -83,30 +98,21 @@ netlify.toml              # Build + redirects to `/.netlify/functions/api`
 
 ## Quick Start (VS Code)
 
-1. Clone and install
+1) Install and run (dev)
 
 ```
-git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
-cd Smart-Crop-Tools
 pnpm install
-```
-
-2. Run the app (dev)
-
-```
 pnpm dev
 ```
 
 - Open http://localhost:8080
 - Login (top‑right) to access the Working Suite (Chatbot, Market & Weather, Pest Detector, Advisory)
 
-3. Open and debug in VS Code
+2) Run in VS Code
 
-```
-code .
-```
-
-- Use “JavaScript Debug Terminal” and run `pnpm dev`, or use this launch config to debug the production server:
+- Open the folder in VS Code
+- Option A: Use “JavaScript Debug Terminal”, run `pnpm dev` and navigate to http://localhost:8080
+- Option B: Debug the production server (after `pnpm build`) with this launch config:
 
 ```jsonc
 // .vscode/launch.json
@@ -120,9 +126,9 @@ code .
       "program": "${workspaceFolder}/dist/server/node-build.mjs",
       "cwd": "${workspaceFolder}",
       "env": { "PORT": "3000" },
-      "skipFiles": ["<node_internals>/**"],
-    },
-  ],
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
 }
 ```
 
@@ -152,7 +158,7 @@ HF_MODEL=microsoft/resnet-50
 
 - `pnpm dev` — Vite dev server (Express middleware) at http://localhost:8080
 - `pnpm build` — Build client and server bundles
-- `pnpm start` — Start the built server (`dist/server/node-build.mjs`)
+- `pnpm start` — Start the built server (`dist/server/node-build.mjs`) on `PORT` (defaults to 3000)
 - `pnpm typecheck` — TypeScript checks
 - `pnpm test` — Run Vitest tests
 
@@ -207,6 +213,7 @@ node dist/server/node-build.mjs
 ## Troubleshooting
 
 - Dev server/port: Default dev URL is http://localhost:8080 (configured in `vite.config.ts`).
+- “Cannot find module dist/server/node-build.mjs” when starting prod: run `pnpm build` first.
 - No MongoDB configured: the app falls back to in‑memory storage so you can demo all flows.
 - Weather blocked/slow: the app automatically uses Open‑Meteo; the UI shows a friendly status.
 - Large bundles: consider dynamic imports or `manualChunks` if you need smaller chunks for production.
