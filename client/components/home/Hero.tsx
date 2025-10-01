@@ -2,7 +2,7 @@ import { ArrowRight, Sprout, CloudSun, Bot } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-white to-emerald-50 p-10 md:p-16">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-white to-emerald-50 p-8 sm:p-10 md:p-16 min-h-[60vh] md:min-h-[50vh]">
       <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-amber-200/40 blur-3xl" />
       <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
 
