@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle } from "lucide-react";
+import { INDIA_CENTROID } from "@/lib/geo";
 
 export default function MarketWidget() {
   const [commodity, setCommodity] = useState("Wheat");
-  const state = "Punjab";
+  const state = "";
   const [items, setItems] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [weatherError, setWeatherError] = useState<string | null>(null);
@@ -14,12 +15,12 @@ export default function MarketWidget() {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setCoords({ lat: 31.1471, lon: 75.3412 }); // Punjab centroid fallback
+      setCoords(INDIA_CENTROID);
       return;
     }
     navigator.geolocation.getCurrentPosition(
       (p) => setCoords({ lat: p.coords.latitude, lon: p.coords.longitude }),
-      () => setCoords({ lat: 31.1471, lon: 75.3412 }),
+      () => setCoords(INDIA_CENTROID),
     );
   }, []);
 
@@ -44,7 +45,6 @@ export default function MarketWidget() {
     // Try primary market API
     const params = new URLSearchParams();
     if (commodity) params.set("commodity", commodity);
-    if (state) params.set("state", state);
     const path =
       "/api/market" + (params.toString() ? `?${params.toString()}` : "");
 
@@ -67,13 +67,9 @@ export default function MarketWidget() {
 
     // Last-resort local sample
     setItems([
-      {
-        commodity: "Wheat",
-        state: "Punjab",
-        mandi: "Ludhiana",
-        unit: "Qtl",
-        price: 2200,
-      },
+      { commodity: "Wheat", state: "Uttar Pradesh", mandi: "Kanpur", unit: "Qtl", price: 2210 },
+      { commodity: "Rice", state: "West Bengal", mandi: "Kolkata", unit: "Qtl", price: 2460 },
+      { commodity: "Onion", state: "Maharashtra", mandi: "Nashik", unit: "Qtl", price: 1700 },
     ]);
   }
 
@@ -131,16 +127,13 @@ export default function MarketWidget() {
     <div className="grid gap-6 md:grid-cols-2">
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Market Prices (Punjab)</h3>
+          <h3 className="text-lg font-semibold">Market Prices</h3>
           <div className="flex gap-2">
             <input
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
               className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm"
             />
-            <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600">
-              State: Punjab
-            </span>
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
