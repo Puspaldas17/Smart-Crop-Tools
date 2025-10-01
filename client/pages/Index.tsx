@@ -66,7 +66,7 @@ function ToolsSuiteInner() {
           <AdvisoryWidget />
         </Suspense>
       </div>
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-8 min-[577px]:grid-cols-2">
         <div id="chat">
           <Suspense
             fallback={
@@ -135,7 +135,7 @@ export default function Index() {
               management—backed by real‑time weather and market data.
             </p>
           </header>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Detailed explanation">
               <List
                 items={[
@@ -191,7 +191,7 @@ export default function Index() {
               Technical Approach
             </h2>
           </header>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Technologies (MERN)">
               <List
                 items={[
@@ -224,7 +224,7 @@ export default function Index() {
               Feasibility and Viability
             </h2>
           </header>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 min-[577px]:grid-cols-2 lg:grid-cols-3">
             <Card title="Feasibility">
               <List
                 items={[
@@ -262,7 +262,7 @@ export default function Index() {
               Impact and Benefits
             </h2>
           </header>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Impact on audience">
               <List
                 items={[
@@ -292,7 +292,7 @@ export default function Index() {
               Research and References
             </h2>
           </header>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Sources">
               <List
                 items={[
