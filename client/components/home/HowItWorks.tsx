@@ -26,16 +26,16 @@ export default function HowItWorks() {
   return (
     <section
       aria-labelledby="how-title"
-      className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-8"
+      className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 sm:p-8 md:p-10"
     >
       <h2 id="how-title" className="text-2xl font-bold tracking-tight">
         How it works
       </h2>
-      <ol className="mt-6 grid gap-6 md:grid-cols-4">
+      <ol className="mt-6 grid gap-6 sm:gap-7 md:gap-8 md:grid-cols-4">
         {steps.map(({ icon: Icon, title, desc }, i) => (
           <li
             key={title}
-            className="rounded-xl border border-slate-200 bg-white p-6"
+            className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6 md:p-7"
           >
             <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 font-semibold text-emerald-700">
