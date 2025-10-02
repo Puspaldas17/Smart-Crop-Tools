@@ -26,7 +26,7 @@ export default function HowItWorks() {
   return (
     <section
       aria-labelledby="how-title"
-      className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 sm:p-8 md:p-10"
+      className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 px-4 md:px-8 py-8 md:py-16"
     >
       <h2 id="how-title" className="text-2xl font-bold tracking-tight">
         How it works

@@ -114,7 +114,7 @@ function ToolsSuite() {
 export default function Index() {
   const { farmer } = useAuth();
   return (
-    <div className="space-y-24">
+    <div className="space-y-8 md:space-y-16">
       <Hero />
       <Stats />
       <Features />

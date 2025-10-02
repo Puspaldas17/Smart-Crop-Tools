@@ -43,7 +43,7 @@ export default function Features() {
   return (
     <section
       aria-labelledby="features-title"
-      className="rounded-2xl bg-white p-6 sm:p-8 md:p-10 ring-1 ring-slate-200"
+      className="rounded-2xl bg-white px-4 md:px-8 py-8 md:py-16 ring-1 ring-slate-200"
     >
       <h2 id="features-title" className="text-2xl font-bold tracking-tight">
         What you get
