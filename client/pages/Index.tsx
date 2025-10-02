@@ -37,7 +37,7 @@ import CTA from "@/components/home/CTA";
 
 function ToolsSuiteInner() {
   return (
-    <div className="grid gap-8">
+    <div className="grid gap-6">
       <Suspense
         fallback={
           <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
@@ -67,7 +67,7 @@ function ToolsSuiteInner() {
           <AdvisoryWidget />
         </Suspense>
       </div>
-      <div className="grid gap-8 min-[577px]:grid-cols-3">
+      <div className="grid gap-6 min-[577px]:grid-cols-3">
         <div id="chat">
           <Suspense
             fallback={
@@ -124,7 +124,7 @@ function ToolsSuite() {
 export default function Index() {
   const { farmer } = useAuth();
   return (
-    <div className="space-y-8 md:space-y-16">
+    <div className="space-y-6 md:space-y-6">
       <Hero />
       <Stats />
       <Features />
@@ -145,7 +145,7 @@ export default function Index() {
               management��backed by real‑time weather and market data.
             </p>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Detailed explanation">
               <List
                 items={[
@@ -201,7 +201,7 @@ export default function Index() {
               Technical Approach
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Technologies (MERN)">
               <List
                 items={[
@@ -234,7 +234,7 @@ export default function Index() {
               Feasibility and Viability
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 min-[577px]:grid-cols-2 lg:grid-cols-3">
             <Card title="Feasibility">
               <List
                 items={[
@@ -272,7 +272,7 @@ export default function Index() {
               Impact and Benefits
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Impact on audience">
               <List
                 items={[
@@ -302,7 +302,7 @@ export default function Index() {
               Research and References
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 min-[577px]:grid-cols-2">
             <Card title="Sources">
               <List
                 items={[
@@ -314,7 +314,7 @@ export default function Index() {
                 ]}
               />
             </Card>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
               <h3 className="text-lg font-semibold">Key Capabilities</h3>
               <div className="mt-4 grid gap-3">
                 {[
@@ -356,7 +356,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
       <div className="mt-4 text-slate-700 leading-relaxed max-w-prose">
         {children}

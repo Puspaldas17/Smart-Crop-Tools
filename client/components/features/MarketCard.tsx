@@ -73,7 +73,7 @@ export default function MarketCard() {
   }, [commodity]);
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold">Market Prices</h3>
         <div className="flex gap-2">

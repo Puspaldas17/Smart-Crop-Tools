@@ -81,7 +81,7 @@ export default function UnifiedOverview() {
   }, [weather]);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <h3 className="text-xl font-semibold">Unified Overview</h3>
       <p className="mt-1 text-sm text-slate-600">
         Soil, weather, pest and market — all in one place.

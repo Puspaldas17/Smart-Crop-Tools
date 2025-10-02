@@ -185,7 +185,7 @@ export default function Chatbot() {
           ))}
         <button
           onClick={send}
-          className="rounded-md bg-primary p-2 text-primary-foreground"
+          className="rounded-md bg-emerald-600 p-2 text-white"
         >
           <Send className="h-5 w-5" />
         </button>

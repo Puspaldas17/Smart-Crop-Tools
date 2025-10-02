@@ -143,7 +143,7 @@ export default function MarketWidget() {
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
-      <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-semibold">Market Prices</h3>
           <div className="flex gap-2">
@@ -184,7 +184,7 @@ export default function MarketWidget() {
           </table>
         </div>
       </div>
-      <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-semibold">Weather</h3>
           <button
