@@ -79,7 +79,7 @@ export default function RootLayout() {
             </span>
             <span className="text-lg">Smart Crop Advisory</span>
           </Link>
-          <nav className="hidden gap-6 md:flex">
+          <nav className="hidden gap-4 md:flex">
             {[
               ...(farmer ? [{ href: "/#tools", label: "Tools" }] : []),
               { href: "/#about", label: "About" },
