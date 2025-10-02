@@ -15,7 +15,7 @@ export default function Hero() {
           <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
             Smart Crop Advisory
           </h1>
-          <p className="mt-4 mx-auto max-w-[65ch] text-slate-600 md:text-lg">
+          <p className="mt-4 mx-auto max-w-[65ch] text-slate-600 md:text-lg leading-relaxed">
             One unified platform for crop advice, market prices, weather alerts
             and pest detection — multilingual and voice‑enabled.
           </p>
