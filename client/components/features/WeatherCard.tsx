@@ -20,7 +20,10 @@ export default function WeatherCard() {
     );
   }, []);
 
-  async function fetchSafe(path: string, timeout = 7000): Promise<Response | null> {
+  async function fetchSafe(
+    path: string,
+    timeout = 7000,
+  ): Promise<Response | null> {
     try {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), timeout);

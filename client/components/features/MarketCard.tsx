@@ -5,7 +5,10 @@ export default function MarketCard() {
   const [items, setItems] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchSafe(path: string, timeout = 7000): Promise<Response | null> {
+  async function fetchSafe(
+    path: string,
+    timeout = 7000,
+  ): Promise<Response | null> {
     try {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), timeout);
@@ -20,7 +23,8 @@ export default function MarketCard() {
   async function loadPrices() {
     const params = new URLSearchParams();
     if (commodity) params.set("commodity", commodity);
-    const path = "/api/market" + (params.toString() ? `?${params.toString()}` : "");
+    const path =
+      "/api/market" + (params.toString() ? `?${params.toString()}` : "");
 
     const r = await fetchSafe(path, 7000);
     if (r && r.ok) {
@@ -39,9 +43,27 @@ export default function MarketCard() {
     }
 
     setItems([
-      { commodity: "Wheat", state: "Uttar Pradesh", mandi: "Kanpur", unit: "Qtl", price: 2210 },
-      { commodity: "Rice", state: "West Bengal", mandi: "Kolkata", unit: "Qtl", price: 2460 },
-      { commodity: "Onion", state: "Maharashtra", mandi: "Nashik", unit: "Qtl", price: 1700 },
+      {
+        commodity: "Wheat",
+        state: "Uttar Pradesh",
+        mandi: "Kanpur",
+        unit: "Qtl",
+        price: 2210,
+      },
+      {
+        commodity: "Rice",
+        state: "West Bengal",
+        mandi: "Kolkata",
+        unit: "Qtl",
+        price: 2460,
+      },
+      {
+        commodity: "Onion",
+        state: "Maharashtra",
+        mandi: "Nashik",
+        unit: "Qtl",
+        price: 1700,
+      },
     ]);
   }
 
@@ -63,7 +85,9 @@ export default function MarketCard() {
         </div>
       </div>
       {error && (
-        <div className="mt-3 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">{error}</div>
+        <div className="mt-3 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">
+          {error}
+        </div>
       )}
       <div className="mt-4 max-h-64 overflow-y-auto overflow-x-auto">
         <table className="min-w-full text-left text-sm">

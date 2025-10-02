@@ -11,9 +11,7 @@ import {
 
 import React, { useState, Suspense, startTransition } from "react";
 const Chatbot = React.lazy(() => import("@/components/features/Chatbot"));
-const MarketCard = React.lazy(
-  () => import("@/components/features/MarketCard"),
-);
+const MarketCard = React.lazy(() => import("@/components/features/MarketCard"));
 const WeatherCard = React.lazy(
   () => import("@/components/features/WeatherCard"),
 );
