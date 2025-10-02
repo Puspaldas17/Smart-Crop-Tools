@@ -150,11 +150,11 @@ export default function MarketWidget() {
             <input
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
-              className="w-48 rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             />
           </div>
         </div>
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 overflow-x-auto overflow-y-auto">
           {error && (
             <div className="mb-2 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">
               {error}
