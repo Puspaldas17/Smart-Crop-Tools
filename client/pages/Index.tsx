@@ -348,7 +348,9 @@ function Card({
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-      <div className="mt-4 text-slate-700 leading-relaxed max-w-prose">{children}</div>
+      <div className="mt-4 text-slate-700 leading-relaxed max-w-prose">
+        {children}
+      </div>
     </div>
   );
 }

@@ -47,7 +47,9 @@ export default function HowItWorks() {
             <div className="mt-3 text-base font-semibold text-slate-900">
               {title}
             </div>
-            <div className="mt-1 text-sm text-slate-600 leading-relaxed">{desc}</div>
+            <div className="mt-1 text-sm text-slate-600 leading-relaxed">
+              {desc}
+            </div>
           </li>
         ))}
       </ol>

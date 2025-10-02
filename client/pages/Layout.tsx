@@ -124,7 +124,10 @@ export default function RootLayout() {
           </div>
         </div>
       </header>
-      <main id="content" className="container max-w-[1400px] px-4 md:px-8 py-8 md:py-16">
+      <main
+        id="content"
+        className="container max-w-[1400px] px-4 md:px-8 py-8 md:py-16"
+      >
         <Outlet />
       </main>
       <footer className="border-t border-slate-200/60 bg-white/60 py-12">
