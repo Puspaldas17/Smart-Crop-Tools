@@ -38,7 +38,7 @@ export default function PestDetector() {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="my-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
       <h3 className="text-xl font-semibold">
         Image-based Pest/Disease Detection
       </h3>
@@ -46,7 +46,7 @@ export default function PestDetector() {
         Upload a leaf/crop image. Analysis runs on the server for maximum
         compatibility in this preview.
       </p>
-      <div className="mt-4 flex flex-col gap-4 md:flex-row">
+      <div className="mt-4 flex flex-col items-start gap-6 md:flex-row md:items-start">
         <div className="flex-1">
           <input
             type="file"
@@ -55,12 +55,14 @@ export default function PestDetector() {
             onChange={onFile}
             className="text-sm"
           />
-          <div className="mt-3 aspect-video w-full overflow-hidden rounded-lg bg-slate-100">
-            <img
-              ref={imgRef}
-              alt="preview"
-              className="h-full w-full object-contain"
-            />
+          <div className="mt-3 flex justify-center">
+            <div className="relative w-full max-w-xl overflow-hidden rounded-lg bg-slate-100 pt-[75%]">
+              <img
+                ref={imgRef}
+                alt="preview"
+                className="absolute inset-0 h-full w-full object-contain"
+              />
+            </div>
           </div>
           <div className="mt-2 rounded-md bg-emerald-50 p-2 text-sm text-emerald-800">
             Using server-side prediction for reliability.
