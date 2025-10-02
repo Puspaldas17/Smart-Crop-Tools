@@ -44,16 +44,16 @@ export default function AdvisoryWidget() {
   return (
     <div
       id="advisory"
-      className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+      className="my-5 rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
     >
       <h3 className="text-xl font-semibold">Quick Crop Advisory</h3>
-      <form onSubmit={onSubmit} className="mt-3 flex gap-3">
+      <form onSubmit={onSubmit} className="mt-3 flex items-stretch gap-3">
         <input
           name="crop"
           placeholder="Crop (e.g., wheat)"
-          className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm"
+          className="w-4/5 rounded-md border border-slate-300 px-4 py-3 text-sm"
         />
-        <button className="rounded-md bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white">
+        <button className="w-1/5 rounded-md bg-emerald-600 px-5 py-3 text-sm font-semibold text-white">
           Get Advice
         </button>
       </form>
