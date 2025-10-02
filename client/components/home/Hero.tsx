@@ -2,11 +2,11 @@ import { ArrowRight, Sprout, CloudSun, Bot } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-white to-emerald-50 px-6 sm:px-8 md:px-16 py-8 sm:py-10 md:py-16 min-h-[45vh] sm:min-h-[50vh] md:min-h-[65vh] lg:min-h-[75vh]">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-white to-emerald-50 px-4 md:px-8 py-8 md:py-16 min-h-[45vh] sm:min-h-[50vh] md:min-h-[65vh] lg:min-h-[75vh]">
       <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-amber-200/40 blur-3xl" />
       <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
 
-      <div className="relative z-10 grid items-center gap-10 md:grid-cols-2">
+      <div className="relative z-10 grid items-center gap-8 min-[577px]:grid-cols-2">
         <div className="mx-auto max-w-[min(70vw,800px)] text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/70 px-3 py-1 text-xs font-medium text-amber-700 shadow-sm backdrop-blur-sm">
             <Sprout className="h-4 w-4" />
@@ -15,7 +15,7 @@ export default function Hero() {
           <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
             Smart Crop Advisory
           </h1>
-          <p className="mt-4 mx-auto max-w-[65ch] text-slate-600 md:text-lg">
+          <p className="mt-4 mx-auto max-w-[65ch] text-slate-600 md:text-lg leading-relaxed">
             One unified platform for crop advice, market prices, weather alerts
             and pest detection — multilingual and voice‑enabled.
           </p>
