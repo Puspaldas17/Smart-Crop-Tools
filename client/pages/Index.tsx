@@ -11,8 +11,11 @@ import {
 
 import React, { useState, Suspense, startTransition } from "react";
 const Chatbot = React.lazy(() => import("@/components/features/Chatbot"));
-const MarketWidget = React.lazy(
-  () => import("@/components/features/MarketWidget"),
+const MarketCard = React.lazy(
+  () => import("@/components/features/MarketCard"),
+);
+const WeatherCard = React.lazy(
+  () => import("@/components/features/WeatherCard"),
 );
 const PestDetector = React.lazy(
   () => import("@/components/features/PestDetector"),
@@ -66,7 +69,7 @@ function ToolsSuiteInner() {
           <AdvisoryWidget />
         </Suspense>
       </div>
-      <div className="grid gap-8 min-[577px]:grid-cols-2">
+      <div className="grid gap-8 min-[577px]:grid-cols-3">
         <div id="chat">
           <Suspense
             fallback={
@@ -78,15 +81,24 @@ function ToolsSuiteInner() {
             <Chatbot />
           </Suspense>
         </div>
-        <div id="market">
+        <div id="market" className="contents">
           <Suspense
             fallback={
               <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-                Loading market & weather…
+                Loading market…
               </div>
             }
           >
-            <MarketWidget />
+            <MarketCard />
+          </Suspense>
+          <Suspense
+            fallback={
+              <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+                Loading weather…
+              </div>
+            }
+          >
+            <WeatherCard />
           </Suspense>
         </div>
       </div>
@@ -132,7 +144,7 @@ export default function Index() {
             <p className="mt-2 max-w-prose text-slate-600">
               A mobile app and chatbot that work online and offline to deliver
               personalized crop, fertilizer, irrigation and pest
-              management—backed by real‑time weather and market data.
+              management��backed by real‑time weather and market data.
             </p>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
