@@ -72,7 +72,7 @@ export default function RootLayout() {
           (scrolled ? "bg-white/80 shadow-sm" : "bg-white/60")
         }
       >
-        <div className="container max-w-[1400px] flex h-16 items-center justify-between">
+        <div className="container max-w-[1400px] px-4 md:px-8 flex items-center justify-between py-6">
           <Link to="/" className="flex items-center gap-2 font-semibold">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-[#ff8a00] to-[#2ea043] text-white font-bold">
               SC
@@ -124,11 +124,11 @@ export default function RootLayout() {
           </div>
         </div>
       </header>
-      <main id="content" className="container max-w-[1400px] py-8 md:py-16">
+      <main id="content" className="container max-w-[1400px] px-4 md:px-8 py-8 md:py-16">
         <Outlet />
       </main>
-      <footer className="border-t border-slate-200/60 bg-white/60 py-8">
-        <div className="container max-w-[1400px] flex flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
+      <footer className="border-t border-slate-200/60 bg-white/60 py-12">
+        <div className="container max-w-[1400px] px-4 md:px-8 flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
           <p className="text-sm text-slate-600">
             © {new Date().getFullYear()} Smart Crop Advisory
           </p>

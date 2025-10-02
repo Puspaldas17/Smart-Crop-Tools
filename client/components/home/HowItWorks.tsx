@@ -35,7 +35,7 @@ export default function HowItWorks() {
         {steps.map(({ icon: Icon, title, desc }, i) => (
           <li
             key={title}
-            className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6 md:p-7"
+            className="rounded-xl border border-slate-200 bg-white p-6"
           >
             <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 font-semibold text-emerald-700">

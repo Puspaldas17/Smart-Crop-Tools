@@ -48,11 +48,11 @@ export default function Features() {
       <h2 id="features-title" className="text-2xl font-bold tracking-tight">
         What you get
       </h2>
-      <div className="mt-6 grid gap-6 md:gap-8 min-[577px]:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid gap-6 md:gap-8 min-[577px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {features.map(({ icon: Icon, title, desc }) => (
           <div
             key={title}
-            className="rounded-xl border border-slate-200 p-5 sm:p-6 md:p-7 hover:shadow-sm"
+            className="rounded-xl border border-slate-200 p-6 hover:shadow-sm"
           >
             <Icon className="h-5 w-5 text-emerald-600" />
             <div className="mt-3 text-base font-semibold text-slate-900">
