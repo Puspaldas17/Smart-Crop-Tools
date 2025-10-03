@@ -147,7 +147,7 @@ export default function Index() {
             <p className="mt-2 max-w-prose text-slate-600">
               A mobile app and chatbot that work online and offline to deliver
               personalized crop, fertilizer, irrigation and pest
-              management��backed by real‑time weather and market data.
+              management—backed by real‑time weather and market data.
             </p>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
