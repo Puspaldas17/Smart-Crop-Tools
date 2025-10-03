@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSpeech, languages } from "./useSpeech";
 import { Mic, StopCircle, Send } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState<
@@ -8,6 +9,7 @@ export default function Chatbot() {
   >([]);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const { farmer } = useAuth();
   const [lang, setLang] = useState("en-IN");
   const {
     listening,
@@ -29,6 +31,31 @@ export default function Chatbot() {
       setTranscript("");
     }
   }, [transcript, setTranscript]);
+
+  useEffect(() => {
+    if (farmer?.language && farmer.language !== lang) setLang(farmer.language);
+  }, [farmer, lang]);
+
+  // Load previous chat messages for this user
+  useEffect(() => {
+    const key = farmer?.phone ? `chat:${farmer.phone}` : "chat:anon";
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setMessages(parsed);
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [farmer?.phone]);
+
+  // Persist messages whenever they change
+  useEffect(() => {
+    const key = farmer?.phone ? `chat:${farmer.phone}` : "chat:anon";
+    try {
+      localStorage.setItem(key, JSON.stringify(messages));
+    } catch {}
+  }, [messages, farmer?.phone]);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
@@ -163,6 +190,15 @@ export default function Chatbot() {
             placeholder="Type your question…"
             className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm"
           />
+        )}
+        {!voiceMode && messages.length > 0 && (
+          <button
+            onClick={() => setMessages([])}
+            title="Clear"
+            className="rounded-md border border-slate-300 p-2 text-slate-700"
+          >
+            Clear
+          </button>
         )}
         {supported &&
           !voiceMode &&
