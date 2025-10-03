@@ -2,6 +2,9 @@ import React from "react";
 import { useInView } from "@/hooks/useInView";
 import { useHash } from "@/hooks/useHash";
 
+import { useEffect } from "react";
+import { getLastTool } from "@/hooks/useLastTool";
+
 export default function ToolsSection({
   show,
   children,
@@ -12,6 +15,14 @@ export default function ToolsSection({
   const hash = useHash();
   const { ref, inView } = useInView<HTMLDivElement>();
   const shouldMount = !!show && (hash === "#tools" || inView);
+
+  useEffect(() => {
+    if (!show) return;
+    const id = getLastTool();
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  }, [show]);
 
   return (
     <section id="tools" className={`scroll-mt-24 ${!show ? "hidden" : ""}`}>
