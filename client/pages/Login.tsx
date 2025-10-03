@@ -1,12 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, farmer } = useAuth();
   const navigate = useNavigate();
   const [status, setStatus] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (farmer) navigate("/#tools", { replace: true });
+  }, [farmer, navigate]);
 
   const fetchWithTimeout = useMemo(
     () =>
@@ -60,6 +65,7 @@ export default function Login() {
         const data = await r.json().catch(() => ({}));
         if (r.ok) {
           login(data as any);
+          toast.success(`Welcome, ${data?.name || "Farmer"}!`);
           setStatus("Success. Redirecting…");
           navigate("/#tools", { replace: true });
           return;
