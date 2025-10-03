@@ -30,6 +30,12 @@ function HeaderAuth() {
       >
         Open Tools
       </a>
+      <Link
+        to="/login"
+        className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+      >
+        Profile
+      </Link>
       <button
         onClick={logout}
         className="rounded-md border border-slate-300 px-3 py-2 text-sm"
