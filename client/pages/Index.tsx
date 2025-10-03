@@ -126,11 +126,15 @@ export default function Index() {
   const { farmer } = useAuth();
   return (
     <div className="space-y-8 md:space-y-16">
-      <Hero />
-      <Stats />
-      <Features />
-      <HowItWorks />
-      <CTA />
+      {!farmer && (
+        <>
+          <Hero />
+          <Stats />
+          <Features />
+          <HowItWorks />
+          <CTA />
+        </>
+      )}
 
       {/* About */}
       <section id="about" className="scroll-mt-24">
