@@ -1,0 +1,34 @@
+import React from "react";
+import { useInView } from "@/hooks/useInView";
+import { useHash } from "@/hooks/useHash";
+
+export default function ToolsSection({
+  show,
+  children,
+}: {
+  show: boolean;
+  children: React.ReactNode;
+}) {
+  const hash = useHash();
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const shouldMount = !!show && (hash === "#tools" || inView);
+
+  return (
+    <section id="tools" className={`scroll-mt-24 ${!show ? "hidden" : ""}`}>
+      <header className="mb-6">
+        <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
+        <p className="mt-2 max-w-prose text-slate-600">
+          Chatbot, Market & Weather, Pest Detection, and Advisory demo — all together.
+        </p>
+      </header>
+      <div ref={ref} />
+      {shouldMount ? (
+        children
+      ) : (
+        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+          Scroll here or click Open Tools to load…
+        </div>
+      )}
+    </section>
+  );
+}
