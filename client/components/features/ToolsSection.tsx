@@ -21,7 +21,11 @@ export default function ToolsSection({
     const id = getLastTool();
     if (!id) return;
     const el = document.getElementById(id);
-    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    if (el)
+      setTimeout(
+        () => el.scrollIntoView({ behavior: "smooth", block: "start" }),
+        50,
+      );
   }, [show]);
 
   return (
@@ -29,7 +33,8 @@ export default function ToolsSection({
       <header className="mb-6">
         <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
         <p className="mt-2 max-w-prose text-slate-600">
-          Chatbot, Market & Weather, Pest Detection, and Advisory demo — all together.
+          Chatbot, Market & Weather, Pest Detection, and Advisory demo — all
+          together.
         </p>
       </header>
       <div ref={ref} />

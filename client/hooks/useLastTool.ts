@@ -1,6 +1,13 @@
 const KEY = "lastTool";
 
-export type ToolId = "advisory" | "chat" | "market" | "pest" | "weather" | "overview" | "features";
+export type ToolId =
+  | "advisory"
+  | "chat"
+  | "market"
+  | "pest"
+  | "weather"
+  | "overview"
+  | "features";
 
 export function getLastTool(): ToolId | null {
   try {

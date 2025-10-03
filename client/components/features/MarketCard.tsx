@@ -80,14 +80,17 @@ export default function MarketCard() {
         <h3 className="text-xl font-semibold">Market Prices</h3>
         <div className="flex items-center gap-3">
           {lastUpdated && (
-            <span className="text-xs text-slate-500">Updated {Math.max(1, Math.round((Date.now() - lastUpdated) / 1000))}s ago</span>
+            <span className="text-xs text-slate-500">
+              Updated{" "}
+              {Math.max(1, Math.round((Date.now() - lastUpdated) / 1000))}s ago
+            </span>
           )}
           <div className="flex gap-2">
-          <input
-            value={commodity}
-            onChange={(e) => setCommodity(e.target.value)}
-            className="w-48 rounded-md border border-slate-300 px-3 py-2 text-sm"
-          />
+            <input
+              value={commodity}
+              onChange={(e) => setCommodity(e.target.value)}
+              className="w-48 rounded-md border border-slate-300 px-3 py-2 text-sm"
+            />
           </div>
         </div>
       </div>

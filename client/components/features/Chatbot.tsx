@@ -105,7 +105,9 @@ export default function Chatbot() {
         ? data.reply
         : data.error || "Sorry, I couldn't process that.";
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
-      try { speak(reply); } catch {}
+      try {
+        speak(reply);
+      } catch {}
     } catch (e) {
       const reply = "Network unavailable — please try again later.";
       setMessages((m) => [...m, { role: "assistant", content: reply }]);

@@ -15,7 +15,10 @@ export default function Login() {
 
   const fetchWithTimeout = useMemo(
     () =>
-      async (input: RequestInfo | URL, init: RequestInit & { timeoutMs?: number } = {}) => {
+      async (
+        input: RequestInfo | URL,
+        init: RequestInit & { timeoutMs?: number } = {},
+      ) => {
         const { timeoutMs = 8000, ...rest } = init;
         const ctrl = new AbortController();
         const id = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -72,7 +75,8 @@ export default function Login() {
         }
         lastError = data?.error || `Attempt ${attempt} failed`;
       } catch (err: any) {
-        lastError = err?.name === "AbortError" ? "Request timed out" : "Network error";
+        lastError =
+          err?.name === "AbortError" ? "Request timed out" : "Network error";
       }
       if (attempt < 3) {
         setStatus(`Retrying… (${attempt}/3)`);
@@ -133,8 +137,20 @@ export default function Login() {
           {submitting ? (
             <span className="inline-flex items-center gap-2">
               <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
               </svg>
               Signing in…
             </span>

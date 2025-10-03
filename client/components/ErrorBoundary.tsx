@@ -2,7 +2,10 @@ import React from "react";
 
 type State = { hasError: boolean; message?: string };
 
-export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, State> {
+export class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  State
+> {
   state: State = { hasError: false };
 
   static getDerivedStateFromError(err: any): State {
@@ -20,7 +23,10 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
         <div className="container max-w-[800px] p-6">
           <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-900 shadow-sm">
             <h2 className="text-lg font-semibold">Something went wrong</h2>
-            <p className="mt-2 text-sm">Please refresh the page. If the problem continues, try again later.</p>
+            <p className="mt-2 text-sm">
+              Please refresh the page. If the problem continues, try again
+              later.
+            </p>
           </div>
         </div>
       );

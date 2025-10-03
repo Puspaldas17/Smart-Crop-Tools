@@ -16,7 +16,13 @@ function useScrollTop(offset = 8) {
   return scrolled;
 }
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function HeaderAuth() {
   const { farmer, logout } = useAuth();
@@ -118,7 +124,10 @@ export default function RootLayout() {
                     {[
                       ...(farmer ? [{ href: "/#tools", label: "Tools" }] : []),
                       { href: "/#about", label: "About" },
-                      { href: farmer ? "/profile" : "/login", label: farmer ? "Profile" : "Login" },
+                      {
+                        href: farmer ? "/profile" : "/login",
+                        label: farmer ? "Profile" : "Login",
+                      },
                     ].map((i) => (
                       <a
                         key={i.href}

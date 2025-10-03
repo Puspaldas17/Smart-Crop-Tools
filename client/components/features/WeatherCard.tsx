@@ -87,7 +87,10 @@ export default function WeatherCard() {
         <h3 className="text-xl font-semibold">Weather</h3>
         <div className="flex items-center gap-3">
           {lastUpdated && (
-            <span className="text-xs text-slate-500">Updated {Math.max(1, Math.round((Date.now() - lastUpdated) / 1000))}s ago</span>
+            <span className="text-xs text-slate-500">
+              Updated{" "}
+              {Math.max(1, Math.round((Date.now() - lastUpdated) / 1000))}s ago
+            </span>
           )}
           <button
             onClick={loadWeather}
