@@ -20,8 +20,16 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // DB
-  void connectDB();
+  // DB: ensure the connection is ready before handling domain routes
+  const dbReady = connectDB();
+  app.use(async (_req, _res, next) => {
+    try {
+      await dbReady;
+    } catch {
+      // If connection fails, continue; in-memory mode will still work
+    }
+    next();
+  });
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
