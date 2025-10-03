@@ -34,8 +34,7 @@ import Stats from "@/components/home/Stats";
 import Features from "@/components/home/Features";
 import HowItWorks from "@/components/home/HowItWorks";
 import CTA from "@/components/home/CTA";
-import { useInView } from "@/hooks/useInView";
-import { useHash } from "@/hooks/useHash";
+import ToolsSection from "@/components/features/ToolsSection";
 
 function ToolsSuiteInner() {
   return (
