@@ -8,6 +8,7 @@ export default function WeatherCard() {
   );
   const [weather, setWeather] = useState<any>(null);
   const [weatherError, setWeatherError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<number | null>(null);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -45,6 +46,7 @@ export default function WeatherCard() {
         const data = await r.json();
         setWeather(data);
         setWeatherError(null);
+        setLastUpdated(Date.now());
         return;
       } catch (e) {
         setWeatherError("Weather unavailable");
@@ -83,12 +85,17 @@ export default function WeatherCard() {
     <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold">Weather</h3>
-        <button
-          onClick={loadWeather}
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm"
-        >
-          Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          {lastUpdated && (
+            <span className="text-xs text-slate-500">Updated {Math.max(1, Math.round((Date.now() - lastUpdated) / 1000))}s ago</span>
+          )}
+          <button
+            onClick={loadWeather}
+            className="rounded-md border border-slate-300 px-4 py-2 text-sm"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
       {weather ? (
         <div className="mt-4 space-y-1 text-sm text-slate-700">
