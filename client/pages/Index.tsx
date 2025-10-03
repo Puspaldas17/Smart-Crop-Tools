@@ -182,19 +182,29 @@ export default function Index() {
         </div>
 
         {/* Tools (All working parts in one place) */}
-        <section
-          id="tools"
-          className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}
-        >
-          <header className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
-            <p className="mt-2 max-w-prose text-slate-600">
-              Chatbot, Market & Weather, Pest Detection, and Advisory demo — all
-              together.
-            </p>
-          </header>
-          <ToolsSuite />
-        </section>
+        {(() => {
+          const hash = useHash();
+          const { ref, inView } = useInView<HTMLDivElement>();
+          const shouldMount = !!farmer && (hash === "#tools" || inView);
+          return (
+            <section id="tools" className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}>
+              <header className="mb-6">
+                <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
+                <p className="mt-2 max-w-prose text-slate-600">
+                  Chatbot, Market & Weather, Pest Detection, and Advisory demo — all together.
+                </p>
+              </header>
+              <div ref={ref} />
+              {shouldMount ? (
+                <ToolsSuite />
+              ) : (
+                <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+                  Scroll here or click Open Tools to load…
+                </div>
+              )}
+            </section>
+          );
+        })()}
 
         {/* Technical Approach */}
         <div id="tech" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
