@@ -4,6 +4,7 @@ export default function MarketCard() {
   const [commodity, setCommodity] = useState("Wheat");
   const [items, setItems] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<number | null>(null);
 
   async function fetchSafe(
     path: string,
@@ -31,6 +32,7 @@ export default function MarketCard() {
       const data = await r.json();
       setItems(data.items || []);
       setError(null);
+      setLastUpdated(Date.now());
       return;
     }
 
@@ -76,12 +78,17 @@ export default function MarketCard() {
     <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold">Market Prices</h3>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-3">
+          {lastUpdated && (
+            <span className="text-xs text-slate-500">Updated {Math.max(1, Math.round((Date.now() - lastUpdated) / 1000))}s ago</span>
+          )}
+          <div className="flex gap-2">
           <input
             value={commodity}
             onChange={(e) => setCommodity(e.target.value)}
             className="w-48 rounded-md border border-slate-300 px-3 py-2 text-sm"
           />
+          </div>
         </div>
       </div>
       {error && (
