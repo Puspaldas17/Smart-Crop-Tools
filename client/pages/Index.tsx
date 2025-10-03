@@ -116,8 +116,29 @@ function ToolsSuiteInner() {
   );
 }
 
+import { useEffect } from "react";
+import { setLastTool } from "@/hooks/useLastTool";
+
 function ToolsSuite() {
   const { farmer } = useAuth();
+  useEffect(() => {
+    if (!farmer) return;
+    const ids = ["advisory", "chat", "market", "pest"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setLastTool(e.target.id as any);
+        });
+      },
+      { rootMargin: "0px 0px -40% 0px", threshold: 0.6 },
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [farmer]);
+
   if (!farmer) return null;
   return <ToolsSuiteInner />;
 }
