@@ -34,14 +34,18 @@ import Stats from "@/components/home/Stats";
 import Features from "@/components/home/Features";
 import HowItWorks from "@/components/home/HowItWorks";
 import CTA from "@/components/home/CTA";
+import ToolsSection from "@/components/features/ToolsSection";
 
 function ToolsSuiteInner() {
   return (
     <div className="grid gap-8">
       <Suspense
         fallback={
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-            Loading…
+          <div className="rounded-xl border border-slate-200 bg-white p-6">
+            <div className="animate-pulse space-y-3">
+              <div className="h-5 w-40 rounded bg-slate-200" />
+              <div className="h-24 rounded bg-slate-200" />
+            </div>
           </div>
         }
       >
@@ -49,8 +53,11 @@ function ToolsSuiteInner() {
       </Suspense>
       <Suspense
         fallback={
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-            Loading overview…
+          <div className="rounded-xl border border-slate-200 bg-white p-6">
+            <div className="animate-pulse space-y-3">
+              <div className="h-5 w-48 rounded bg-slate-200" />
+              <div className="h-24 rounded bg-slate-200" />
+            </div>
           </div>
         }
       >
@@ -71,8 +78,11 @@ function ToolsSuiteInner() {
         <div id="chat">
           <Suspense
             fallback={
-              <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-                Loading chat…
+              <div className="rounded-xl border border-slate-200 bg-white p-6">
+                <div className="animate-pulse space-y-3">
+                  <div className="h-5 w-32 rounded bg-slate-200" />
+                  <div className="h-24 rounded bg-slate-200" />
+                </div>
               </div>
             }
           >
@@ -115,8 +125,29 @@ function ToolsSuiteInner() {
   );
 }
 
+import { useEffect } from "react";
+import { setLastTool } from "@/hooks/useLastTool";
+
 function ToolsSuite() {
   const { farmer } = useAuth();
+  useEffect(() => {
+    if (!farmer) return;
+    const ids = ["advisory", "chat", "market", "pest"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setLastTool(e.target.id as any);
+        });
+      },
+      { rootMargin: "0px 0px -40% 0px", threshold: 0.6 },
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [farmer]);
+
   if (!farmer) return null;
   return <ToolsSuiteInner />;
 }
@@ -125,11 +156,15 @@ export default function Index() {
   const { farmer } = useAuth();
   return (
     <div className="space-y-8 md:space-y-16">
-      <Hero />
-      <Stats />
-      <Features />
-      <HowItWorks />
-      <CTA />
+      {!farmer && (
+        <>
+          <Hero />
+          <Stats />
+          <Features />
+          <HowItWorks />
+          <CTA />
+        </>
+      )}
 
       {/* About */}
       <section id="about" className="scroll-mt-24">
@@ -142,7 +177,7 @@ export default function Index() {
             <p className="mt-2 max-w-prose text-slate-600">
               A mobile app and chatbot that work online and offline to deliver
               personalized crop, fertilizer, irrigation and pest
-              management��backed by real‑time weather and market data.
+              management—backed by real‑time weather and market data.
             </p>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
@@ -180,19 +215,9 @@ export default function Index() {
         </div>
 
         {/* Tools (All working parts in one place) */}
-        <section
-          id="tools"
-          className={`scroll-mt-24 ${!farmer ? "hidden" : ""}`}
-        >
-          <header className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
-            <p className="mt-2 max-w-prose text-slate-600">
-              Chatbot, Market & Weather, Pest Detection, and Advisory demo — all
-              together.
-            </p>
-          </header>
+        <ToolsSection show={!!farmer}>
           <ToolsSuite />
-        </section>
+        </ToolsSection>
 
         {/* Technical Approach */}
         <div id="tech" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
