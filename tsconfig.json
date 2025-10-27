@@ -14,8 +14,7 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "6.0",
+  "forceConsistentCasingInFileNames": true,
 
     "strict": false,
     "noUnusedLocals": false,
