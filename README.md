@@ -1,117 +1,115 @@
-# Smart Crop Advisory System
 
-[![build](https://img.shields.io/badge/build-passing-brightgreen)](https://vercel.com)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Quick Start: see `docs/running.md` for easy, copy-paste PowerShell commands to run, test and deploy this project.
+````markdown
+# 🌾 Smart Crop Advisory System
 
-A production‑ready, full‑stack MERN application that delivers data‑driven, multilingual guidance for farmers. It unifies a voice‑enabled chatbot, local weather with alerts, market prices, quick crop advisory, and image‑based pest diagnosis in a single responsive web app.
+[![Build](https://img.shields.io/badge/build-passing-brightgreen)](https://vercel.com)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Made with React](https://img.shields.io/badge/frontend-React-blue?logo=react)]()
+[![Backend: Express](https://img.shields.io/badge/backend-Express-black?logo=express)]()
+[![Database: MongoDB](https://img.shields.io/badge/database-MongoDB-green?logo=mongodb)]()
 
-- Frontend: React (Vite) + TailwindCSS + Radix UI
-- Backend: Express (integrated with Vite in dev) + shared TypeScript types
-- Database: MongoDB via Mongoose (with in‑memory fallback for local demos)
-- ML: Server endpoint with optional Hugging Face Inference API
-
----
-
-## Table of Contents
-
-- Features
-- Architecture & Project Structure
-- Requirements
-- Quick Start (VS Code)
-- Environment Variables
-- Scripts
-- API Reference
-- Deployment (Netlify, Self‑host, Builder MCP)
-- Troubleshooting
-- Security
+> 🌱 A full-stack, production-ready **MERN** app delivering multilingual, data-driven guidance for farmers — powered by real-time weather, market prices, and image-based pest diagnosis.
 
 ---
 
-## Features
+## 🚀 Quick Start
 
-- Multilingual, voice‑enabled chatbot (geolocation‑aware responses)
-- Market Prices (Punjab) with robust offline/sample fallbacks
-- Local Weather with safety alerts (temperature, humidity, wind)
-- Quick Crop Advisory (summary, fertilizer, irrigation, pest hints)
-- Image‑based Pest/Disease Detection (server‑side inference in preview)
-- Minimal farmer login and gated “Working Suite”
-- Smooth scrolling, fluid typography, and responsive layout across devices
+See [`docs/running.md`](docs/running.md) for complete setup and deployment details.
 
-## Architecture & Project Structure
+```bash
+# Clone the repo
+git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
+cd Smart-Crop-Tools
 
-- Single repo with SPA (client), API (server), and shared types.
-- Vite serves React and mounts Express middleware for APIs during development (single port).
-- Production build emits:
-  - Client SPA → `dist/spa/`
-  - Server bundle → `dist/server/node-build.mjs` (serves SPA and `/api/*`)
+# Install dependencies
+pnpm install
+
+# Run the dev server
+pnpm dev
+````
+
+➡️ Visit [http://localhost:8080](http://localhost:8080)
+🧑‍🌾 Login (top-right) to access the **Working Suite** (Chatbot, Market, Weather, Pest Detector, Advisory)
+
+---
+
+## ✨ Features
+
+* 🗣️ **Voice & Multilingual Chatbot** – geolocation-aware smart replies
+* 💹 **Market Prices (Punjab)** – with robust offline/sample fallbacks
+* 🌦️ **Local Weather Alerts** – temp, humidity, wind safety notifications
+* 🌾 **Quick Crop Advisory** – fertilizer, irrigation, and pest hints
+* 🐛 **Pest/Disease Detection** – via server-side ML image inference
+* 🔐 **Lightweight Farmer Login** – secure, minimal credential model
+* 📱 **Responsive Design** – smooth scroll, fluid typography, mobile-first UI
+
+---
+
+## 🧱 Tech Stack
+
+| Layer                | Technology                                     |
+| :------------------- | :--------------------------------------------- |
+| **Frontend**         | React (Vite), TailwindCSS, Radix UI            |
+| **Backend**          | Express.js (integrated with Vite for dev)      |
+| **Database**         | MongoDB via Mongoose (with in-memory fallback) |
+| **Machine Learning** | Server endpoint (Hugging Face Inference API)   |
+
+---
+
+## 🏗️ Architecture & Structure
+
+Monorepo with client (SPA), server (API), and shared TypeScript models.
 
 ```
 client/
-  App.tsx                 # Router + providers
-  global.css              # Tailwind theme, fluid type, smooth scroll
-  pages/
-    Layout.tsx            # Header, nav, footer, container
-    Index.tsx             # Landing + Working Suite (chat, market, weather, pest)
-    Login.tsx             # Farmer login/registration
-  components/
-    features/
-      Chatbot.tsx         # Multilingual + voice chatbot
-      MarketWidget.tsx    # Prices + weather with alerts & fallbacks
-      PestDetector.tsx    # Server-side prediction in preview
-      FeatureTiles.tsx    # Quick action tiles (scroll & events)
-      AdvisoryWidget.tsx  # Weather-aware advisory form
-    ui/                   # UI building blocks
-  hooks/                  # useAuth, useSpeech, etc.
-  lib/                    # utils
+ ├─ App.tsx                # Router + providers
+ ├─ global.css             # Tailwind theme, smooth scroll
+ ├─ pages/                 # Landing, Login, Suite
+ ├─ components/features/   # Chatbot, Market, PestDetector, Advisory
+ ├─ components/ui/         # Reusable UI blocks
+ ├─ hooks/                 # useAuth, useSpeech, etc.
+ └─ lib/                   # Utilities
 
 server/
-  index.ts                # Express app; routes registration
-  node-build.ts           # Production HTTP server (serves SPA + API)
-  db.ts                   # Mongo connection + Farmer/Advisory models (in‑memory fallback)
-  routes/                 # API handlers (auth, advisory, weather, market, predict, demo)
+ ├─ index.ts               # Express app + route registration
+ ├─ node-build.ts          # Production HTTP server
+ ├─ db.ts                  # Mongo connection (fallback: in-memory)
+ └─ routes/                # API handlers (auth, market, weather, etc.)
 
 shared/
-  api.ts                  # Shared DTOs/types across client & server
+ └─ api.ts                 # Shared DTOs/types for client + server
 
 netlify/
-  functions/api.ts        # Netlify Function wrapper for Express
-netlify.toml              # Build + redirects to `/.netlify/functions/api`
+ ├─ functions/api.ts       # Netlify Function wrapper for Express
+ └─ netlify.toml           # Build config + redirects
 ```
 
-## Requirements
+---
 
-- Node.js 18+ (or 20+ recommended)
-- pnpm 8+ (preferred) or npm
-- VS Code (recommended)
+## ⚙️ Requirements
 
-## Quick Start (VS Code)
+* 🟢 **Node.js** 18+ (20+ recommended)
+* 🔵 **pnpm** 8+ (preferred) or npm
+* 🧩 **VS Code** (recommended for debugging)
 
-1. Clone and install
+---
 
-```
-git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
-cd Smart-Crop-Tools
-pnpm install
-```
+## 🧑‍💻 Run & Debug in VS Code
 
-2. Run the app (dev)
+Open the project in VS Code:
 
-```
-pnpm dev
-```
-
-- Open http://localhost:8080
-- Login (top‑right) to access the Working Suite (Chatbot, Market & Weather, Pest Detector, Advisory)
-
-3. Open and debug in VS Code
-
-```
+```bash
 code .
 ```
 
-- Use “JavaScript Debug Terminal” and run `pnpm dev`, or use this launch config to debug the production server:
+Use **JavaScript Debug Terminal** and run:
+
+```bash
+pnpm dev
+```
+
+Or debug the production server using:
 
 ```jsonc
 // .vscode/launch.json
@@ -123,57 +121,76 @@ code .
       "request": "launch",
       "name": "Run built server",
       "program": "${workspaceFolder}/dist/server/node-build.mjs",
-      "cwd": "${workspaceFolder}",
       "env": { "PORT": "3000" },
-      "skipFiles": ["<node_internals>/**"],
-    # Smart Crop Advisory — Quick & Simple
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
+```
 
-    What it is
-    - Small full-stack app: React (Vite) frontend + Express API (TypeScript).
-    - Local dev uses Vite and mounts Express middleware so frontend and API work together.
+---
 
-    Quick start (PowerShell)
-    ```powershell
-    # 1. Install
-    npm install
+## 🌐 Environment Variables
 
-    # 2. Optional: copy env
-    copy .env.example .env
+| Variable      | Description                     | Example             |
+| ------------- | ------------------------------- | ------------------- |
+| `PORT`        | Local server port               | `8080`              |
+| `MONGODB_URI` | MongoDB connection URI          | `mongodb+srv://...` |
+| `HF_API_KEY`  | Hugging Face API key (optional) | `hf_123abc...`      |
 
-    # 3. Start dev server (Vite + Express)
-    npm run dev
+> 🧠 If `MONGODB_URI` is not set, the app runs with an **in-memory demo DB**.
 
-    # 4. Run tests and typecheck
-    npm run typecheck
-    npm test
+---
 
-    # 5. Build and start (production)
-    npm run build
-    npm start
-    ```
+## 📦 Scripts
 
-    Where to find more
-    - Running & deploy instructions: `docs/running.md`
-    - Vercel guide: `docs/deploy-vercel.md`
+| Command          | Description                     |
+| :--------------- | :------------------------------ |
+| `pnpm dev`       | Run dev server (Vite + Express) |
+| `pnpm build`     | Build client + server bundles   |
+| `pnpm start`     | Run built production server     |
+| `pnpm test`      | Run tests                       |
+| `pnpm typecheck` | Type validation                 |
 
-    Important notes
-    - If `MONGODB_URI` is not set, the app uses an in-memory DB for demo data.
-    - If port 8080 is busy, set `$env:PORT` before `npm run dev`.
-    - CI builds run typecheck, tests, and build (`.github/workflows/ci.yml`).
+---
 
-    Files & folders (top-level)
-    - `client/` — React app
-    - `server/` — Express routes + server entry
-    - `shared/` — shared TypeScript types
-    - `api/` — serverless wrapper for Vercel
-    - `docs/` — docs and deployment guides
+## 🚢 Deployment
 
-    Need help?
-    - Paste Vercel deployment logs here if you see `404 NOT_FOUND` and I'll help debug.
+Supports multiple targets:
 
-    License: MIT
+* 🌍 **Netlify** (serverless) → uses `netlify/functions/api.ts`
+* 🧭 **Vercel** → check `docs/deploy-vercel.md`
+* 🖥️ **Self-hosted / Builder MCP** – simple `pnpm build && pnpm start`
 
+---
 
-- Never commit secrets. Use environment variables in your hosting provider.
-- Only minimal PII (name/phone) is collected in the demo. Review and harden before production.
-- Add monitoring (e.g., Sentry) and WAF/Rate limits on `/api/*` in production.
+## 🧰 Troubleshooting
+
+* ❌ **Port busy?**
+
+  ```powershell
+  $env:PORT=9090; pnpm dev
+  ```
+
+* 🧩 **No MongoDB connection?**
+  App switches to an **in-memory DB** for demos.
+
+* 🔍 **404 NOT_FOUND on Vercel?**
+  Check `vercel.json` or deployment logs and ensure API routes are registered.
+
+---
+
+## 🔒 Security
+
+* Never commit secrets or `.env` files.
+* Use environment variables on your hosting provider.
+* Only minimal demo data (name/phone) is stored.
+* Add monitoring (Sentry, etc.) and WAF/rate limiting on `/api/*` before production.
+
+---
+
+## 📜 License
+
+MIT License © [Puspal Das](https://github.com/puspaldas05)
+
+---
