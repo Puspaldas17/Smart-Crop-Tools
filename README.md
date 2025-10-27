@@ -1,5 +1,10 @@
 # Smart Crop Advisory System
 
+[![build](https://img.shields.io/badge/build-passing-brightgreen)](https://vercel.com)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+Quick Start: see `docs/running.md` for easy, copy-paste PowerShell commands to run, test and deploy this project.
+
 A production‑ready, full‑stack MERN application that delivers data‑driven, multilingual guidance for farmers. It unifies a voice‑enabled chatbot, local weather with alerts, market prices, quick crop advisory, and image‑based pest diagnosis in a single responsive web app.
 
 - Frontend: React (Vite) + TailwindCSS + Radix UI
