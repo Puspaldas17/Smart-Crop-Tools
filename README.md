@@ -126,113 +126,53 @@ code .
       "cwd": "${workspaceFolder}",
       "env": { "PORT": "3000" },
       "skipFiles": ["<node_internals>/**"],
-    # Smart Crop Advisory System
+    # Smart Crop Advisory — Quick & Simple
 
-    [![build](https://img.shields.io/badge/build-passing-brightgreen)](https://vercel.com) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+    What it is
+    - Small full-stack app: React (Vite) frontend + Express API (TypeScript).
+    - Local dev uses Vite and mounts Express middleware so frontend and API work together.
 
-    Quick Start: see `docs/running.md` for easy, copy-paste PowerShell commands to run, test and deploy this project.
-
-    A concise, well-organized starter for a full-stack crop advisory web app (React + Express + TypeScript). This repo contains a client SPA, an Express API, and shared types. It uses Vite for development and build.
-
-    Contents
-
-    - Quick Start (copy-paste commands)
-    - What this repo contains (high level)
-    - Run / Build / Test commands (PowerShell-ready)
-    - Deployment notes (Vercel + Netlify)
-    - Troubleshooting & next steps
-
-    See full developer docs in `docs/` (running.md, deploy-vercel.md).
-
-    Why this repo is useful
-
-    - Fast local development: Vite serves the SPA and mounts Express middleware on the same port (hot reload for both).
-    - Easy serverless deployment: server code is prepared to be used as a serverless function (Vercel/Netlify) and as a standalone Node server.
-
-    Quick Start (Windows PowerShell)
-
-    1) Install dependencies
-
+    Quick start (PowerShell)
     ```powershell
+    # 1. Install
     npm install
-    ```
 
-    2) Create a local .env (optional)
-
-    ```powershell
+    # 2. Optional: copy env
     copy .env.example .env
-    # Edit .env to set MONGODB_URI or any API keys
-    ```
 
-    3) Run in development (Vite + Express)
-
-    ```powershell
+    # 3. Start dev server (Vite + Express)
     npm run dev
-    # or force port: $env:PORT = "8080"; npm run dev
-    ```
 
-    4) Run tests and typecheck
-
-    ```powershell
+    # 4. Run tests and typecheck
     npm run typecheck
     npm test
-    ```
 
-    5) Production build & start
-
-    ```powershell
+    # 5. Build and start (production)
     npm run build
     npm start
     ```
 
-    Project at-a-glance
+    Where to find more
+    - Running & deploy instructions: `docs/running.md`
+    - Vercel guide: `docs/deploy-vercel.md`
 
-    ```
-    client/                # React SPA (Vite + TypeScript)
-    server/                # Express API and server build entry
-    shared/                # Shared TypeScript types between client & server
-    api/                   # Vercel serverless wrapper (exports handler)
-    dist/                  # Built artifacts (spa + server)
-    docs/                  # Developer docs: running.md, deploy-vercel.md
-    ```
+    Important notes
+    - If `MONGODB_URI` is not set, the app uses an in-memory DB for demo data.
+    - If port 8080 is busy, set `$env:PORT` before `npm run dev`.
+    - CI builds run typecheck, tests, and build (`.github/workflows/ci.yml`).
 
-    Important scripts (package.json)
+    Files & folders (top-level)
+    - `client/` — React app
+    - `server/` — Express routes + server entry
+    - `shared/` — shared TypeScript types
+    - `api/` — serverless wrapper for Vercel
+    - `docs/` — docs and deployment guides
 
-    - `npm run dev` — start Vite dev server (with Express middleware)
-    - `npm run build` — build client and server bundles (also lists dist/spa contents for diagnostics)
-    - `npm start` — start the built Node server (`dist/server/node-build.mjs`)
-    - `npm test` — run Vitest unit tests
-    - `npm run typecheck` — run TypeScript compiler checks
+    Need help?
+    - Paste Vercel deployment logs here if you see `404 NOT_FOUND` and I'll help debug.
 
-    Environment variables
+    License: MIT
 
-    - MONGODB_URI — MongoDB connection string (if absent, the app uses an in-memory fallback)
-    - OPENWEATHER_API_KEY — optional weather API key
-    - MARKET_API_URL / MARKET_API_KEY — optional market data source
-    - HF_TOKEN / HF_MODEL — optional Hugging Face token/model for image prediction
-
-    Deployment notes
-
-    - Vercel: `vercel.json` and `api/index.ts` are included. Set `Build Command = npm run build` and `Output Directory = dist/spa`. Add env vars in the Vercel dashboard.
-    - Netlify: `netlify.toml` and Netlify functions wrapper exist for Netlify functions.
-
-    Troubleshooting quick checks
-
-    - If Vite reports "Port X is in use" — either free the port or set `$env:PORT` before starting.
-    - If you see `[db] MONGODB_URI not set. Using in-memory storage.` — set `MONGODB_URI` in `.env` or in your host's env vars.
-    - If Vercel shows `404 NOT_FOUND` after deploy, check the build logs for `dist/spa/index.html` (CI outputs a listing). Also check function logs for serverless errors.
-
-    CI
-
-    - A GitHub Actions workflow is included at `.github/workflows/ci.yml` to run install, typecheck, tests, and build on push/PR to `main`.
-
-    Contributing
-
-    - Please open issues or PRs. See `docs/` for more context and deployment instructions.
-
-    License
-
-    - MIT
 
 - Never commit secrets. Use environment variables in your hosting provider.
 - Only minimal PII (name/phone) is collected in the demo. Review and harden before production.
