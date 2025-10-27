@@ -7,9 +7,11 @@ import { createServer } from "./server";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8080,
+    // Allow overriding port via PORT env var (useful when 8080 is in use)
+    port: Number(process.env.PORT) || 8080,
+    // Allow serving files from project root (index.html) as well as client/shared
     fs: {
-      allow: ["./client", "./shared"],
+      allow: ["./", "./client", "./shared"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
   },
