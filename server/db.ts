@@ -110,6 +110,9 @@ const farmerSchema = new mongoose.Schema(
       village: String,
       state: String,
     },
+    subscriptionStatus: { type: String, default: "free", enum: ["free", "premium"] },
+    subscriptionStartDate: { type: Date },
+    subscriptionEndDate: { type: Date },
   },
   { timestamps: true },
 );
