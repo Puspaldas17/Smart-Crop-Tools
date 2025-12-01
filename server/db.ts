@@ -149,6 +149,25 @@ const advisoryHistorySchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+const analyticsDataSchema = new mongoose.Schema(
+  {
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    crop: { type: String, required: true },
+    date: { type: Date, default: Date.now },
+    cropHealthScore: { type: Number, min: 0, max: 100 },
+    yield: { type: Number },
+    soilMoisture: { type: Number, min: 0, max: 100 },
+    soilNitrogen: { type: Number, min: 0, max: 100 },
+    soilPH: { type: Number, min: 0, max: 14 },
+    temperature: { type: Number },
+    humidity: { type: Number, min: 0, max: 100 },
+    rainfall: { type: Number },
+    pestPressure: { type: Number, min: 0, max: 100 },
+    diseaseRisk: { type: Number, min: 0, max: 100 },
+  },
+  { timestamps: true },
+);
+
 export const Farmer: any = USE_MEMORY
   ? new InMemoryCollection("Farmer")
   : mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema);
