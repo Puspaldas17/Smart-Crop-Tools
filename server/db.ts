@@ -47,7 +47,6 @@ class InMemoryCollection<T extends AnyDoc> {
     const now = new Date();
     const applyUpdate = (base: T) => {
       const clone = { ...base } as T;
-      // Apply $setOnInsert only if it exists and when creating; handled separately
       const plain = Object.fromEntries(
         Object.entries(update).filter(([k]) => k !== "$setOnInsert"),
       );
@@ -64,14 +63,22 @@ class InMemoryCollection<T extends AnyDoc> {
     }
 
     if (options.upsert) {
+      const plain = Object.fromEntries(
+        Object.entries(update || {}).filter(([k]) => k !== "$setOnInsert"),
+      );
       const base: T = {
         ...(update?.$setOnInsert || {}),
-        ...(Object.fromEntries(
-          Object.entries(update || {}).filter(([k]) => k !== "$setOnInsert"),
-        ) as any),
+        ...plain,
       } as T;
-      const created = await this.create(base);
-      return created;
+
+      const out = {
+        ...base,
+        _id: this.genId(),
+        createdAt: (base as any).createdAt || now,
+        updatedAt: now,
+      } as T;
+      this.items.push(out);
+      return structuredClone(out);
     }
 
     return null;
