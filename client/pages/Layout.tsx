@@ -48,6 +48,9 @@ function HeaderAuth() {
             <a href="/#tools">Open Tools</a>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
+            <Link to="/dashboard">Dashboard</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link to="/profile">Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
