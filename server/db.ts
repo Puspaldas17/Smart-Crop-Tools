@@ -130,6 +130,17 @@ const advisorySchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+const advisoryHistorySchema = new mongoose.Schema(
+  {
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    crop: { type: String, required: true },
+    advisory: { type: String, required: true },
+    weatherData: mongoose.Schema.Types.Mixed,
+    soilData: mongoose.Schema.Types.Mixed,
+  },
+  { timestamps: true },
+);
+
 export const Farmer: any = USE_MEMORY
   ? new InMemoryCollection("Farmer")
   : mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema);
