@@ -28,3 +28,19 @@ export const upsertFarmer: RequestHandler = async (req, res) => {
     res.status(500).json({ error: "auth error" });
   }
 };
+
+export const guestLogin: RequestHandler = async (req, res) => {
+  try {
+    const guest = {
+      _id: "guest_" + Date.now(),
+      name: "Guest User",
+      phone: undefined,
+      language: req.body?.language || "en-IN",
+      isGuest: true,
+    };
+    res.json(guest);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "guest login error" });
+  }
+};
