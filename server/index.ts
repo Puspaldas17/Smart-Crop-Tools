@@ -48,6 +48,7 @@ export function createServer() {
   app.post("/api/chat", chatHandler);
   app.post("/api/predict", uploadMiddleware, predictHandler);
   app.post("/api/auth/farmer", upsertFarmer);
+  app.post("/api/auth/guest", guestLogin);
 
   // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
   app.get("/api/neon/posts/:id", getPostById);
