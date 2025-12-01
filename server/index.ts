@@ -11,6 +11,7 @@ import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
 import { upsertFarmer, guestLogin } from "./routes/auth";
 import { saveAdvisoryHistory, getAdvisoryHistory, getProfileData, updateSubscription } from "./routes/profile";
+import { recordAnalytics, getAnalyticsSummary, getCropTrends, getSoilHealthTrend, getWeatherImpactAnalysis } from "./routes/analytics";
 import { getPostById } from "./routes/neon";
 
 export function createServer() {
