@@ -179,3 +179,7 @@ export const Advisory: any = USE_MEMORY
 export const AdvisoryHistory: any = USE_MEMORY
   ? new InMemoryCollection("AdvisoryHistory")
   : mongoose.models.AdvisoryHistory || mongoose.model("AdvisoryHistory", advisoryHistorySchema);
+
+export const AnalyticsData: any = USE_MEMORY
+  ? new InMemoryCollection("AnalyticsData")
+  : mongoose.models.AnalyticsData || mongoose.model("AnalyticsData", analyticsDataSchema);
