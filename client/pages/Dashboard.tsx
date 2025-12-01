@@ -19,7 +19,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [history, setHistory] = useState<AdvisoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"history" | "subscription">("history");
+  const [activeTab, setActiveTab] = useState<"history" | "subscription" | "analytics">("history");
 
   useEffect(() => {
     if (!farmer || farmer.isGuest) {
