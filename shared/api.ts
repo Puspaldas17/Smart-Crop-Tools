@@ -19,6 +19,7 @@ export interface FarmerDTO {
   landSize?: number;
   language?: string;
   location?: { lat?: number; lon?: number; village?: string; state?: string };
+  isGuest?: boolean;
 }
 
 export interface AdvisoryDTO {
