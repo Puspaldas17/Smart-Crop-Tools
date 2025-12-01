@@ -187,10 +187,10 @@ export default function Dashboard() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          <div className="border-b border-slate-200 p-6 flex gap-4">
+          <div className="border-b border-slate-200 p-6 flex gap-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab("history")}
-              className={`font-medium pb-2 border-b-2 ${
+              className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "history"
                   ? "border-primary text-primary"
                   : "border-transparent text-slate-600"
@@ -200,13 +200,23 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => setActiveTab("subscription")}
-              className={`font-medium pb-2 border-b-2 ${
+              className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "subscription"
                   ? "border-primary text-primary"
                   : "border-transparent text-slate-600"
               }`}
             >
-              Statistics
+              Usage Stats
+            </button>
+            <button
+              onClick={() => setActiveTab("analytics")}
+              className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
+                activeTab === "analytics"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-slate-600"
+              }`}
+            >
+              Analytics & Insights
             </button>
           </div>
 
