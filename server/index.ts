@@ -51,6 +51,11 @@ export function createServer() {
   app.post("/api/auth/farmer", upsertFarmer);
   app.post("/api/auth/guest", guestLogin);
 
+  app.post("/api/advisory/history", saveAdvisoryHistory);
+  app.get("/api/advisory/history/:farmerId", getAdvisoryHistory);
+  app.get("/api/profile/:farmerId", getProfileData);
+  app.put("/api/profile/:farmerId/subscription", updateSubscription);
+
   // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
   app.get("/api/neon/posts/:id", getPostById);
 
