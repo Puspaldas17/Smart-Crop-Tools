@@ -148,3 +148,7 @@ export const Farmer: any = USE_MEMORY
 export const Advisory: any = USE_MEMORY
   ? new InMemoryCollection("Advisory")
   : mongoose.models.Advisory || mongoose.model("Advisory", advisorySchema);
+
+export const AdvisoryHistory: any = USE_MEMORY
+  ? new InMemoryCollection("AdvisoryHistory")
+  : mongoose.models.AdvisoryHistory || mongoose.model("AdvisoryHistory", advisoryHistorySchema);
