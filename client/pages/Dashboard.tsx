@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { ChevronLeft, Calendar, Crop, CheckCircle2, AlertCircle } from "lucide-react";
+
+const Analytics = lazy(() => import("@/components/features/Analytics"));
 
 interface AdvisoryRecord {
   _id?: string;
