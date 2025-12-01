@@ -37,6 +37,26 @@ export default function AdvisoryWidget() {
       if (r.ok) {
         setAdvisory(data);
         setStatus("Ready.");
+
+        if (farmer && farmer._id && !farmer.isGuest) {
+          const summary = data.summary || "Advisory generated";
+          const historyPayload = {
+            farmerId: farmer._id,
+            crop,
+            advisory: summary,
+            weatherData: { lat: coords.lat, lon: coords.lon },
+          };
+
+          try {
+            await fetch("/api/advisory/history", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(historyPayload),
+            });
+          } catch (historyError) {
+            console.error("Failed to save history:", historyError);
+          }
+        }
       } else setStatus(data.error || "Failed");
     } catch (e) {
       setStatus("Network error");
