@@ -3,7 +3,19 @@ import { AdvisoryHistory, AnalyticsData } from "../db";
 
 export const recordAnalytics: RequestHandler = async (req, res) => {
   try {
-    const { farmerId, crop, cropHealthScore, soilMoisture, soilNitrogen, soilPH, temperature, humidity, rainfall, pestPressure, diseaseRisk } = req.body;
+    const {
+      farmerId,
+      crop,
+      cropHealthScore,
+      soilMoisture,
+      soilNitrogen,
+      soilPH,
+      temperature,
+      humidity,
+      rainfall,
+      pestPressure,
+      diseaseRisk,
+    } = req.body;
 
     if (!farmerId || !crop) {
       return res.status(400).json({ error: "farmerId and crop are required" });
@@ -51,7 +63,7 @@ export const getAnalyticsSummary: RequestHandler = async (req, res) => {
     }
 
     const recentData = allAnalytics.filter(
-      (d: any) => new Date(d.date || d.createdAt) >= cutoffDate
+      (d: any) => new Date(d.date || d.createdAt) >= cutoffDate,
     );
 
     let advisories: any[] = [];
@@ -71,20 +83,30 @@ export const getAnalyticsSummary: RequestHandler = async (req, res) => {
       stats.scores.push(Math.random() * 30 + 70);
     });
 
-    const cropPerformance = Array.from(cropStats.entries()).map(([crop, stats]) => ({
-      crop,
-      count: stats.count,
-      avgScore: stats.scores.length > 0 ? stats.scores.reduce((a, b) => a + b, 0) / stats.scores.length : 0,
-    }));
+    const cropPerformance = Array.from(cropStats.entries()).map(
+      ([crop, stats]) => ({
+        crop,
+        count: stats.count,
+        avgScore:
+          stats.scores.length > 0
+            ? stats.scores.reduce((a, b) => a + b, 0) / stats.scores.length
+            : 0,
+      }),
+    );
 
     const soilHealthTrend = recentData
-      .filter((d: any) => d.soilMoisture !== undefined || d.soilNitrogen !== undefined || d.soilPH !== undefined)
+      .filter(
+        (d: any) =>
+          d.soilMoisture !== undefined ||
+          d.soilNitrogen !== undefined ||
+          d.soilPH !== undefined,
+      )
       .slice(-7)
       .map((d: any) => ({
         date: new Date(d.date || d.createdAt).toLocaleDateString("en-IN"),
         moisture: d.soilMoisture || Math.random() * 100,
         nitrogen: d.soilNitrogen || Math.random() * 100,
-        pH: d.soilPH || (5 + Math.random() * 3),
+        pH: d.soilPH || 5 + Math.random() * 3,
       }));
 
     if (soilHealthTrend.length === 0) {
@@ -100,20 +122,47 @@ export const getAnalyticsSummary: RequestHandler = async (req, res) => {
       }
     }
 
-    const temps = recentData.filter((d: any) => d.temperature !== undefined).map((d: any) => d.temperature as number);
-    const humidities = recentData.filter((d: any) => d.humidity !== undefined).map((d: any) => d.humidity as number);
-    const rainfalls = recentData.filter((d: any) => d.rainfall !== undefined).map((d: any) => d.rainfall as number);
+    const temps = recentData
+      .filter((d: any) => d.temperature !== undefined)
+      .map((d: any) => d.temperature as number);
+    const humidities = recentData
+      .filter((d: any) => d.humidity !== undefined)
+      .map((d: any) => d.humidity as number);
+    const rainfalls = recentData
+      .filter((d: any) => d.rainfall !== undefined)
+      .map((d: any) => d.rainfall as number);
 
     const weatherImpact = {
-      temperature: temps.length > 0 ? temps.reduce((a, b) => a + b, 0) / temps.length : 25 + Math.random() * 15,
-      humidity: humidities.length > 0 ? humidities.reduce((a, b) => a + b, 0) / humidities.length : 50 + Math.random() * 30,
-      rainfall: rainfalls.length > 0 ? rainfalls.reduce((a, b) => a + b, 0) / rainfalls.length : Math.random() * 50,
+      temperature:
+        temps.length > 0
+          ? temps.reduce((a, b) => a + b, 0) / temps.length
+          : 25 + Math.random() * 15,
+      humidity:
+        humidities.length > 0
+          ? humidities.reduce((a, b) => a + b, 0) / humidities.length
+          : 50 + Math.random() * 30,
+      rainfall:
+        rainfalls.length > 0
+          ? rainfalls.reduce((a, b) => a + b, 0) / rainfalls.length
+          : Math.random() * 50,
     };
 
     const pestAnalysis = [
-      { type: "Aphids", risk: Math.random() * 80, frequency: Math.floor(Math.random() * 5) + 1 },
-      { type: "Whiteflies", risk: Math.random() * 60, frequency: Math.floor(Math.random() * 4) + 1 },
-      { type: "Leaf Miners", risk: Math.random() * 70, frequency: Math.floor(Math.random() * 3) + 1 },
+      {
+        type: "Aphids",
+        risk: Math.random() * 80,
+        frequency: Math.floor(Math.random() * 5) + 1,
+      },
+      {
+        type: "Whiteflies",
+        risk: Math.random() * 60,
+        frequency: Math.floor(Math.random() * 4) + 1,
+      },
+      {
+        type: "Leaf Miners",
+        risk: Math.random() * 70,
+        frequency: Math.floor(Math.random() * 3) + 1,
+      },
     ];
 
     res.json({
@@ -146,7 +195,11 @@ export const getCropTrends: RequestHandler = async (req, res) => {
     }
 
     const trends = data
-      .sort((a: any, b: any) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime())
+      .sort(
+        (a: any, b: any) =>
+          new Date(a.date || a.createdAt).getTime() -
+          new Date(b.date || b.createdAt).getTime(),
+      )
       .slice(-30)
       .map((d: any) => ({
         date: new Date(d.date || d.createdAt).toLocaleDateString("en-IN"),
@@ -193,8 +246,17 @@ export const getSoilHealthTrend: RequestHandler = async (req, res) => {
     }
 
     const trend = data
-      .filter((d: any) => d.soilMoisture !== undefined || d.soilNitrogen !== undefined || d.soilPH !== undefined)
-      .sort((a: any, b: any) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime())
+      .filter(
+        (d: any) =>
+          d.soilMoisture !== undefined ||
+          d.soilNitrogen !== undefined ||
+          d.soilPH !== undefined,
+      )
+      .sort(
+        (a: any, b: any) =>
+          new Date(a.date || a.createdAt).getTime() -
+          new Date(b.date || b.createdAt).getTime(),
+      )
       .slice(-30)
       .map((d: any) => ({
         date: new Date(d.date || d.createdAt).toLocaleDateString("en-IN"),
@@ -243,12 +305,21 @@ export const getWeatherImpactAnalysis: RequestHandler = async (req, res) => {
     }
 
     const recentData = data.filter(
-      (d: any) => new Date(d.date || d.createdAt) >= cutoffDate
+      (d: any) => new Date(d.date || d.createdAt) >= cutoffDate,
     );
 
     const analysis = recentData
-      .filter((d: any) => d.temperature !== undefined || d.humidity !== undefined || d.rainfall !== undefined)
-      .sort((a: any, b: any) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime())
+      .filter(
+        (d: any) =>
+          d.temperature !== undefined ||
+          d.humidity !== undefined ||
+          d.rainfall !== undefined,
+      )
+      .sort(
+        (a: any, b: any) =>
+          new Date(a.date || a.createdAt).getTime() -
+          new Date(b.date || b.createdAt).getTime(),
+      )
       .slice(-15)
       .map((d: any) => ({
         date: new Date(d.date || d.createdAt).toLocaleDateString("en-IN"),

@@ -118,7 +118,11 @@ const farmerSchema = new mongoose.Schema(
       village: String,
       state: String,
     },
-    subscriptionStatus: { type: String, default: "free", enum: ["free", "premium"] },
+    subscriptionStatus: {
+      type: String,
+      default: "free",
+      enum: ["free", "premium"],
+    },
     subscriptionStartDate: { type: Date },
     subscriptionEndDate: { type: Date },
   },
@@ -140,7 +144,11 @@ const advisorySchema = new mongoose.Schema(
 
 const advisoryHistorySchema = new mongoose.Schema(
   {
-    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    farmerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Farmer",
+      required: true,
+    },
     crop: { type: String, required: true },
     advisory: { type: String, required: true },
     weatherData: mongoose.Schema.Types.Mixed,
@@ -151,7 +159,11 @@ const advisoryHistorySchema = new mongoose.Schema(
 
 const analyticsDataSchema = new mongoose.Schema(
   {
-    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    farmerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Farmer",
+      required: true,
+    },
     crop: { type: String, required: true },
     date: { type: Date, default: Date.now },
     cropHealthScore: { type: Number, min: 0, max: 100 },
@@ -178,8 +190,10 @@ export const Advisory: any = USE_MEMORY
 
 export const AdvisoryHistory: any = USE_MEMORY
   ? new InMemoryCollection("AdvisoryHistory")
-  : mongoose.models.AdvisoryHistory || mongoose.model("AdvisoryHistory", advisoryHistorySchema);
+  : mongoose.models.AdvisoryHistory ||
+    mongoose.model("AdvisoryHistory", advisoryHistorySchema);
 
 export const AnalyticsData: any = USE_MEMORY
   ? new InMemoryCollection("AnalyticsData")
-  : mongoose.models.AnalyticsData || mongoose.model("AnalyticsData", analyticsDataSchema);
+  : mongoose.models.AnalyticsData ||
+    mongoose.model("AnalyticsData", analyticsDataSchema);

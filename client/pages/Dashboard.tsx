@@ -2,7 +2,13 @@ import { useEffect, useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { ChevronLeft, Calendar, Crop, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  Calendar,
+  Crop,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 
 const Analytics = lazy(() => import("@/components/features/Analytics"));
 
@@ -19,7 +25,9 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [history, setHistory] = useState<AdvisoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"history" | "subscription" | "analytics">("history");
+  const [activeTab, setActiveTab] = useState<
+    "history" | "subscription" | "analytics"
+  >("history");
 
   useEffect(() => {
     if (!farmer || farmer.isGuest) {
@@ -102,7 +110,9 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-sm text-slate-600">Soil Type</p>
-              <p className="font-medium">{farmer?.soilType || "Not specified"}</p>
+              <p className="font-medium">
+                {farmer?.soilType || "Not specified"}
+              </p>
             </div>
             <div>
               <p className="text-sm text-slate-600">Land Size</p>
@@ -135,12 +145,16 @@ export default function Dashboard() {
                 {isPremium ? (
                   <>
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-700">Premium</span>
+                    <span className="text-sm font-medium text-green-700">
+                      Premium
+                    </span>
                   </>
                 ) : (
                   <>
                     <AlertCircle className="h-4 w-4 text-slate-600" />
-                    <span className="text-sm font-medium text-slate-700">Free Plan</span>
+                    <span className="text-sm font-medium text-slate-700">
+                      Free Plan
+                    </span>
                   </>
                 )}
               </div>
@@ -270,7 +284,9 @@ export default function Dashboard() {
               <div className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 p-4 border border-slate-200">
-                    <p className="text-sm text-slate-600 mb-1">Total Advisories</p>
+                    <p className="text-sm text-slate-600 mb-1">
+                      Total Advisories
+                    </p>
                     <p className="text-3xl font-bold">{history.length}</p>
                   </div>
                   <div className="rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 p-4 border border-blue-200">

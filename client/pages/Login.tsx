@@ -55,9 +55,7 @@ export default function Login() {
       setStatus("Failed to load as guest");
     } catch (err: any) {
       setStatus(
-        err?.name === "AbortError"
-          ? "Request timed out"
-          : "Network error"
+        err?.name === "AbortError" ? "Request timed out" : "Network error",
       );
     } finally {
       setSubmitting(false);

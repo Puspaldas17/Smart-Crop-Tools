@@ -67,7 +67,9 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
   const [weatherData, setWeatherData] = useState<WeatherAnalysisData[]>([]);
   const [cropTrends, setCropTrends] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "crop" | "soil" | "weather">("overview");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "crop" | "soil" | "weather"
+  >("overview");
 
   useEffect(() => {
     fetchAnalytics();
@@ -165,7 +167,9 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
                 <p className="text-sm text-slate-600">Total Advisories</p>
                 <TrendingUp className="h-4 w-4 text-blue-600" />
               </div>
-              <p className="text-3xl font-bold text-blue-900">{summary.totalAdvisories}</p>
+              <p className="text-3xl font-bold text-blue-900">
+                {summary.totalAdvisories}
+              </p>
             </div>
 
             <div className="rounded-lg border border-slate-200 p-4 bg-gradient-to-br from-green-50 to-green-100">
@@ -176,8 +180,10 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
               <p className="text-3xl font-bold text-green-900">
                 {summary.soilHealthTrend.length > 0
                   ? Math.round(
-                      summary.soilHealthTrend.reduce((sum, d) => sum + d.moisture, 0) /
-                        summary.soilHealthTrend.length
+                      summary.soilHealthTrend.reduce(
+                        (sum, d) => sum + d.moisture,
+                        0,
+                      ) / summary.soilHealthTrend.length,
                     )
                   : 0}
                 %
@@ -201,7 +207,10 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
               </div>
               <p className="text-3xl font-bold text-red-900">
                 {summary.pestAnalysis.length > 0
-                  ? Math.round(summary.pestAnalysis.reduce((sum, p) => sum + p.risk, 0) / summary.pestAnalysis.length)
+                  ? Math.round(
+                      summary.pestAnalysis.reduce((sum, p) => sum + p.risk, 0) /
+                        summary.pestAnalysis.length,
+                    )
                   : 0}
               </p>
             </div>
@@ -215,16 +224,43 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
                   <BarChart data={summary.cropPerformance}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="crop" />
-                    <YAxis yAxisId="left" label={{ value: "Count", angle: -90, position: "insideLeft" }} />
-                    <YAxis yAxisId="right" orientation="right" label={{ value: "Score", angle: 90, position: "insideRight" }} />
+                    <YAxis
+                      yAxisId="left"
+                      label={{
+                        value: "Count",
+                        angle: -90,
+                        position: "insideLeft",
+                      }}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      label={{
+                        value: "Score",
+                        angle: 90,
+                        position: "insideRight",
+                      }}
+                    />
                     <Tooltip />
                     <Legend />
-                    <Bar yAxisId="left" dataKey="count" fill="#3b82f6" name="Advisories" />
-                    <Bar yAxisId="right" dataKey="avgScore" fill="#10b981" name="Avg Score" />
+                    <Bar
+                      yAxisId="left"
+                      dataKey="count"
+                      fill="#3b82f6"
+                      name="Advisories"
+                    />
+                    <Bar
+                      yAxisId="right"
+                      dataKey="avgScore"
+                      fill="#10b981"
+                      name="Avg Score"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-sm text-slate-500 py-8 text-center">No crop data available</p>
+                <p className="text-sm text-slate-500 py-8 text-center">
+                  No crop data available
+                </p>
               )}
             </div>
 
@@ -236,13 +272,21 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
                     <PolarGrid />
                     <PolarAngleAxis dataKey="type" />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} />
-                    <Radar name="Risk Level" dataKey="risk" stroke="#ef4444" fill="#ef4444" fillOpacity={0.6} />
+                    <Radar
+                      name="Risk Level"
+                      dataKey="risk"
+                      stroke="#ef4444"
+                      fill="#ef4444"
+                      fillOpacity={0.6}
+                    />
                     <Legend />
                     <Tooltip />
                   </RadarChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-sm text-slate-500 py-8 text-center">No pest data available</p>
+                <p className="text-sm text-slate-500 py-8 text-center">
+                  No pest data available
+                </p>
               )}
             </div>
           </div>
@@ -259,47 +303,90 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="healthScore" stroke="#10b981" name="Health Score" dot={false} />
-              <Line type="monotone" dataKey="yield" stroke="#3b82f6" name="Yield" dot={false} />
-              <Line type="monotone" dataKey="pestPressure" stroke="#ef4444" name="Pest Pressure" dot={false} />
+              <Line
+                type="monotone"
+                dataKey="healthScore"
+                stroke="#10b981"
+                name="Health Score"
+                dot={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="yield"
+                stroke="#3b82f6"
+                name="Yield"
+                dot={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="pestPressure"
+                stroke="#ef4444"
+                name="Pest Pressure"
+                dot={false}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
       )}
 
-      {activeTab === "soil" && summary && summary.soilHealthTrend.length > 0 && (
-        <div className="space-y-4">
-          <div className="rounded-lg border border-slate-200 p-4 bg-white">
-            <h3 className="font-semibold mb-4">Soil Moisture & Nitrogen Trend</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={summary.soilHealthTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
-                <Tooltip />
-                <Legend />
-                <Area yAxisId="left" type="monotone" dataKey="moisture" fill="#06b6d4" stroke="#06b6d4" name="Moisture %" />
-                <Area yAxisId="right" type="monotone" dataKey="nitrogen" fill="#f59e0b" stroke="#f59e0b" name="Nitrogen %" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+      {activeTab === "soil" &&
+        summary &&
+        summary.soilHealthTrend.length > 0 && (
+          <div className="space-y-4">
+            <div className="rounded-lg border border-slate-200 p-4 bg-white">
+              <h3 className="font-semibold mb-4">
+                Soil Moisture & Nitrogen Trend
+              </h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={summary.soilHealthTrend}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="right" orientation="right" />
+                  <Tooltip />
+                  <Legend />
+                  <Area
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="moisture"
+                    fill="#06b6d4"
+                    stroke="#06b6d4"
+                    name="Moisture %"
+                  />
+                  <Area
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="nitrogen"
+                    fill="#f59e0b"
+                    stroke="#f59e0b"
+                    name="Nitrogen %"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
 
-          <div className="rounded-lg border border-slate-200 p-4 bg-white">
-            <h3 className="font-semibold mb-4">Soil pH Level</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={summary.soilHealthTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis domain={[4, 8]} />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="pH" stroke="#8b5cf6" strokeWidth={2} name="pH Level" dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="rounded-lg border border-slate-200 p-4 bg-white">
+              <h3 className="font-semibold mb-4">Soil pH Level</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={summary.soilHealthTrend}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis domain={[4, 8]} />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="pH"
+                    stroke="#8b5cf6"
+                    strokeWidth={2}
+                    name="pH Level"
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {activeTab === "weather" && weatherData.length > 0 && (
         <div className="space-y-4">
@@ -309,13 +396,49 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
               <LineChart data={weatherData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
-                <YAxis yAxisId="left" label={{ value: "°C / %", angle: -90, position: "insideLeft" }} />
-                <YAxis yAxisId="right" orientation="right" label={{ value: "Health Score", angle: 90, position: "insideRight" }} />
+                <YAxis
+                  yAxisId="left"
+                  label={{
+                    value: "°C / %",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  label={{
+                    value: "Health Score",
+                    angle: 90,
+                    position: "insideRight",
+                  }}
+                />
                 <Tooltip />
                 <Legend />
-                <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#f97316" name="Temperature °C" dot={false} />
-                <Line yAxisId="left" type="monotone" dataKey="humidity" stroke="#06b6d4" name="Humidity %" dot={false} />
-                <Line yAxisId="right" type="monotone" dataKey="cropHealthScore" stroke="#10b981" name="Crop Health" dot={false} />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="temperature"
+                  stroke="#f97316"
+                  name="Temperature °C"
+                  dot={false}
+                />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="humidity"
+                  stroke="#06b6d4"
+                  name="Humidity %"
+                  dot={false}
+                />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="cropHealthScore"
+                  stroke="#10b981"
+                  name="Crop Health"
+                  dot={false}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>

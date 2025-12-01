@@ -4,9 +4,11 @@ import { Farmer, AdvisoryHistory } from "../db";
 export const saveAdvisoryHistory: RequestHandler = async (req, res) => {
   try {
     const { farmerId, crop, advisory, weatherData, soilData } = req.body;
-    
+
     if (!farmerId || !crop || !advisory) {
-      return res.status(400).json({ error: "farmerId, crop, and advisory are required" });
+      return res
+        .status(400)
+        .json({ error: "farmerId, crop, and advisory are required" });
     }
 
     const history = await (AdvisoryHistory as any).create({
@@ -41,8 +43,10 @@ export const getAdvisoryHistory: RequestHandler = async (req, res) => {
     }
 
     const sorted = histories
-      .sort((a: any, b: any) =>
-        new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      .sort(
+        (a: any, b: any) =>
+          new Date(b.createdAt || 0).getTime() -
+          new Date(a.createdAt || 0).getTime(),
       )
       .slice(0, limit);
 
@@ -63,7 +67,9 @@ export const getProfileData: RequestHandler = async (req, res) => {
 
     const farmer = (Farmer as any).findById
       ? await (Farmer as any).findById(farmerId)
-      : await (Farmer as any).find({ _id: farmerId }).then((docs: any[]) => docs[0]);
+      : await (Farmer as any)
+          .find({ _id: farmerId })
+          .then((docs: any[]) => docs[0]);
 
     if (!farmer) {
       return res.status(404).json({ error: "Farmer not found" });
@@ -108,7 +114,7 @@ export const updateSubscription: RequestHandler = async (req, res) => {
     const farmer = await (Farmer as any).findOneAndUpdate(
       { _id: farmerId },
       updatePayload,
-      { new: true, upsert: false }
+      { new: true, upsert: false },
     );
 
     if (!farmer) {

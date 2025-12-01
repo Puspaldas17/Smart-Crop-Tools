@@ -57,7 +57,12 @@ export interface AnalyticsDataDTO {
 export interface AnalyticsSummaryDTO {
   totalAdvisories: number;
   cropPerformance: Array<{ crop: string; count: number; avgScore: number }>;
-  soilHealthTrend: Array<{ date: string; moisture: number; nitrogen: number; pH: number }>;
+  soilHealthTrend: Array<{
+    date: string;
+    moisture: number;
+    nitrogen: number;
+    pH: number;
+  }>;
   weatherImpact: { temperature: number; humidity: number; rainfall: number };
   pestAnalysis: Array<{ type: string; risk: number; frequency: number }>;
 }
