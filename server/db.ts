@@ -35,6 +35,14 @@ class InMemoryCollection<T extends AnyDoc> {
     return found ? (structuredClone(found) as T) : null;
   }
 
+  async find(filter: Partial<T>): Promise<T[]> {
+    return this.items
+      .filter((d) =>
+        Object.entries(filter).every(([k, v]) => (d as any)[k] === v),
+      )
+      .map((d) => structuredClone(d) as T);
+  }
+
   async findOneAndUpdate(
     filter: Partial<T>,
     update: any,
