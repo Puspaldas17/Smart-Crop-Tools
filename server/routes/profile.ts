@@ -33,9 +33,15 @@ export const getAdvisoryHistory: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId is required" });
     }
 
-    const histories = await (AdvisoryHistory as any).find?.({ farmerId }) || [];
+    let histories: any[] = [];
+    if ((AdvisoryHistory as any).find) {
+      histories = await (AdvisoryHistory as any).find({ farmerId });
+    } else {
+      histories = [];
+    }
+
     const sorted = histories
-      .sort((a: any, b: any) => 
+      .sort((a: any, b: any) =>
         new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
       )
       .slice(0, limit);
