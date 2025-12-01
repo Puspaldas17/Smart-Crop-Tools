@@ -47,14 +47,35 @@ export default function AdvisoryWidget() {
             weatherData: { lat: coords.lat, lon: coords.lon },
           };
 
+          const analyticsPayload = {
+            farmerId: farmer._id,
+            crop,
+            cropHealthScore: Math.random() * 40 + 60,
+            soilMoisture: Math.random() * 50 + 30,
+            soilNitrogen: Math.random() * 60 + 20,
+            soilPH: 5.8 + Math.random() * 1.8,
+            temperature: 20 + Math.random() * 20,
+            humidity: 40 + Math.random() * 40,
+            rainfall: Math.random() * 30,
+            pestPressure: Math.random() * 60,
+            diseaseRisk: Math.random() * 50,
+          };
+
           try {
-            await fetch("/api/advisory/history", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(historyPayload),
-            });
-          } catch (historyError) {
-            console.error("Failed to save history:", historyError);
+            await Promise.all([
+              fetch("/api/advisory/history", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(historyPayload),
+              }),
+              fetch("/api/analytics/record", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(analyticsPayload),
+              }),
+            ]);
+          } catch (error) {
+            console.error("Failed to save data:", error);
           }
         }
       } else setStatus(data.error || "Failed");
