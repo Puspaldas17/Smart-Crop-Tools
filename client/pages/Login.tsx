@@ -32,6 +32,38 @@ export default function Login() {
     [],
   );
 
+  async function handleGuestLogin() {
+    setSubmitting(true);
+    setStatus("Loading as guest…");
+    try {
+      const r = await fetchWithTimeout("/api/auth/guest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          language: "en-IN",
+        }),
+        timeoutMs: 8000,
+      });
+      const data = await r.json().catch(() => ({}));
+      if (r.ok) {
+        login(data as any);
+        toast.success("Welcome! Continuing as guest...");
+        setStatus("Success. Redirecting…");
+        navigate("/#tools", { replace: true });
+        return;
+      }
+      setStatus("Failed to load as guest");
+    } catch (err: any) {
+      setStatus(
+        err?.name === "AbortError"
+          ? "Request timed out"
+          : "Network error"
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (submitting) return;
