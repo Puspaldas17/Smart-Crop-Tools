@@ -20,6 +20,21 @@ export interface FarmerDTO {
   language?: string;
   location?: { lat?: number; lon?: number; village?: string; state?: string };
   isGuest?: boolean;
+  subscriptionStatus?: "free" | "premium";
+  subscriptionStartDate?: Date;
+  subscriptionEndDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface AdvisoryHistoryDTO {
+  _id?: string;
+  farmerId: string;
+  crop: string;
+  advisory: string;
+  timestamp: Date;
+  weatherData?: Record<string, any>;
+  soilData?: Record<string, any>;
 }
 
 export interface AdvisoryDTO {
