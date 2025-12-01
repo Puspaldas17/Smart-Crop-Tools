@@ -96,13 +96,18 @@ export const updateSubscription: RequestHandler = async (req, res) => {
     const endDate = new Date();
     endDate.setFullYear(endDate.getFullYear() + 1);
 
+    const updatePayload = {
+      subscriptionStatus,
+      subscriptionStartDate: now,
+    };
+
+    if (subscriptionStatus === "premium") {
+      (updatePayload as any).subscriptionEndDate = endDate;
+    }
+
     const farmer = await (Farmer as any).findOneAndUpdate(
       { _id: farmerId },
-      {
-        subscriptionStatus,
-        subscriptionStartDate: now,
-        subscriptionEndDate: subscriptionStatus === "premium" ? endDate : undefined,
-      },
+      updatePayload,
       { new: true, upsert: false }
     );
 
