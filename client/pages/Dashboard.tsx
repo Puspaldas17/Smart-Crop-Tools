@@ -312,6 +312,19 @@ export default function Dashboard() {
                 </div>
               </div>
             )}
+
+            {activeTab === "analytics" && farmer?._id && (
+              <Suspense
+                fallback={
+                  <div className="animate-pulse space-y-3">
+                    <div className="h-8 w-40 rounded bg-slate-200" />
+                    <div className="h-64 rounded bg-slate-200" />
+                  </div>
+                }
+              >
+                <Analytics farmerId={farmer._id} />
+              </Suspense>
+            )}
           </div>
         </div>
       </div>
