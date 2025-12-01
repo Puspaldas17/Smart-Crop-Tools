@@ -126,6 +126,7 @@ export default function RootLayout() {
                   <nav className="mt-8 grid gap-4">
                     {[
                       ...(farmer ? [{ href: "/#tools", label: "Tools" }] : []),
+                      ...(farmer && !farmer.isGuest ? [{ href: "/dashboard", label: "Dashboard" }] : []),
                       { href: "/#about", label: "About" },
                       {
                         href: farmer ? "/profile" : "/login",
