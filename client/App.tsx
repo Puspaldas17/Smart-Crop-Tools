@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import RootLayout from "./pages/Layout";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
