@@ -9,7 +9,20 @@ import { createAdvisory } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
-import { upsertFarmer } from "./routes/auth";
+import { upsertFarmer, guestLogin } from "./routes/auth";
+import {
+  saveAdvisoryHistory,
+  getAdvisoryHistory,
+  getProfileData,
+  updateSubscription,
+} from "./routes/profile";
+import {
+  recordAnalytics,
+  getAnalyticsSummary,
+  getCropTrends,
+  getSoilHealthTrend,
+  getWeatherImpactAnalysis,
+} from "./routes/analytics";
 import { getPostById } from "./routes/neon";
 
 export function createServer() {
@@ -48,6 +61,18 @@ export function createServer() {
   app.post("/api/chat", chatHandler);
   app.post("/api/predict", uploadMiddleware, predictHandler);
   app.post("/api/auth/farmer", upsertFarmer);
+  app.post("/api/auth/guest", guestLogin);
+
+  app.post("/api/advisory/history", saveAdvisoryHistory);
+  app.get("/api/advisory/history/:farmerId", getAdvisoryHistory);
+  app.get("/api/profile/:farmerId", getProfileData);
+  app.put("/api/profile/:farmerId/subscription", updateSubscription);
+
+  app.post("/api/analytics/record", recordAnalytics);
+  app.get("/api/analytics/summary/:farmerId", getAnalyticsSummary);
+  app.get("/api/analytics/crop-trends/:farmerId", getCropTrends);
+  app.get("/api/analytics/soil-health/:farmerId", getSoilHealthTrend);
+  app.get("/api/analytics/weather-impact/:farmerId", getWeatherImpactAnalysis);
 
   // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
   app.get("/api/neon/posts/:id", getPostById);

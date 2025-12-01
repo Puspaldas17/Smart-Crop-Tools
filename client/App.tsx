@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import RootLayout from "./pages/Layout";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
@@ -58,6 +59,7 @@ const App = () => (
                 <Route index element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Route>

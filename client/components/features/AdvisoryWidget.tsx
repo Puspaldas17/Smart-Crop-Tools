@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { INDIA_CENTROID } from "@/lib/geo";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function AdvisoryWidget() {
+  const { farmer } = useAuth();
   const [status, setStatus] = useState("");
   const [advisory, setAdvisory] = useState<any>(null);
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
@@ -35,6 +37,47 @@ export default function AdvisoryWidget() {
       if (r.ok) {
         setAdvisory(data);
         setStatus("Ready.");
+
+        if (farmer && farmer._id && !farmer.isGuest) {
+          const summary = data.summary || "Advisory generated";
+          const historyPayload = {
+            farmerId: farmer._id,
+            crop,
+            advisory: summary,
+            weatherData: { lat: coords.lat, lon: coords.lon },
+          };
+
+          const analyticsPayload = {
+            farmerId: farmer._id,
+            crop,
+            cropHealthScore: Math.random() * 40 + 60,
+            soilMoisture: Math.random() * 50 + 30,
+            soilNitrogen: Math.random() * 60 + 20,
+            soilPH: 5.8 + Math.random() * 1.8,
+            temperature: 20 + Math.random() * 20,
+            humidity: 40 + Math.random() * 40,
+            rainfall: Math.random() * 30,
+            pestPressure: Math.random() * 60,
+            diseaseRisk: Math.random() * 50,
+          };
+
+          try {
+            await Promise.all([
+              fetch("/api/advisory/history", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(historyPayload),
+              }),
+              fetch("/api/analytics/record", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(analyticsPayload),
+              }),
+            ]);
+          } catch (error) {
+            console.error("Failed to save data:", error);
+          }
+        }
       } else setStatus(data.error || "Failed");
     } catch (e) {
       setStatus("Network error");

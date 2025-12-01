@@ -35,6 +35,14 @@ class InMemoryCollection<T extends AnyDoc> {
     return found ? (structuredClone(found) as T) : null;
   }
 
+  async find(filter: Partial<T>): Promise<T[]> {
+    return this.items
+      .filter((d) =>
+        Object.entries(filter).every(([k, v]) => (d as any)[k] === v),
+      )
+      .map((d) => structuredClone(d) as T);
+  }
+
   async findOneAndUpdate(
     filter: Partial<T>,
     update: any,
@@ -47,7 +55,6 @@ class InMemoryCollection<T extends AnyDoc> {
     const now = new Date();
     const applyUpdate = (base: T) => {
       const clone = { ...base } as T;
-      // Apply $setOnInsert only if it exists and when creating; handled separately
       const plain = Object.fromEntries(
         Object.entries(update).filter(([k]) => k !== "$setOnInsert"),
       );
@@ -64,14 +71,22 @@ class InMemoryCollection<T extends AnyDoc> {
     }
 
     if (options.upsert) {
+      const plain = Object.fromEntries(
+        Object.entries(update || {}).filter(([k]) => k !== "$setOnInsert"),
+      );
       const base: T = {
         ...(update?.$setOnInsert || {}),
-        ...(Object.fromEntries(
-          Object.entries(update || {}).filter(([k]) => k !== "$setOnInsert"),
-        ) as any),
+        ...plain,
       } as T;
-      const created = await this.create(base);
-      return created;
+
+      const out = {
+        ...base,
+        _id: this.genId(),
+        createdAt: (base as any).createdAt || now,
+        updatedAt: now,
+      } as T;
+      this.items.push(out);
+      return structuredClone(out);
     }
 
     return null;
@@ -103,6 +118,13 @@ const farmerSchema = new mongoose.Schema(
       village: String,
       state: String,
     },
+    subscriptionStatus: {
+      type: String,
+      default: "free",
+      enum: ["free", "premium"],
+    },
+    subscriptionStartDate: { type: Date },
+    subscriptionEndDate: { type: Date },
   },
   { timestamps: true },
 );
@@ -120,6 +142,44 @@ const advisorySchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+const advisoryHistorySchema = new mongoose.Schema(
+  {
+    farmerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Farmer",
+      required: true,
+    },
+    crop: { type: String, required: true },
+    advisory: { type: String, required: true },
+    weatherData: mongoose.Schema.Types.Mixed,
+    soilData: mongoose.Schema.Types.Mixed,
+  },
+  { timestamps: true },
+);
+
+const analyticsDataSchema = new mongoose.Schema(
+  {
+    farmerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Farmer",
+      required: true,
+    },
+    crop: { type: String, required: true },
+    date: { type: Date, default: Date.now },
+    cropHealthScore: { type: Number, min: 0, max: 100 },
+    yield: { type: Number },
+    soilMoisture: { type: Number, min: 0, max: 100 },
+    soilNitrogen: { type: Number, min: 0, max: 100 },
+    soilPH: { type: Number, min: 0, max: 14 },
+    temperature: { type: Number },
+    humidity: { type: Number, min: 0, max: 100 },
+    rainfall: { type: Number },
+    pestPressure: { type: Number, min: 0, max: 100 },
+    diseaseRisk: { type: Number, min: 0, max: 100 },
+  },
+  { timestamps: true },
+);
+
 export const Farmer: any = USE_MEMORY
   ? new InMemoryCollection("Farmer")
   : mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema);
@@ -127,3 +187,13 @@ export const Farmer: any = USE_MEMORY
 export const Advisory: any = USE_MEMORY
   ? new InMemoryCollection("Advisory")
   : mongoose.models.Advisory || mongoose.model("Advisory", advisorySchema);
+
+export const AdvisoryHistory: any = USE_MEMORY
+  ? new InMemoryCollection("AdvisoryHistory")
+  : mongoose.models.AdvisoryHistory ||
+    mongoose.model("AdvisoryHistory", advisoryHistorySchema);
+
+export const AnalyticsData: any = USE_MEMORY
+  ? new InMemoryCollection("AnalyticsData")
+  : mongoose.models.AnalyticsData ||
+    mongoose.model("AnalyticsData", analyticsDataSchema);

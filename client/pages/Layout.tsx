@@ -48,6 +48,9 @@ function HeaderAuth() {
             <a href="/#tools">Open Tools</a>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
+            <Link to="/dashboard">Dashboard</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link to="/profile">Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -123,6 +126,9 @@ export default function RootLayout() {
                   <nav className="mt-8 grid gap-4">
                     {[
                       ...(farmer ? [{ href: "/#tools", label: "Tools" }] : []),
+                      ...(farmer && !farmer.isGuest
+                        ? [{ href: "/dashboard", label: "Dashboard" }]
+                        : []),
                       { href: "/#about", label: "About" },
                       {
                         href: farmer ? "/profile" : "/login",
