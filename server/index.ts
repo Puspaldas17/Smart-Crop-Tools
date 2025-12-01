@@ -9,7 +9,7 @@ import { createAdvisory } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
-import { upsertFarmer } from "./routes/auth";
+import { upsertFarmer, guestLogin } from "./routes/auth";
 import { getPostById } from "./routes/neon";
 
 export function createServer() {
