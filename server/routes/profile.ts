@@ -61,8 +61,10 @@ export const getProfileData: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId is required" });
     }
 
-    const farmer = await (Farmer as any).findById?.(farmerId);
-    
+    const farmer = (Farmer as any).findById
+      ? await (Farmer as any).findById(farmerId)
+      : await (Farmer as any).find({ _id: farmerId }).then((docs: any[]) => docs[0]);
+
     if (!farmer) {
       return res.status(404).json({ error: "Farmer not found" });
     }
