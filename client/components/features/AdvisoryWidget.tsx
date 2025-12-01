@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { INDIA_CENTROID } from "@/lib/geo";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function AdvisoryWidget() {
+  const { farmer } = useAuth();
   const [status, setStatus] = useState("");
   const [advisory, setAdvisory] = useState<any>(null);
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
