@@ -57,6 +57,12 @@ export function createServer() {
   app.get("/api/profile/:farmerId", getProfileData);
   app.put("/api/profile/:farmerId/subscription", updateSubscription);
 
+  app.post("/api/analytics/record", recordAnalytics);
+  app.get("/api/analytics/summary/:farmerId", getAnalyticsSummary);
+  app.get("/api/analytics/crop-trends/:farmerId", getCropTrends);
+  app.get("/api/analytics/soil-health/:farmerId", getSoilHealthTrend);
+  app.get("/api/analytics/weather-impact/:farmerId", getWeatherImpactAnalysis);
+
   // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
   app.get("/api/neon/posts/:id", getPostById);
 
