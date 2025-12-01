@@ -164,7 +164,7 @@ export default function Login() {
         <button
           disabled={submitting}
           aria-busy={submitting}
-          className="mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-80"
+          className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-80"
         >
           {submitting ? (
             <span className="inline-flex items-center gap-2">
@@ -192,6 +192,19 @@ export default function Login() {
         </button>
         <div className="text-sm text-slate-600">{status}</div>
       </form>
+
+      <div className="mt-6 border-t border-slate-200 pt-4">
+        <p className="mb-3 text-center text-sm text-slate-600">
+          Or continue as a guest to explore
+        </p>
+        <button
+          onClick={handleGuestLogin}
+          disabled={submitting}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Continue as Guest
+        </button>
+      </div>
     </div>
   );
 }
