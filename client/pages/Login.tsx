@@ -45,7 +45,11 @@ export default function Login() {
         timeoutMs: 8000,
       });
       const data = await r.json().catch(() => ({}));
-      console.log("Guest login response:", { status: r.status, ok: r.ok, data });
+      console.log("Guest login response:", {
+        status: r.status,
+        ok: r.ok,
+        data,
+      });
       if (r.ok) {
         login(data as any);
         toast.success("Welcome! Continuing as guest...");
@@ -53,7 +57,9 @@ export default function Login() {
         navigate("/#tools", { replace: true });
         return;
       }
-      setStatus(`Failed to load as guest (${r.status}): ${data?.error || "Unknown error"}`);
+      setStatus(
+        `Failed to load as guest (${r.status}): ${data?.error || "Unknown error"}`,
+      );
     } catch (err: any) {
       console.error("Guest login error:", err);
       setStatus(
