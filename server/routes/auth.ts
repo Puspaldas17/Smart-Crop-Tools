@@ -34,9 +34,12 @@ export const guestLogin: RequestHandler = async (req, res) => {
     const guest = {
       _id: "guest_" + Date.now(),
       name: "Guest User",
-      phone: undefined,
+      phone: "",
+      soilType: undefined,
+      landSize: 0,
       language: req.body?.language || "en-IN",
       isGuest: true,
+      subscriptionStatus: "free" as const,
     };
     return res.status(200).json(guest);
   } catch (e) {
