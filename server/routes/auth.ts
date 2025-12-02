@@ -34,13 +34,13 @@ export const guestLogin: RequestHandler = async (req, res) => {
     const guest = {
       _id: "guest_" + Date.now(),
       name: "Guest User",
+      phone: undefined,
       language: req.body?.language || "en-IN",
       isGuest: true,
     };
-    res.status(200).json(guest);
-    return;
+    return res.status(200).json(guest);
   } catch (e) {
     console.error("Guest login error:", e);
-    res.status(500).json({ error: "guest login error" });
+    return res.status(500).json({ error: "guest login error" });
   }
 };
