@@ -46,7 +46,7 @@ export const guestLogin: RequestHandler = async (req, res) => {
     console.error("[auth] Guest login error:", err);
     res.status(500).json({
       error: "guest login error",
-      details: err instanceof Error ? err.message : "Unknown error"
+      details: err instanceof Error ? err.message : "Unknown error",
     });
   }
 };

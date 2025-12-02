@@ -72,7 +72,7 @@ export default function Login() {
       setStatus(
         r.status === 500
           ? `Server error: ${errorMsg}`
-          : "Failed to load as guest"
+          : "Failed to load as guest",
       );
     } catch (err: any) {
       console.error("Guest login exception:", err);
