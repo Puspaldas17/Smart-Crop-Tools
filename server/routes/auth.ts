@@ -31,16 +31,22 @@ export const upsertFarmer: RequestHandler = async (req, res) => {
 
 export const guestLogin: RequestHandler = async (req, res) => {
   try {
+    const language = req.body?.language || "en-IN";
     const guest = {
-      _id: "guest_" + Date.now(),
+      _id: `guest_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
       name: "Guest User",
-      language: req.body?.language || "en-IN",
+      language,
       isGuest: true,
+      createdAt: new Date(),
     };
+
+    console.log("[auth] Guest login successful:", guest._id);
     res.status(200).json(guest);
-    return;
-  } catch (e) {
-    console.error("Guest login error:", e);
-    res.status(500).json({ error: "guest login error" });
+  } catch (err) {
+    console.error("[auth] Guest login error:", err);
+    res.status(500).json({
+      error: "guest login error",
+      details: err instanceof Error ? err.message : "Unknown error"
+    });
   }
 };
