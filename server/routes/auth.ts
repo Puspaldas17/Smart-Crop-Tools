@@ -22,10 +22,10 @@ export const upsertFarmer: RequestHandler = async (req, res) => {
       { new: true, upsert: true },
     );
 
-    res.json(farmer);
+    return res.json(farmer);
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: "auth error" });
+    return res.status(500).json({ error: "auth error" });
   }
 };
 
