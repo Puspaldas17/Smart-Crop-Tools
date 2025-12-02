@@ -44,16 +44,38 @@ export default function Login() {
         }),
         timeoutMs: 8000,
       });
-      const data = await r.json().catch(() => ({}));
-      if (r.ok) {
-        login(data as any);
+
+      let data: any = {};
+      try {
+        data = await r.json();
+      } catch (parseErr) {
+        console.error("Failed to parse response:", parseErr);
+        setStatus("Server error: Invalid response");
+        setSubmitting(false);
+        return;
+      }
+
+      if (r.ok && data._id) {
+        login(data);
         toast.success("Welcome! Continuing as guest...");
         setStatus("Success. Redirecting…");
         navigate("/#tools", { replace: true });
         return;
       }
-      setStatus("Failed to load as guest");
+
+      const errorMsg = data?.error || data?.details || "Unknown error";
+      console.error("Guest login failed:", {
+        status: r.status,
+        statusText: r.statusText,
+        error: errorMsg,
+      });
+      setStatus(
+        r.status === 500
+          ? `Server error: ${errorMsg}`
+          : "Failed to load as guest"
+      );
     } catch (err: any) {
+      console.error("Guest login exception:", err);
       setStatus(
         err?.name === "AbortError" ? "Request timed out" : "Network error",
       );
