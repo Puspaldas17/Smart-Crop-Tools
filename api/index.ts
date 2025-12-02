@@ -3,9 +3,6 @@ import fs from "fs";
 import path from "path";
 import serverless from "serverless-http";
 
-// Lazy-initialize the Express app so this function works both on Vercel
-// (where a compiled server bundle may exist under dist/server) and locally
-// (where we can import the source createServer).
 let handler: any = null;
 
 async function initHandler() {
@@ -16,27 +13,33 @@ async function initHandler() {
 
 	if (fs.existsSync(distServerPath)) {
 		try {
-			// Try to import the compiled server bundle first (production builds)
+			console.log("[api] Attempting to import built server from:", distServerPath);
 			const mod = await import(distServerPath);
-			// The compiled bundle may export a `createServer` factory or the app directly
 			if (mod.createServer) {
 				app = mod.createServer();
+				console.log("[api] Successfully created app from built server");
 			} else if (mod.default && typeof mod.default === "function") {
-				// default export might be an express app
 				app = mod.default;
+				console.log("[api] Successfully used default export from built server");
 			} else if (mod.app) {
 				app = mod.app;
+				console.log("[api] Successfully used app export from built server");
 			}
 		} catch (err) {
-			// Fall through to source import below
-			console.warn("Failed to import dist server bundle:", err);
+			console.warn("[api] Failed to import dist server bundle:", err);
 		}
 	}
 
 	if (!app) {
-		// Import the source server (TypeScript) and create the app.
-		const src = await import("../server/index");
-		app = src.createServer();
+		try {
+			console.log("[api] Falling back to source server import");
+			const src = await import("../server/index");
+			app = src.createServer();
+			console.log("[api] Successfully created app from source server");
+		} catch (err) {
+			console.error("[api] Fatal error creating server:", err);
+			throw err;
+		}
 	}
 
 	handler = serverless(app);
@@ -44,6 +47,11 @@ async function initHandler() {
 }
 
 export default async function vercelHandler(req: any, res: any) {
-	const h = await initHandler();
-	return h(req, res);
+	try {
+		const h = await initHandler();
+		return h(req, res);
+	} catch (err) {
+		console.error("[api] Handler error:", err);
+		res.status(500).json({ error: "Server initialization failed" });
+	}
 }
