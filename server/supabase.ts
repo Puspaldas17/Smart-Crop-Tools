@@ -7,12 +7,10 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function initSupabaseSchema() {
   try {
-    const { error: createTableError } = await supabase.rpc(
-      "init_schema",
-    );
+    const { error: createTableError } = await supabase.rpc("init_schema");
     if (createTableError) {
       console.warn(
-        "[supabase] Schema already exists or init_schema not available"
+        "[supabase] Schema already exists or init_schema not available",
       );
     }
   } catch (e) {

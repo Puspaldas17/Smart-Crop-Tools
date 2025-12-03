@@ -75,13 +75,16 @@ export const getAnalyticsSummary: RequestHandler = async (req, res) => {
       .eq("farmer_id", farmerId);
 
     if (analyticsError || advisoriesError) {
-      console.error("[analytics] Error fetching summary:", analyticsError || advisoriesError);
+      console.error(
+        "[analytics] Error fetching summary:",
+        analyticsError || advisoriesError,
+      );
       return res.status(500).json({ error: "Failed to fetch analytics" });
     }
 
     const recentData = allAnalytics || [];
     const cropStats = new Map<string, { count: number; scores: number[] }>();
-    
+
     (advisories || []).forEach((adv: any) => {
       if (!cropStats.has(adv.crop)) {
         cropStats.set(adv.crop, { count: 0, scores: [] });
@@ -208,15 +211,13 @@ export const getCropTrends: RequestHandler = async (req, res) => {
       return res.status(500).json({ error: "Failed to fetch crop trends" });
     }
 
-    const trends = (data || [])
-      .slice(-30)
-      .map((d: any) => ({
-        date: new Date(d.created_at).toLocaleDateString("en-IN"),
-        healthScore: d.crop_health_score || 0,
-        yield: d.yield || 0,
-        pestPressure: d.pest_pressure || 0,
-        diseaseRisk: d.disease_risk || 0,
-      }));
+    const trends = (data || []).slice(-30).map((d: any) => ({
+      date: new Date(d.created_at).toLocaleDateString("en-IN"),
+      healthScore: d.crop_health_score || 0,
+      yield: d.yield || 0,
+      pestPressure: d.pest_pressure || 0,
+      diseaseRisk: d.disease_risk || 0,
+    }));
 
     if (trends.length === 0) {
       for (let i = 0; i < 15; i++) {
@@ -256,7 +257,9 @@ export const getSoilHealthTrend: RequestHandler = async (req, res) => {
 
     if (error) {
       console.error("[analytics] Error fetching soil health trend:", error);
-      return res.status(500).json({ error: "Failed to fetch soil health trend" });
+      return res
+        .status(500)
+        .json({ error: "Failed to fetch soil health trend" });
     }
 
     const trend = (data || [])
@@ -316,7 +319,9 @@ export const getWeatherImpactAnalysis: RequestHandler = async (req, res) => {
 
     if (error) {
       console.error("[analytics] Error fetching weather impact:", error);
-      return res.status(500).json({ error: "Failed to fetch weather impact analysis" });
+      return res
+        .status(500)
+        .json({ error: "Failed to fetch weather impact analysis" });
     }
 
     const analysis = (data || [])
