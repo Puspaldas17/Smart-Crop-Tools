@@ -66,7 +66,6 @@ export const guestLogin: RequestHandler = async (req, res) => {
     const guest = {
       id: "guest_" + Date.now(),
       name: "Guest User",
-      phone: undefined,
       language: req.body?.language || "en-IN",
       isGuest: true,
     };
