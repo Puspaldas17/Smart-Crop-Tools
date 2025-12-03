@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { supabase } from "../supabase";
+import { Advisory } from "../db";
 
 function generateAdvice({
   tempC,
@@ -69,28 +69,18 @@ export const createAdvisory: RequestHandler = async (req, res) => {
     const pest =
       "Scout weekly; use pheromone traps; prefer bio‑control where possible.";
 
-    const { data, error } = await supabase
-      .from("advisories")
-      .insert({
-        farmer_id: farmerId,
-        crop,
-        summary,
-        fertilizer,
-        irrigation,
-        pest,
-        weather,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("[advisory] Error creating:", error);
-      return res.status(400).json({ error: "Failed to create advisory" });
-    }
-
-    res.status(201).json(data);
+    const doc = await (Advisory as any).create({
+      farmerId,
+      crop,
+      summary,
+      fertilizer,
+      irrigation,
+      pest,
+      weather,
+    });
+    res.status(201).json(doc);
   } catch (e) {
-    console.error("[advisory] Error:", e);
+    console.error(e);
     res.status(400).json({ error: "Failed to create advisory" });
   }
 };
