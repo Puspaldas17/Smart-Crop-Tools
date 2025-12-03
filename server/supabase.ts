@@ -5,33 +5,36 @@ const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.warn(
-    "[supabase] SUPABASE_URL or SUPABASE_ANON_KEY not set. Authentication will not work until configured."
+    "[supabase] SUPABASE_URL or SUPABASE_ANON_KEY not set. Authentication will not work until configured.",
   );
 }
 
-export const supabase = (supabaseUrl && supabaseKey)
-  ? createClient(supabaseUrl, supabaseKey)
-  : ({
-      from: () => ({
-        select: () => Promise.reject(new Error("Supabase not configured")),
-        insert: () => Promise.reject(new Error("Supabase not configured")),
-        update: () => Promise.reject(new Error("Supabase not configured")),
-        eq: () => ({
+export const supabase =
+  supabaseUrl && supabaseKey
+    ? createClient(supabaseUrl, supabaseKey)
+    : ({
+        from: () => ({
           select: () => Promise.reject(new Error("Supabase not configured")),
+          insert: () => Promise.reject(new Error("Supabase not configured")),
+          update: () => Promise.reject(new Error("Supabase not configured")),
+          eq: () => ({
+            select: () => Promise.reject(new Error("Supabase not configured")),
+          }),
         }),
-      }),
-    } as any);
+      } as any);
 
 export async function initSupabaseSchema() {
   try {
     if (!supabaseUrl || !supabaseKey) {
-      console.warn("[supabase] Cannot initialize schema: Supabase not configured");
+      console.warn(
+        "[supabase] Cannot initialize schema: Supabase not configured",
+      );
       return;
     }
     const { error: createTableError } = await supabase.rpc("init_schema");
     if (createTableError) {
       console.warn(
-        "[supabase] Schema already exists or init_schema not available"
+        "[supabase] Schema already exists or init_schema not available",
       );
     }
   } catch (e) {
