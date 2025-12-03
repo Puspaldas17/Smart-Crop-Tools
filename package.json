@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "vite",
-  "build": "npm run build:client && npm run build:server && node scripts/list-dist.cjs",
+    "build": "npm run build:client && npm run build:server && node scripts/list-dist.cjs",
     "build:client": "vite build",
     "build:server": "vite build --config vite.config.server.ts",
     "start": "node dist/server/node-build.mjs",
@@ -21,12 +21,13 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@netlify/neon": "^0.1.0",
+    "@supabase/supabase-js": "^2.86.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "mongoose": "^8.8.0",
-    "zod": "^3.25.76",
     "multer": "^2.0.2",
-    "@netlify/neon": "^0.1.0"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -62,6 +63,8 @@
     "@swc/core": "^1.13.3",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-query": "^5.84.2",
+    "@tensorflow-models/mobilenet": "^2.1.1",
+    "@tensorflow/tfjs": "^4.22.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.2.1",
@@ -100,9 +103,7 @@
     "typescript": "^5.9.2",
     "vaul": "^1.1.2",
     "vite": "^7.1.2",
-    "vitest": "^3.2.4",
-    "@tensorflow/tfjs": "^4.22.0",
-    "@tensorflow-models/mobilenet": "^2.1.1"
+    "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
 }
