@@ -10,6 +10,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+import { Flame, Trophy, Star, Target } from "lucide-react";
+import { useGamification } from "@/context/GamificationContext";
+import { MissionCard } from "@/components/features/Gamification/MissionCard";
+import { LeaderboardWidget } from "@/components/features/Gamification/LeaderboardWidget";
+import { BadgesGallery } from "@/components/features/Gamification/BadgesGallery";
+
 const Analytics = lazy(() => import("@/components/features/Analytics"));
 
 interface AdvisoryRecord {
@@ -25,9 +31,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [history, setHistory] = useState<AdvisoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const { xp, level, streak, missions } = useGamification();
   const [activeTab, setActiveTab] = useState<
-    "history" | "subscription" | "analytics"
-  >("history");
+    "missions" | "history" | "subscription" | "analytics"
+  >("missions");
 
   useEffect(() => {
     if (!farmer || farmer.isGuest) {
@@ -90,7 +97,17 @@ export default function Dashboard() {
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold">{farmer?.name}</h1>
-              <p className="text-slate-600 mt-1">Farmer Account</p>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold border border-yellow-200">
+                  <Star className="w-3 h-3 fill-yellow-800" /> Lvl {level}
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 text-xs font-bold border border-orange-200">
+                  <Flame className="w-3 h-3 fill-orange-800" /> {streak} Day Streak
+                </span>
+                <span className="text-sm text-slate-500">
+                  {xp} XP
+                </span>
+              </div>
             </div>
             <button
               onClick={() => {
@@ -101,6 +118,20 @@ export default function Dashboard() {
             >
               Logout
             </button>
+          </div>
+          
+          {/* XP Progress Bar */}
+          <div className="mb-6">
+            <div className="flex justify-betweentext-xs mb-1">
+               <span className="text-xs text-muted-foreground">Progress to Level {level + 1}</span>
+               <span className="text-xs font-medium">{xp % 100} / 100 XP</span>
+            </div>
+            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+               <div 
+                 className="h-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500" 
+                 style={{ width: `${Math.min(100, xp % 100)}%` }}
+               />
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -201,7 +232,18 @@ export default function Dashboard() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          <div className="border-b border-slate-200 p-6 flex gap-4 overflow-x-auto">
+          <div className="border-b border-slate-200 p-6 flex gap-4 overflow-x-auto remove-scrollbar">
+            <button
+              onClick={() => setActiveTab("missions")}
+              className={`font-medium pb-2 border-b-2 whitespace-nowrap inline-flex items-center gap-2 ${
+                activeTab === "missions"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-slate-600"
+              }`}
+            >
+              <Target className="w-4 h-4" />
+              Missions
+            </button>
             <button
               onClick={() => setActiveTab("history")}
               className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
@@ -235,6 +277,24 @@ export default function Dashboard() {
           </div>
 
           <div className="p-6">
+            {activeTab === "missions" && (
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="md:col-span-2 space-y-6">
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3">Daily Missions</h3>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                       {missions.map(mission => (
+                         <MissionCard key={mission.id} mission={mission} />
+                       ))}
+                    </div>
+                  </div>
+                  <BadgesGallery />
+                </div>
+                <div>
+                  <LeaderboardWidget />
+                </div>
+              </div>
+            )}
             {activeTab === "history" && (
               <div>
                 {loading ? (
