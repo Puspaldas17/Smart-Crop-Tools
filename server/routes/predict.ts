@@ -40,11 +40,42 @@ async function runHuggingFace(image: Buffer) {
   }
 }
 
+async function runLocalAIService(file: any) {
+  try {
+    const formData = new FormData();
+    const blob = new Blob([file.buffer], { type: file.mimetype });
+    formData.append("file", blob, file.originalname);
+
+    const res = await fetch("http://localhost:8000/predict/disease", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        source: "local-ai-service",
+        analysis: data.analysis,
+      };
+    }
+  } catch (error) {
+    // Service likely not running, ignore and fall back
+    console.log("Local AI service unreachable, using fallback");
+  }
+  return null;
+}
+
 export const predictHandler: RequestHandler = async (req, res) => {
   const file = (req as any).file;
   if (!file) return res.status(400).json({ error: "file required" });
 
-  // Try Hugging Face inference if configured
+  // 1. Try Local Python AI Service
+  const localResult = await runLocalAIService(file);
+  if (localResult) {
+    return res.json(localResult);
+  }
+
+  // 2. Try Hugging Face inference if configured
   try {
     const hf = await runHuggingFace(file.buffer as Buffer);
     if (hf) return res.json({ source: "huggingface", predictions: hf });
