@@ -24,6 +24,7 @@ import {
   getWeatherImpactAnalysis,
 } from "./routes/analytics";
 import { getPostById } from "./routes/neon";
+import { logTreatment, getAnimalStatus, getLedger } from "./routes/amu";
 
 export function createServer() {
   const app = express();
@@ -62,6 +63,11 @@ export function createServer() {
   app.post("/api/predict", uploadMiddleware, predictHandler);
   app.post("/api/auth/farmer", upsertFarmer);
   app.post("/api/auth/guest", guestLogin);
+
+  // AMU / Blockchain Routes
+  app.post("/api/amu/log", logTreatment);
+  app.get("/api/amu/status/:animalId", getAnimalStatus);
+  app.get("/api/amu/ledger", getLedger);
 
   app.post("/api/advisory/history", saveAdvisoryHistory);
   app.get("/api/advisory/history/:farmerId", getAdvisoryHistory);

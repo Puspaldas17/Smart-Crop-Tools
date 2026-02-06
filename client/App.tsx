@@ -13,6 +13,7 @@ import RootLayout from "./pages/Layout";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
+import AMUManager from "./pages/AMUManager";
 import { AuthProvider } from "@/hooks/useAuth";
 import { GamificationProvider } from "@/context/GamificationContext";
 
@@ -62,6 +63,7 @@ const App = () => (
                   <Route path="/login" element={<Login />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/amu" element={<AMUManager />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Route>
