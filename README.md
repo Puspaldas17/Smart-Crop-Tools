@@ -1,196 +1,158 @@
+# 🌾 AgriVerse (formerly Smart Crop Tools)
 
+**AgriVerse** is a comprehensive, AI-powered digital platform designed to revolutionize sustainable farming practices. It integrates gamified learning, real-time advisory, and livestock health management into a single, accessible solution for farmers.
 
-````markdown
-# 🌾 Smart Crop Advisory System
-
-[![Build](https://img.shields.io/badge/build-passing-brightgreen)](https://vercel.com)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Made with React](https://img.shields.io/badge/frontend-React-blue?logo=react)]()
-[![Backend: Express](https://img.shields.io/badge/backend-Express-black?logo=express)]()
-[![Database: MongoDB](https://img.shields.io/badge/database-MongoDB-green?logo=mongodb)]()
-
-> 🌱 A full-stack, production-ready **MERN** app delivering multilingual, data-driven guidance for farmers — powered by real-time weather, market prices, and image-based pest diagnosis.
+[![Tech Stack](https://img.shields.io/badge/stack-MERN-blue)]()
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Vision & Roadmap
 
-See [`docs/running.md`](docs/running.md) for complete setup and deployment details.
+**AgriVerse** aims to bridge the gap between technology and traditional farming. Our roadmap outlines the evolution of this platform into a gamified ecosystem.
+
+### 1️⃣ Problem Statement
+
+- **Low Adoption**: Sustainable practices are often ignored due to lack of engaging training.
+- **AMU Risks**: Unsafe antimicrobial usage in livestock poses health risks.
+- **Information Gap**: Lack of personalized, localized advisory.
+
+### 2️⃣ Project Objective
+
+To create a digital platform that:
+
+- Educates via **gamification**.
+- Tracks **antimicrobial usage (AMU)**.
+- Delivers **AI-based advisory**.
+- Works **offline** in local languages.
+
+### 3️⃣ Core Modules (Planned)
+
+1.  **Gamified Farming Platform**: Missions, rewards, and leaderboards to drive sustainable habits.
+2.  **AMU & Compliance**: Digital logbooks, vet verification, and withdrawal alerts.
+3.  **AI Decision Support**: Soil health analysis, weather forecasting, and crop recommendations.
+4.  **AI Assistant**: Voice-enabled, multilingual chatbot with image-based disease diagnosis.
+
+### 4️⃣ Development Roadmap
+
+- **Step 1**: Requirement Analysis & Persona Definition.
+- **Step 2**: System Architecture & Microservices Design.
+- **Step 3**: Frontend Development (Mobile/Web).
+- **Step 4**: AI/ML Model Training (Crop & Disease).
+- **Step 5**: AMU & Blockchain Integration.
+- **Step 6**: Dashboards & Analytics.
+- **Step 7**: Field Testing & Validation.
+- **Step 8**: Pilot Deployment.
+
+_(See `ROADMAP.md` for full details)_
+
+---
+
+## ✨ Current Features
+
+The project currently provides the following foundational features:
+
+- **🗣️ Multilingual Chatbot**: Voice-enabled, context-aware smart replies.
+- **💹 Market Prices**: Real-time or sample data for crop prices (Mandi rates).
+- **🌦️ Weather Alerts**: Localized temperature, humidity, and wind safety notifications.
+- **🐛 Pest Detection**: Machine-Learning powered image diagnosis (Server-side & Client-side).
+- **🔐 Farmer Access**: Secure, lightweight login system (Guest mode supported).
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer            | Technology                                |
+| :--------------- | :---------------------------------------- |
+| **Frontend**     | React 18, Vite, TailwindCSS, Radix UI     |
+| **Backend**      | Node.js, Express.js (Express 5)           |
+| **Database**     | MongoDB (Mongoose) + In-memory fallback   |
+| **Auth/Storage** | Supabase (Optional/Mocked for dev)        |
+| **ML/AI**        | Hugging Face Inference API, TensorFlow.js |
+| **Deployment**   | Vercel, Netlify, or self-hosted Node.js   |
+
+---
+
+## 💻 Getting Started
+
+Follow these steps to set up and run the project locally.
+
+### Prerequisites
+
+- **Node.js** v18+ (Recommended v20+)
+- **npm** or **pnpm**
+
+### Installation
+
+1.  **Clone the repository**:
+
+    ```bash
+    git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
+    cd Smart-Crop-Tools
+    ```
+
+2.  **Install dependencies**:
+
+    ```bash
+    npm install
+    # or
+    pnpm install
+    ```
+
+3.  **Environment Setup**:
+    Copy `.env.example` to `.env` (optional, defaults provided):
+    ```bash
+    cp .env.example .env
+    ```
+
+    - _Note_: If `MONGODB_URI` is not set, the app uses an in-memory database.
+    - _Note_: If `SUPABASE_URL` is not set, a placeholder mock is used to prevent startup crashes.
+
+### Running the Application
+
+**Development Mode** (Hot Reloading):
 
 ```bash
-# Clone the repo
-git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
-cd Smart-Crop-Tools
-
-# Install dependencies
-pnpm install
-
-# Run the dev server
-pnpm dev
-````
-
-➡️ Visit [http://localhost:8080](http://localhost:8080)
-🧑‍🌾 Login (top-right) to access the **Working Suite** (Chatbot, Market, Weather, Pest Detector, Advisory)
-
----
-
-## ✨ Features
-
-* 🗣️ **Voice & Multilingual Chatbot** – geolocation-aware smart replies
-* 💹 **Market Prices (Punjab)** – with robust offline/sample fallbacks
-* 🌦️ **Local Weather Alerts** – temp, humidity, wind safety notifications
-* 🌾 **Quick Crop Advisory** – fertilizer, irrigation, and pest hints
-* 🐛 **Pest/Disease Detection** – via server-side ML image inference
-* 🔐 **Lightweight Farmer Login** – secure, minimal credential model
-* 📱 **Responsive Design** – smooth scroll, fluid typography, mobile-first UI
-
----
-
-## 🧱 Tech Stack
-
-| Layer                | Technology                                     |
-| :------------------- | :--------------------------------------------- |
-| **Frontend**         | React (Vite), TailwindCSS, Radix UI            |
-| **Backend**          | Express.js (integrated with Vite for dev)      |
-| **Database**         | MongoDB via Mongoose (with in-memory fallback) |
-| **Machine Learning** | Server endpoint (Hugging Face Inference API)   |
-
----
-
-## 🏗️ Architecture & Structure
-
-Monorepo with client (SPA), server (API), and shared TypeScript models.
-
-```
-client/
- ├─ App.tsx                # Router + providers
- ├─ global.css             # Tailwind theme, smooth scroll
- ├─ pages/                 # Landing, Login, Suite
- ├─ components/features/   # Chatbot, Market, PestDetector, Advisory
- ├─ components/ui/         # Reusable UI blocks
- ├─ hooks/                 # useAuth, useSpeech, etc.
- └─ lib/                   # Utilities
-
-server/
- ├─ index.ts               # Express app + route registration
- ├─ node-build.ts          # Production HTTP server
- ├─ db.ts                  # Mongo connection (fallback: in-memory)
- └─ routes/                # API handlers (auth, market, weather, etc.)
-
-shared/
- └─ api.ts                 # Shared DTOs/types for client + server
-
-netlify/
- ├─ functions/api.ts       # Netlify Function wrapper for Express
- └─ netlify.toml           # Build config + redirects
+npm run dev
 ```
 
----
+> Opens at `http://localhost:8080` (or `http://localhost:5173`)
 
-## ⚙️ Requirements
+**Production Build & Run**:
 
-* 🟢 **Node.js** 18+ (20+ recommended)
-* 🔵 **pnpm** 8+ (preferred) or npm
-* 🧩 **VS Code** (recommended for debugging)
+1.  Build the project:
+    ```bash
+    npm run build
+    ```
+2.  Start the production server:
+    `bash
+    npm start
+    `
+    > Server runs on port **3000** by default (or user defined `PORT`).
 
----
+### Testing
 
-## 🧑‍💻 Run & Debug in VS Code
-
-Open the project in VS Code:
+Run TypeScript validation:
 
 ```bash
-code .
+npm run typecheck
 ```
-
-Use **JavaScript Debug Terminal** and run:
-
-```bash
-pnpm dev
-```
-
-Or debug the production server using:
-
-```jsonc
-// .vscode/launch.json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Run built server",
-      "program": "${workspaceFolder}/dist/server/node-build.mjs",
-      "env": { "PORT": "3000" },
-      "skipFiles": ["<node_internals>/**"]
-    }
-  ]
-}
-```
-
----
-
-## 🌐 Environment Variables
-
-| Variable      | Description                     | Example             |
-| ------------- | ------------------------------- | ------------------- |
-| `PORT`        | Local server port               | `8080`              |
-| `MONGODB_URI` | MongoDB connection URI          | `mongodb+srv://...` |
-| `HF_API_KEY`  | Hugging Face API key (optional) | `hf_123abc...`      |
-
-> 🧠 If `MONGODB_URI` is not set, the app runs with an **in-memory demo DB**.
-
----
-
-## 📦 Scripts
-
-| Command          | Description                     |
-| :--------------- | :------------------------------ |
-| `pnpm dev`       | Run dev server (Vite + Express) |
-| `pnpm build`     | Build client + server bundles   |
-| `pnpm start`     | Run built production server     |
-| `pnpm test`      | Run tests                       |
-| `pnpm typecheck` | Type validation                 |
-
----
-
-## 🚢 Deployment
-
-Supports multiple targets:
-
-* 🌍 **Netlify** (serverless) → uses `netlify/functions/api.ts`
-* 🧭 **Vercel** → check `docs/deploy-vercel.md`
-* 🖥️ **Self-hosted / Builder MCP** – simple `pnpm build && pnpm start`
 
 ---
 
 ## 🧰 Troubleshooting
 
-* ❌ **Port busy?**
-
-  ```powershell
-  $env:PORT=9090; pnpm dev
-  ```
-
-* 🧩 **No MongoDB connection?**
-  App switches to an **in-memory DB** for demos.
-
-* 🔍 **404 NOT_FOUND on Vercel?**
-  Check `vercel.json` or deployment logs and ensure API routes are registered.
-
----
-
-## 🔒 Security
-
-* Never commit secrets or `.env` files.
-* Use environment variables on your hosting provider.
-* Only minimal demo data (name/phone) is stored.
-* Add monitoring (Sentry, etc.) and WAF/rate limiting on `/api/*` before production.
+- **Port in use?**
+  - Set `PORT` environment variable: `$env:PORT=9090; npm start`.
+- **Database connection fails?**
+  - Ensure your IP is whitelisted in MongoDB Atlas.
+  - For local dev, just remove `MONGODB_URI` to use the in-memory fallback.
+- **Supabase errors?**
+  - The app gracefully handles missing Supabase credentials by using placeholders. Some features (advanced auth) may be limited without valid keys.
 
 ---
 
 ## 📜 License
 
-MIT License © [Puspal Das](https://github.com/puspaldas05)
-
----
+MIT License.
