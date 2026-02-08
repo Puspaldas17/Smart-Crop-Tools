@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { supabase } from "../supabase";
+import { AnalyticsData, AdvisoryHistory, Farmer } from "../db";
 
 export const recordAnalytics: RequestHandler = async (req, res) => {
   try {
@@ -21,28 +21,19 @@ export const recordAnalytics: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId and crop are required" });
     }
 
-    const { data, error } = await supabase
-      .from("analytics_data")
-      .insert({
-        farmer_id: farmerId,
-        crop,
-        crop_health_score: cropHealthScore,
-        soil_moisture: soilMoisture,
-        soil_nitrogen: soilNitrogen,
-        soil_ph: soilPH,
-        temperature,
-        humidity,
-        rainfall,
-        pest_pressure: pestPressure,
-        disease_risk: diseaseRisk,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("[analytics] Error recording:", error);
-      return res.status(500).json({ error: "Failed to record analytics" });
-    }
+    const data = await AnalyticsData.create({
+      farmerId,
+      crop,
+      cropHealthScore,
+      soilMoisture,
+      soilNitrogen,
+      soilPH,
+      temperature,
+      humidity,
+      rainfall,
+      pestPressure,
+      diseaseRisk,
+    });
 
     res.json(data);
   } catch (e) {
@@ -63,24 +54,12 @@ export const getAnalyticsSummary: RequestHandler = async (req, res) => {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
 
-    const { data: allAnalytics, error: analyticsError } = await supabase
-      .from("analytics_data")
-      .select("*")
-      .eq("farmer_id", farmerId)
-      .gte("created_at", cutoffDate.toISOString());
+    const allAnalytics = await AnalyticsData.find({
+      farmerId,
+      createdAt: { $gte: cutoffDate },
+    });
 
-    const { data: advisories, error: advisoriesError } = await supabase
-      .from("advisory_histories")
-      .select("*")
-      .eq("farmer_id", farmerId);
-
-    if (analyticsError || advisoriesError) {
-      console.error(
-        "[analytics] Error fetching summary:",
-        analyticsError || advisoriesError,
-      );
-      return res.status(500).json({ error: "Failed to fetch analytics" });
-    }
+    const advisories = await AdvisoryHistory.find({ farmerId });
 
     const recentData = allAnalytics || [];
     const cropStats = new Map<string, { count: number; scores: number[] }>();
@@ -108,16 +87,16 @@ export const getAnalyticsSummary: RequestHandler = async (req, res) => {
     const soilHealthTrend = (recentData as any[])
       .filter(
         (d: any) =>
-          d.soil_moisture !== undefined ||
-          d.soil_nitrogen !== undefined ||
-          d.soil_ph !== undefined,
+          d.soilMoisture !== undefined ||
+          d.soilNitrogen !== undefined ||
+          d.soilPH !== undefined,
       )
       .slice(-7)
       .map((d: any) => ({
-        date: new Date(d.created_at).toLocaleDateString("en-IN"),
-        moisture: d.soil_moisture || Math.random() * 100,
-        nitrogen: d.soil_nitrogen || Math.random() * 100,
-        pH: d.soil_ph || 5 + Math.random() * 3,
+        date: new Date(d.createdAt).toLocaleDateString("en-IN"),
+        moisture: d.soilMoisture || Math.random() * 100,
+        nitrogen: d.soilNitrogen || Math.random() * 100,
+        pH: d.soilPH || 5 + Math.random() * 3,
       }));
 
     if (soilHealthTrend.length === 0) {
@@ -198,25 +177,16 @@ export const getCropTrends: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId and crop are required" });
     }
 
-    const { data, error } = await supabase
-      .from("analytics_data")
-      .select("*")
-      .eq("farmer_id", farmerId)
-      .eq("crop", crop)
-      .order("created_at", { ascending: true })
+    const data = await AnalyticsData.find({ farmerId, crop })
+      .sort({ createdAt: 1 })
       .limit(30);
 
-    if (error) {
-      console.error("[analytics] Error fetching crop trends:", error);
-      return res.status(500).json({ error: "Failed to fetch crop trends" });
-    }
-
     const trends = (data || []).slice(-30).map((d: any) => ({
-      date: new Date(d.created_at).toLocaleDateString("en-IN"),
-      healthScore: d.crop_health_score || 0,
+      date: new Date(d.createdAt).toLocaleDateString("en-IN"),
+      healthScore: d.cropHealthScore || 0,
       yield: d.yield || 0,
-      pestPressure: d.pest_pressure || 0,
-      diseaseRisk: d.disease_risk || 0,
+      pestPressure: d.pestPressure || 0,
+      diseaseRisk: d.diseaseRisk || 0,
     }));
 
     if (trends.length === 0) {
@@ -248,33 +218,23 @@ export const getSoilHealthTrend: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId is required" });
     }
 
-    const { data, error } = await supabase
-      .from("analytics_data")
-      .select("*")
-      .eq("farmer_id", farmerId)
-      .order("created_at", { ascending: true })
+    const data = await AnalyticsData.find({ farmerId })
+      .sort({ createdAt: 1 })
       .limit(30);
-
-    if (error) {
-      console.error("[analytics] Error fetching soil health trend:", error);
-      return res
-        .status(500)
-        .json({ error: "Failed to fetch soil health trend" });
-    }
 
     const trend = (data || [])
       .filter(
         (d: any) =>
-          d.soil_moisture !== undefined ||
-          d.soil_nitrogen !== undefined ||
-          d.soil_ph !== undefined,
+          d.soilMoisture !== undefined ||
+          d.soilNitrogen !== undefined ||
+          d.soilPH !== undefined,
       )
       .slice(-30)
       .map((d: any) => ({
-        date: new Date(d.created_at).toLocaleDateString("en-IN"),
-        moisture: d.soil_moisture || 0,
-        nitrogen: d.soil_nitrogen || 0,
-        pH: d.soil_ph || 0,
+        date: new Date(d.createdAt).toLocaleDateString("en-IN"),
+        moisture: d.soilMoisture || 0,
+        nitrogen: d.soilNitrogen || 0,
+        pH: d.soilPH || 0,
       }));
 
     if (trend.length === 0) {
@@ -309,20 +269,12 @@ export const getWeatherImpactAnalysis: RequestHandler = async (req, res) => {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
 
-    const { data, error } = await supabase
-      .from("analytics_data")
-      .select("*")
-      .eq("farmer_id", farmerId)
-      .gte("created_at", cutoffDate.toISOString())
-      .order("created_at", { ascending: true })
+    const data = await AnalyticsData.find({
+      farmerId,
+      createdAt: { $gte: cutoffDate },
+    })
+      .sort({ createdAt: 1 })
       .limit(15);
-
-    if (error) {
-      console.error("[analytics] Error fetching weather impact:", error);
-      return res
-        .status(500)
-        .json({ error: "Failed to fetch weather impact analysis" });
-    }
 
     const analysis = (data || [])
       .filter(
@@ -333,11 +285,11 @@ export const getWeatherImpactAnalysis: RequestHandler = async (req, res) => {
       )
       .slice(-15)
       .map((d: any) => ({
-        date: new Date(d.created_at).toLocaleDateString("en-IN"),
+        date: new Date(d.createdAt).toLocaleDateString("en-IN"),
         temperature: d.temperature || 0,
         humidity: d.humidity || 0,
         rainfall: d.rainfall || 0,
-        cropHealthScore: d.crop_health_score || 0,
+        cropHealthScore: d.cropHealthScore || 0,
       }));
 
     if (analysis.length === 0) {
@@ -367,11 +319,11 @@ export const getSystemOverview: RequestHandler = async (_req, res) => {
     // For the pilot/demo, we simulate system-wide aggregations
 
     // 1. User Stats
-    const totalFarmers = 124; // Mock
-    const activeToday = 45; // Mock
+    const totalFarmers = await Farmer.countDocuments();
+    const activeToday = 45; // Mock (requires session tracking)
 
     // 2. AI Usage Stats
-    const totalScans = 1250;
+    const totalScans = await AnalyticsData.countDocuments();
     const diseaseDetectionRate = 0.18; // 18% of scans show disease
 
     // 3. AMU Compliance (Simulated from Ledger)

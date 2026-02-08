@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { supabase } from "../supabase";
+import { AdvisoryHistory, Farmer } from "../db";
 
 export const saveAdvisoryHistory: RequestHandler = async (req, res) => {
   try {
@@ -11,22 +11,13 @@ export const saveAdvisoryHistory: RequestHandler = async (req, res) => {
         .json({ error: "farmerId, crop, and advisory are required" });
     }
 
-    const { data, error } = await supabase
-      .from("advisory_histories")
-      .insert({
-        farmer_id: farmerId,
-        crop,
-        advisory,
-        weather_data: weatherData,
-        soil_data: soilData,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("[profile] Error saving advisory history:", error);
-      return res.status(500).json({ error: "Failed to save advisory" });
-    }
+    const data = await AdvisoryHistory.create({
+      farmerId,
+      crop,
+      advisory,
+      weatherData,
+      soilData,
+    });
 
     res.json(data);
   } catch (e) {
@@ -44,17 +35,9 @@ export const getAdvisoryHistory: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId is required" });
     }
 
-    const { data, error } = await supabase
-      .from("advisory_histories")
-      .select("*")
-      .eq("farmer_id", farmerId)
-      .order("created_at", { ascending: false })
+    const data = await AdvisoryHistory.find({ farmerId })
+      .sort({ createdAt: -1 })
       .limit(limit);
-
-    if (error) {
-      console.error("[profile] Error fetching history:", error);
-      return res.status(500).json({ error: "Failed to fetch history" });
-    }
 
     res.json(data || []);
   } catch (e) {
@@ -71,20 +54,16 @@ export const getProfileData: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId is required" });
     }
 
-    const { data, error } = await supabase
-      .from("farmers")
-      .select("*")
-      .eq("id", farmerId)
-      .single();
+    const data = await Farmer.findById(farmerId);
 
-    if (error || !data) {
-      console.error("[profile] Error fetching farmer:", error);
+    if (!data) {
+      console.error("[profile] Farmer not found");
       return res.status(404).json({ error: "Farmer not found" });
     }
 
     res.json({
       ...data,
-      subscriptionStatus: data.subscription_status || "free",
+      subscriptionStatus: data.subscriptionStatus || "free",
     });
   } catch (e) {
     console.error("[profile] Error:", e);
@@ -110,23 +89,20 @@ export const updateSubscription: RequestHandler = async (req, res) => {
     endDate.setFullYear(endDate.getFullYear() + 1);
 
     const updatePayload: any = {
-      subscription_status: subscriptionStatus,
-      subscription_start_date: now,
+      subscriptionStatus,
+      subscriptionStartDate: now,
     };
 
     if (subscriptionStatus === "premium") {
-      updatePayload.subscription_end_date = endDate;
+      updatePayload.subscriptionEndDate = endDate;
     }
 
-    const { data, error } = await supabase
-      .from("farmers")
-      .update(updatePayload)
-      .eq("id", farmerId)
-      .select()
-      .single();
+    const data = await Farmer.findByIdAndUpdate(farmerId, updatePayload, {
+      new: true,
+    });
 
-    if (error || !data) {
-      console.error("[profile] Error updating subscription:", error);
+    if (!data) {
+      console.error("[profile] Farmer not found");
       return res.status(404).json({ error: "Farmer not found" });
     }
 
