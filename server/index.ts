@@ -22,6 +22,7 @@ import {
   getCropTrends,
   getSoilHealthTrend,
   getWeatherImpactAnalysis,
+  getSystemOverview,
 } from "./routes/analytics";
 import { getPostById } from "./routes/neon";
 import { logTreatment, getAnimalStatus, getLedger } from "./routes/amu";
@@ -79,6 +80,7 @@ export function createServer() {
   app.get("/api/analytics/crop-trends/:farmerId", getCropTrends);
   app.get("/api/analytics/soil-health/:farmerId", getSoilHealthTrend);
   app.get("/api/analytics/weather-impact/:farmerId", getWeatherImpactAnalysis);
+  app.get("/api/analytics/system", getSystemOverview);
 
   // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
   app.get("/api/neon/posts/:id", getPostById);
