@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { supabase } from "../supabase";
+import { Farmer } from "../db";
 
 export const upsertFarmer: RequestHandler = async (req, res) => {
   try {
@@ -8,51 +8,24 @@ export const upsertFarmer: RequestHandler = async (req, res) => {
     if (!name || !phone)
       return res.status(400).json({ error: "name and phone required" });
 
-    const { data: existing } = await supabase
-      .from("farmers")
-      .select("*")
-      .eq("phone", phone)
-      .single();
+    // Helper to standardise the update/create payload
+    const updateData = {
+      name,
+      phone,
+      soilType,
+      landSize,
+      language,
+      location,
+    };
 
-    if (existing) {
-      const { data, error } = await supabase
-        .from("farmers")
-        .update({
-          name,
-          soilType,
-          landSize,
-          language,
-          location,
-        })
-        .eq("phone", phone)
-        .select()
-        .single();
-
-      if (error) {
-        console.error("[auth] Error updating farmer:", error);
-        return res.status(500).json({ error: "auth error" });
-      }
-
-      return res.json(data);
-    }
-
-    const { data, error } = await supabase
-      .from("farmers")
-      .insert({
-        name,
-        phone,
-        soilType,
-        landSize,
-        language,
-        location,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("[auth] Error creating farmer:", error);
-      return res.status(500).json({ error: "auth error" });
-    }
+    // Try to find and update, or create if not exists
+    // new: true returns the modified document rather than the original
+    // upsert: true creates the object if it doesn't exist.
+    const data = await Farmer.findOneAndUpdate(
+      { phone },
+      updateData,
+      { new: true, upsert: true }
+    );
 
     res.json(data);
   } catch (e) {

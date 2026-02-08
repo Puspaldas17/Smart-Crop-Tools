@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
+console.log("[db] Loading db.ts. URI:", process.env.MONGODB_URI);
 const USE_MEMORY = !process.env.MONGODB_URI;
+console.log("[db] USE_MEMORY:", USE_MEMORY);
 
 type AnyDoc = Record<string, any> & {
   _id?: string;
