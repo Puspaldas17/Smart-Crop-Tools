@@ -360,3 +360,54 @@ export const getWeatherImpactAnalysis: RequestHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch weather impact analysis" });
   }
 };
+
+export const getSystemOverview: RequestHandler = async (_req, res) => {
+  try {
+    // In a real app, these would be separate DB queries
+    // For the pilot/demo, we simulate system-wide aggregations
+
+    // 1. User Stats
+    const totalFarmers = 124; // Mock
+    const activeToday = 45; // Mock
+
+    // 2. AI Usage Stats
+    const totalScans = 1250;
+    const diseaseDetectionRate = 0.18; // 18% of scans show disease
+
+    // 3. AMU Compliance (Simulated from Ledger)
+    const activeWithdrawals = 3; // Mock current active alerts
+    const totalTreatmentsLogged = 89;
+
+    // 4. Disease Trends (for Pie Chart)
+    const diseaseDistribution = [
+      { name: "Leaf Blight", value: 45 },
+      { name: "Yellow Rust", value: 25 },
+      { name: "Aphids", value: 20 },
+      { name: "Healthy", value: 10 },
+    ];
+
+    // 5. Adoption Trend (for Line Chart)
+    const adoptionTrend = [
+      { month: "Jan", users: 20 },
+      { month: "Feb", users: 45 },
+      { month: "Mar", users: 78 },
+      { month: "Apr", users: 110 },
+      { month: "May", users: 124 },
+    ];
+
+    res.json({
+      metrics: {
+        totalFarmers,
+        activeToday,
+        totalScans,
+        activeWithdrawals,
+        totalTreatmentsLogged
+      },
+      diseaseDistribution,
+      adoptionTrend
+    });
+  } catch (e) {
+    console.error("[analytics] Error:", e);
+    res.status(500).json({ error: "Failed to fetch system overview" });
+  }
+};
