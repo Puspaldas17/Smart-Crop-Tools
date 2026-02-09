@@ -69,8 +69,8 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.2.1",
-    "@types/react": "^18.3.23",
+    "@types/node": "^24.10.12",
+    "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
     "@types/three": "^0.176.0",
     "@vitejs/plugin-react-swc": "^4.0.0",
@@ -102,9 +102,10 @@
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.176.0",
     "tsx": "^4.20.3",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vaul": "^1.1.2",
     "vite": "^7.1.2",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
