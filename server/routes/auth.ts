@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 // -- REGISTER --
 export const register: RequestHandler = async (req, res) => {
   try {
-    const { name, email, password, phone, soilType, landSize, language, location } = req.body;
+    const { name, email, password, phone, soilType, landSize, language, location, role } = req.body;
 
     if (!name || !email || !password || !phone) {
       return res.status(400).json({ error: "Name, email, password, and phone are required" });
@@ -29,6 +29,7 @@ export const register: RequestHandler = async (req, res) => {
       landSize,
       language: language || "en-IN",
       location,
+      role: role || "farmer",
     });
 
     // Return user without password
