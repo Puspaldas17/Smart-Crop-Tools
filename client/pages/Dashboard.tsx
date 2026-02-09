@@ -28,9 +28,12 @@ interface AdvisoryRecord {
   weatherData?: Record<string, any>;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function Dashboard() {
   const { farmer, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [history, setHistory] = useState<AdvisoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const { xp, level, streak, missions } = useGamification();
@@ -92,7 +95,7 @@ export default function Dashboard() {
           className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900"
         >
           <ChevronLeft className="h-5 w-5" />
-          Back to Tools
+          {t('nav.tools')}
         </button>
       </div>
 
@@ -120,7 +123,7 @@ export default function Dashboard() {
               }}
               className="px-3 py-2 text-sm rounded-md border border-slate-300 hover:bg-slate-50"
             >
-              Logout
+              {t('nav.logout')}
             </button>
           </div>
           
@@ -164,14 +167,14 @@ export default function Dashboard() {
               onClick={() => navigate("/profile")}
               className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-md hover:brightness-95"
             >
-              Edit Profile
+              {t('nav.profile')}
             </button>
           </div>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
           <div className="border-b border-slate-200 p-6">
-            <h2 className="text-xl font-bold">Subscription & Usage</h2>
+            <h2 className="text-xl font-bold">{t('dash.subscription.title')}</h2>
           </div>
 
           <div className="p-6">
@@ -246,7 +249,7 @@ export default function Dashboard() {
               }`}
             >
               <Target className="w-4 h-4" />
-              Missions
+              {t('dash.tab.missions')}
             </button>
             <button
               onClick={() => setActiveTab("chat")}
@@ -256,7 +259,7 @@ export default function Dashboard() {
                   : "border-transparent text-slate-600"
               }`}
             >
-              AI Assistant
+              {t('dash.tab.assistant')}
             </button>
             <button
               onClick={() => setActiveTab("pest")}
@@ -266,7 +269,7 @@ export default function Dashboard() {
                   : "border-transparent text-slate-600"
               }`}
             >
-              Pest Detector
+              {t('dash.tab.pest')}
             </button>
             <button
               onClick={() => setActiveTab("history")}
@@ -276,7 +279,7 @@ export default function Dashboard() {
                   : "border-transparent text-slate-600"
               }`}
             >
-              Advisory History
+              {t('dash.tab.history')}
             </button>
             <button
               onClick={() => setActiveTab("subscription")}
@@ -286,7 +289,7 @@ export default function Dashboard() {
                   : "border-transparent text-slate-600"
               }`}
             >
-              Usage Stats
+              {t('dash.tab.stats')}
             </button>
             <button
               onClick={() => setActiveTab("analytics")}
@@ -296,7 +299,7 @@ export default function Dashboard() {
                   : "border-transparent text-slate-600"
               }`}
             >
-              Analytics
+              {t('dash.tab.analytics')}
             </button>
           </div>
 

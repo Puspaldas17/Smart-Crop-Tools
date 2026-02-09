@@ -1,11 +1,14 @@
 import React, { startTransition } from "react";
 import { CloudSun, Languages, Brain, Sprout, Mic } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function FeatureTiles() {
+  const { t } = useTranslation();
+  
   const tiles = [
     {
       icon: Sprout,
-      label: "Crop advice",
+      label: t('tiles.advice'),
       action: () =>
         startTransition(() =>
           document
@@ -15,7 +18,7 @@ export default function FeatureTiles() {
     },
     {
       icon: CloudSun,
-      label: "Weather alerts",
+      label: t('tiles.weather'),
       action: () =>
         startTransition(() => {
           document
@@ -26,7 +29,7 @@ export default function FeatureTiles() {
     },
     {
       icon: Brain,
-      label: "Insights",
+      label: t('tiles.insights'),
       action: () =>
         startTransition(() => {
           document
@@ -37,7 +40,7 @@ export default function FeatureTiles() {
     },
     {
       icon: Languages,
-      label: "Multilingual",
+      label: t('tiles.multilingual'),
       action: () =>
         startTransition(() => {
           document
@@ -49,7 +52,7 @@ export default function FeatureTiles() {
     },
     {
       icon: Mic,
-      label: "Voice Mode",
+      label: t('tiles.voice'),
       action: () =>
         startTransition(() => {
           document

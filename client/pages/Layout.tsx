@@ -24,15 +24,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
+
 function HeaderAuth() {
   const { farmer, logout } = useAuth();
+  const { t } = useTranslation();
+  
   return farmer ? (
     <div className="flex items-center gap-2">
       <a
         href="/#tools"
         className="hidden rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow hover:brightness-95 md:inline"
       >
-        Open Tools
+        {t('nav.tools')}
       </a>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -45,16 +50,16 @@ function HeaderAuth() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <a href="/#tools">Open Tools</a>
+            <a href="/#tools">{t('nav.tools')}</a>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/dashboard">{t('nav.dashboard')}</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/profile">Profile</Link>
+            <Link to="/profile">{t('nav.profile')}</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={logout}>{t('nav.logout')}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -64,13 +69,13 @@ function HeaderAuth() {
         to="/login"
         className="rounded-md border border-slate-300 px-3 py-2 text-sm"
       >
-        Farmer Login
+        {t('btn.farmer_login')}
       </Link>
       <Link
         to="/login"
         className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow hover:brightness-95"
       >
-        Get Started
+        {t('btn.get_started')}
       </Link>
     </div>
   );
@@ -79,6 +84,8 @@ function HeaderAuth() {
 export default function RootLayout() {
   const scrolled = useScrollTop(10);
   const { farmer } = useAuth();
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-slate-100 text-slate-900">
       <a
@@ -98,12 +105,12 @@ export default function RootLayout() {
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-[#ff8a00] to-[#2ea043] text-white font-bold">
               SC
             </span>
-            <span className="text-lg">Smart Crop Advisory</span>
+            <span className="text-lg">{t('app.title')}</span>
           </Link>
           <nav className="hidden gap-4 md:flex">
             {[
-              ...(farmer ? [{ href: "/#tools", label: "Tools" }] : []),
-              { href: "/#about", label: "About" },
+              ...(farmer ? [{ href: "/#tools", label: t('nav.tools') }] : []),
+              { href: "/#about", label: t('nav.about') },
             ].map((i) => (
               <a
                 key={i.href}
@@ -115,6 +122,7 @@ export default function RootLayout() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
+             <LanguageSwitcher />
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
@@ -125,14 +133,14 @@ export default function RootLayout() {
                 <SheetContent side="right" className="w-4/5 sm:max-w-sm">
                   <nav className="mt-8 grid gap-4">
                     {[
-                      ...(farmer ? [{ href: "/#tools", label: "Tools" }] : []),
+                      ...(farmer ? [{ href: "/#tools", label: t('nav.tools') }] : []),
                       ...(farmer && !farmer.isGuest
-                        ? [{ href: "/dashboard", label: "Dashboard" }]
+                        ? [{ href: "/dashboard", label: t('nav.dashboard') }]
                         : []),
-                      { href: "/#about", label: "About" },
+                      { href: "/#about", label: t('nav.about') },
                       {
                         href: farmer ? "/profile" : "/login",
-                        label: farmer ? "Profile" : "Login",
+                        label: farmer ? t('nav.profile') : t('nav.login'),
                       },
                     ].map((i) => (
                       <a
