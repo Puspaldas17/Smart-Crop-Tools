@@ -17,6 +17,8 @@ import { LeaderboardWidget } from "@/components/features/Gamification/Leaderboar
 import { BadgesGallery } from "@/components/features/Gamification/BadgesGallery";
 
 const Analytics = lazy(() => import("@/components/features/Analytics"));
+const Chatbot = lazy(() => import("@/components/features/Chatbot"));
+const PestDetector = lazy(() => import("@/components/features/PestDetector"));
 
 interface AdvisoryRecord {
   _id?: string;
@@ -33,7 +35,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const { xp, level, streak, missions } = useGamification();
   const [activeTab, setActiveTab] = useState<
-    "missions" | "history" | "subscription" | "analytics"
+    "missions" | "history" | "subscription" | "analytics" | "chat" | "pest"
   >("missions");
 
   useEffect(() => {
@@ -43,6 +45,8 @@ export default function Dashboard() {
     }
     fetchHistory();
   }, [farmer, navigate]);
+
+  // ... (keeping existing functions fetchHistory, formatDate, etc. unchanged)
 
   async function fetchHistory() {
     try {
@@ -122,7 +126,7 @@ export default function Dashboard() {
           
           {/* XP Progress Bar */}
           <div className="mb-6">
-            <div className="flex justify-betweentext-xs mb-1">
+            <div className="flex justify-between text-xs mb-1">
                <span className="text-xs text-muted-foreground">Progress to Level {level + 1}</span>
                <span className="text-xs font-medium">{xp % 100} / 100 XP</span>
             </div>
@@ -245,6 +249,26 @@ export default function Dashboard() {
               Missions
             </button>
             <button
+              onClick={() => setActiveTab("chat")}
+              className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
+                activeTab === "chat"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-slate-600"
+              }`}
+            >
+              AI Assistant
+            </button>
+            <button
+              onClick={() => setActiveTab("pest")}
+              className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
+                activeTab === "pest"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-slate-600"
+              }`}
+            >
+              Pest Detector
+            </button>
+            <button
               onClick={() => setActiveTab("history")}
               className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "history"
@@ -272,7 +296,7 @@ export default function Dashboard() {
                   : "border-transparent text-slate-600"
               }`}
             >
-              Analytics & Insights
+              Analytics
             </button>
           </div>
 
@@ -295,6 +319,21 @@ export default function Dashboard() {
                 </div>
               </div>
             )}
+            
+            {activeTab === "chat" && (
+              <Suspense fallback={<div>Loading Chat...</div>}>
+                <div className="h-[500px]">
+                  <Chatbot />
+                </div>
+              </Suspense>
+            )}
+            
+            {activeTab === "pest" && (
+              <Suspense fallback={<div>Loading Detector...</div>}>
+                <PestDetector />
+              </Suspense>
+            )}
+
             {activeTab === "history" && (
               <div>
                 {loading ? (

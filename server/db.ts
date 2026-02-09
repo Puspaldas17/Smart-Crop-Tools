@@ -201,3 +201,19 @@ export const AnalyticsData: any = USE_MEMORY
   ? new InMemoryCollection("AnalyticsData")
   : mongoose.models.AnalyticsData ||
     mongoose.model("AnalyticsData", analyticsDataSchema);
+
+const drugLogSchema = new mongoose.Schema(
+  {
+    animalId: { type: String, required: true },
+    drugName: { type: String, required: true },
+    dosage: { type: String, required: true },
+    withdrawalDays: { type: Number, required: true },
+    applicator: { type: String, default: "Farmer" },
+    treatmentDate: { type: Date, default: Date.now },
+  },
+  { timestamps: true },
+);
+
+export const DrugLog: any = USE_MEMORY
+  ? new InMemoryCollection("DrugLog")
+  : mongoose.models.DrugLog || mongoose.model("DrugLog", drugLogSchema);

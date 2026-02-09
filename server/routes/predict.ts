@@ -85,7 +85,75 @@ export const predictHandler: RequestHandler = async (req, res) => {
   const name = file.originalname || "image.jpg";
   const lower = name.toLowerCase();
   let items: { className: string; probability: number }[] = [];
-  if (
+
+  // Rice
+  if (lower.includes("rice") || lower.includes("paddy")) {
+    if (lower.includes("blast")) {
+      items = [
+        { className: "Rice Blast", probability: 0.92 },
+        { className: "Brown Spot", probability: 0.05 },
+        { className: "Healthy Rice", probability: 0.03 },
+      ];
+    } else if (lower.includes("brown")) {
+      items = [
+        { className: "Brown Spot", probability: 0.88 },
+        { className: "Rice Blast", probability: 0.08 },
+        { className: "Healthy Rice", probability: 0.04 },
+      ];
+    } else {
+      items = [
+        { className: "Healthy Rice", probability: 0.95 },
+        { className: "Deficiency (Zinc)", probability: 0.03 },
+        { className: "Rice Blast", probability: 0.02 },
+      ];
+    }
+  } 
+  // Corn / Maize
+  else if (lower.includes("corn") || lower.includes("maize")) {
+    if (lower.includes("rust")) {
+      items = [
+        { className: "Common Rust", probability: 0.94 },
+        { className: "Gray Leaf Spot", probability: 0.04 },
+        { className: "Healthy Corn", probability: 0.02 },
+      ];
+    } else if (lower.includes("blight")) {
+      items = [
+        { className: "Northern Corn Leaf Blight", probability: 0.91 },
+        { className: "Common Rust", probability: 0.06 },
+        { className: "Healthy Corn", probability: 0.03 },
+      ];
+    } else {
+       items = [
+        { className: "Healthy Corn", probability: 0.96 },
+        { className: "Common Rust", probability: 0.03 },
+        { className: "Gray Leaf Spot", probability: 0.01 },
+      ];
+    }
+  }
+  // Potato
+  else if (lower.includes("potato")) {
+     if (lower.includes("early")) {
+      items = [
+        { className: "Early Blight", probability: 0.89 },
+        { className: "Late Blight", probability: 0.07 },
+        { className: "Healthy Potato", probability: 0.04 },
+      ];
+    } else if (lower.includes("late")) {
+      items = [
+        { className: "Late Blight", probability: 0.93 },
+        { className: "Early Blight", probability: 0.05 },
+        { className: "Healthy Potato", probability: 0.02 },
+      ];
+    } else {
+       items = [
+        { className: "Healthy Potato", probability: 0.97 },
+        { className: "Early Blight", probability: 0.02 },
+        { className: "Late Blight", probability: 0.01 },
+      ];
+    }
+  }
+  // Generic / Default
+  else if (
     lower.includes("blight") ||
     lower.includes("fungus") ||
     lower.includes("leaf")
