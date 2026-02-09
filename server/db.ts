@@ -122,6 +122,11 @@ const farmerSchema = new mongoose.Schema(
       village: String,
       state: String,
     },
+    role: {
+      type: String,
+      enum: ["farmer", "vet", "admin"],
+      default: "farmer",
+    },
     subscriptionStatus: {
       type: String,
       default: "free",

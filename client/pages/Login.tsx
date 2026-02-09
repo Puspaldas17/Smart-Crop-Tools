@@ -171,6 +171,19 @@ export default function Login() {
           <Button variant="outline" className="w-full" onClick={handleGuestLogin} disabled={loading}>
             Guest
           </Button>
+
+          <div className="text-center text-sm text-slate-500 mt-6">
+            <p className="mb-2">For Demo Purposes:</p>
+            <div className="flex justify-center gap-4 text-xs">
+               <button onClick={() => navigate("/vet")} className="text-blue-600 hover:underline">
+                 View Vet Dashboard
+               </button>
+               <span>|</span>
+               <button onClick={() => navigate("/admin")} className="text-blue-600 hover:underline">
+                 View Admin Dashboard
+               </button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

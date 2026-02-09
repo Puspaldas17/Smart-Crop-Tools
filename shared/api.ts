@@ -25,6 +25,7 @@ export interface FarmerDTO {
   subscriptionEndDate?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  role?: "farmer" | "vet" | "admin";
 }
 
 export interface AdvisoryHistoryDTO {
