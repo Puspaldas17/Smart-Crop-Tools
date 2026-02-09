@@ -9,7 +9,7 @@ import { createAdvisory } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
-import { upsertFarmer, guestLogin } from "./routes/auth";
+import { upsertFarmer, guestLogin, register, login, getDebugUsers, deleteDebugUser } from "./routes/auth";
 import {
   saveAdvisoryHistory,
   getAdvisoryHistory,
@@ -55,6 +55,7 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Domain routes
+  // Domain routes
   app.post("/api/farmers", createFarmer);
   app.get("/api/farmers/:id", getFarmer);
   app.get("/api/weather", getWeather);
@@ -62,8 +63,14 @@ export function createServer() {
   app.get("/api/market", getMarketPrices);
   app.post("/api/chat", chatHandler);
   app.post("/api/predict", uploadMiddleware, predictHandler);
-  app.post("/api/auth/farmer", upsertFarmer);
+  
+  // Auth routes
+  app.post("/api/auth/register", register);
+  app.post("/api/auth/login", login);
+  app.post("/api/auth/farmer", upsertFarmer); // legacy
   app.post("/api/auth/guest", guestLogin);
+  app.get("/api/debug/users", getDebugUsers);
+  app.delete("/api/debug/users/:id", deleteDebugUser);
 
   // AMU / Blockchain Routes
   app.post("/api/amu/log", logTreatment);
