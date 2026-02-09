@@ -110,6 +110,8 @@ export async function connectDB(uri?: string) {
 const farmerSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    email: { type: String, unique: true, sparse: true },
+    password: { type: String },
     phone: { type: String },
     soilType: { type: String },
     landSize: { type: Number },
