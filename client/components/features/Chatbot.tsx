@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useSpeech, languages } from "./useSpeech";
 import { Mic, StopCircle, Send } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 export default function Chatbot() {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<
     { role: "user" | "assistant"; content: string }[]
   >([]);
@@ -70,7 +72,7 @@ export default function Chatbot() {
     const voiceHandler = () => {
       setVoiceMode(true);
       try {
-        speak("Tap the big mic and speak your question.");
+        speak(t('chat.mic_prompt'));
       } catch {}
       const el = document.getElementById("chat");
       el?.scrollIntoView({ behavior: "smooth" });
@@ -83,7 +85,7 @@ export default function Chatbot() {
       window.removeEventListener("chat:set-language", langHandler as any);
       window.removeEventListener("chat:voice-mode", voiceHandler as any);
     };
-  }, [speak]);
+  }, [speak, t]);
 
   async function send() {
     if (!input.trim()) return;
@@ -103,7 +105,7 @@ export default function Chatbot() {
       const data = await res.json().catch(() => ({}));
       const reply = res.ok
         ? data.reply
-        : data.error || "Sorry, I couldn't process that.";
+        : data.error || t('common.error');
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
       try {
         speak(reply);
@@ -117,7 +119,7 @@ export default function Chatbot() {
   return (
     <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between border-b border-slate-200 p-4">
-        <div className="text-sm font-semibold">Chatbot</div>
+        <div className="text-sm font-semibold">{t('chat.title')}</div>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-1 text-xs text-slate-600">
             <input
@@ -125,7 +127,7 @@ export default function Chatbot() {
               checked={voiceMode}
               onChange={(e) => setVoiceMode(e.target.checked)}
             />
-            Voice‑First Mode
+            {t('chat.voice_mode')}
           </label>
           <select
             value={lang}
@@ -143,7 +145,7 @@ export default function Chatbot() {
       {voiceMode && (
         <div className="p-4">
           <div className="mb-3 text-center text-sm text-slate-600">
-            Tap the big mic and speak your question
+            {t('chat.mic_prompt')}
           </div>
           <div className="flex justify-center">
             {listening ? (
@@ -167,7 +169,7 @@ export default function Chatbot() {
       <div className="scrollbar-thin flex-1 space-y-3 overflow-y-auto p-5">
         {messages.length === 0 && !voiceMode && (
           <div className="text-sm text-slate-500">
-            Ask about weather, market prices, crop/fertilizer advice…
+            {t('chat.empty')}
           </div>
         )}
         {messages.map((m, i) => (
@@ -189,17 +191,17 @@ export default function Chatbot() {
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your question…"
+            placeholder={t('chat.input')}
             className="flex-1 rounded-md border border-slate-300 px-4 py-2.5 text-sm"
           />
         )}
         {!voiceMode && messages.length > 0 && (
           <button
             onClick={() => setMessages([])}
-            title="Clear"
+            title={t('chat.clear')}
             className="rounded-md border border-slate-300 p-2 text-slate-700"
           >
-            Clear
+            {t('chat.clear')}
           </button>
         )}
         {supported &&

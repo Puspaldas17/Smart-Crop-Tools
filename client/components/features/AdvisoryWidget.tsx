@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { INDIA_CENTROID } from "@/lib/geo";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 export default function AdvisoryWidget() {
   const { farmer } = useAuth();
+  const { t } = useTranslation();
   const [status, setStatus] = useState("");
   const [advisory, setAdvisory] = useState<any>(null);
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
@@ -26,7 +28,7 @@ export default function AdvisoryWidget() {
     if (!coords) return;
     const fd = new FormData(e.currentTarget);
     const crop = String(fd.get("crop") || "");
-    setStatus("Generating advisory…");
+    setStatus(t('advisory.generating'));
     try {
       const r = await fetch("/api/advisories", {
         method: "POST",
@@ -36,7 +38,7 @@ export default function AdvisoryWidget() {
       const data = await r.json();
       if (r.ok) {
         setAdvisory(data);
-        setStatus("Ready.");
+        setStatus(t('advisory.ready'));
 
         if (farmer && farmer._id && !farmer.isGuest) {
           const summary = data.summary || "Advisory generated";
@@ -78,9 +80,9 @@ export default function AdvisoryWidget() {
             console.error("Failed to save data:", error);
           }
         }
-      } else setStatus(data.error || "Failed");
+      } else setStatus(data.error || t('common.error'));
     } catch (e) {
-      setStatus("Network error");
+      setStatus(t('common.error'));
     }
   }
 
@@ -89,33 +91,33 @@ export default function AdvisoryWidget() {
       id="advisory"
       className="my-5 rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
     >
-      <h3 className="text-xl font-semibold">Quick Crop Advisory</h3>
+      <h3 className="text-xl font-semibold">{t('advisory.title')}</h3>
       <form onSubmit={onSubmit} className="mt-3 flex items-stretch gap-3">
         <input
           name="crop"
-          placeholder="Crop (e.g., wheat)"
+          placeholder={t('advisory.placeholder')}
           className="w-4/5 rounded-md border border-slate-300 px-4 py-3 text-sm"
         />
         <button className="w-1/5 rounded-md bg-emerald-600 px-5 py-3 text-sm font-semibold text-white">
-          Get Advice
+          {t('advisory.button')}
         </button>
       </form>
       <div className="mt-3 text-sm text-slate-600">{status}</div>
       {advisory && (
         <div className="mt-3 grid gap-2 text-sm text-slate-700">
-          <div className="font-semibold">Summary</div>
+          <div className="font-semibold">{t('advisory.summary')}</div>
           <div>{advisory.summary}</div>
           <div className="grid gap-2 md:grid-cols-3">
             <div className="rounded-md border border-slate-200 p-3">
-              <div className="text-xs font-semibold">Fertilizer</div>
+              <div className="text-xs font-semibold">{t('advisory.fertilizer')}</div>
               <div>{advisory.fertilizer}</div>
             </div>
             <div className="rounded-md border border-slate-200 p-3">
-              <div className="text-xs font-semibold">Irrigation</div>
+              <div className="text-xs font-semibold">{t('advisory.irrigation')}</div>
               <div>{advisory.irrigation}</div>
             </div>
             <div className="rounded-md border border-slate-200 p-3">
-              <div className="text-xs font-semibold">Pest</div>
+              <div className="text-xs font-semibold">{t('advisory.pest')}</div>
               <div>{advisory.pest}</div>
             </div>
           </div>
