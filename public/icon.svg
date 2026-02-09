@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#16a34a"/>
+  <path d="M256 96l-64 128h128l-64-128zM160 384h192v32H160z" fill="white"/>
+  <text x="50%" y="60%" text-anchor="middle" fill="white" font-size="80" font-family="Arial, sans-serif" font-weight="bold">AgriVerse</text>
+</svg>
