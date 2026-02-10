@@ -13,7 +13,7 @@ export default function Hero() {
             Built for small & marginal farmers
           </div>
           <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
-            Smart Crop Advisory
+            AgriVerse
           </h1>
           <p className="mt-4 mx-auto max-w-[65ch] text-slate-600 md:text-lg leading-relaxed">
             One unified platform for crop advice, market prices, weather alerts

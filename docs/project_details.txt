@@ -1,4 +1,4 @@
-# Smart Crop Advisory System
+# AgriVerse System
 
 AI‑powered, multilingual guidance for farmers. This app brings together a voice‑enabled chatbot, market prices, local weather alerts, crop advisory, and image‑based pest/disease detection. Built for reliability in low‑connectivity environments and fully responsive across devices.
 

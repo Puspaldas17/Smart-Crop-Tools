@@ -168,7 +168,7 @@ export default function RootLayout() {
       <footer className="border-t border-slate-200/60 bg-white/60 py-12">
         <div className="container max-w-[1400px] px-4 md:px-8 flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
           <p className="text-sm text-slate-600">
-            © {new Date().getFullYear()} Smart Crop Advisory
+            © {new Date().getFullYear()} AgriVerse
           </p>
           <div className="flex items-center gap-4 text-sm">
             <a
