@@ -6,7 +6,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   en: {
     translation: {
-      "app.title": "Smart Crop Advisory",
+      "app.title": "AgriVerse",
       "nav.home": "Home",
       "nav.tools": "Tools",
       "nav.dashboard": "Dashboard",

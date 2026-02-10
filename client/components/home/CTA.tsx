@@ -11,7 +11,7 @@ export default function CTA() {
       <div className="relative z-10 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
         <div>
           <h3 className="text-2xl font-bold tracking-tight">
-            Ready to try Smart Crop Advisory?
+            Ready to try AgriVerse?
           </h3>
           <p className="mt-1 text-white/90">
             Personalized guidance, market prices and weather alerts at your
