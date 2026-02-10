@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { Block as BlockModel } from "../db";
 
 interface Block {
   index: number;
@@ -12,7 +13,32 @@ export class HashChain {
   public chain: Block[];
 
   constructor() {
-    this.chain = [this.createGenesisBlock()];
+    this.chain = [];
+    this.initialize();
+  }
+
+  private async initialize() {
+    // Load from DB or create Genesis
+    try {
+      const blocks = await BlockModel.find({}).sort({ index: 1 });
+      if (blocks.length > 0) {
+        this.chain = blocks.map((b: any) => ({
+          index: b.index,
+          timestamp: b.timestamp,
+          data: b.data,
+          previousHash: b.previousHash,
+          hash: b.hash,
+        }));
+      } else {
+        const genesis = this.createGenesisBlock();
+        await BlockModel.create(genesis);
+        this.chain = [genesis];
+      }
+    } catch (error) {
+       console.error("Failed to initialize ledger:", error);
+       // Fallback to memory genesis if DB fails initially
+       this.chain = [this.createGenesisBlock()];
+    }
   }
 
   private createGenesisBlock(): Block {
@@ -41,7 +67,7 @@ export class HashChain {
     return this.chain[this.chain.length - 1];
   }
 
-  public addBlock(data: any): Block {
+  public async addBlock(data: any): Promise<Block> {
     const latestBlock = this.getLatestBlock();
     const index = latestBlock.index + 1;
     const timestamp = new Date().toISOString();
@@ -57,6 +83,14 @@ export class HashChain {
     };
 
     this.chain.push(newBlock);
+    
+    // Persist to DB
+    try {
+        await BlockModel.create(newBlock);
+    } catch (e) {
+        console.error("Failed to persist block to DB", e);
+    }
+    
     return newBlock;
   }
 

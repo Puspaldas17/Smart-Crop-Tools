@@ -19,6 +19,7 @@ import { BadgesGallery } from "@/components/features/Gamification/BadgesGallery"
 const Analytics = lazy(() => import("@/components/features/Analytics"));
 const Chatbot = lazy(() => import("@/components/features/Chatbot"));
 const PestDetector = lazy(() => import("@/components/features/PestDetector"));
+const VetDashboard = lazy(() => import("./VetDashboard"));
 
 interface AdvisoryRecord {
   _id?: string;
@@ -86,6 +87,14 @@ export default function Dashboard() {
   const subscriptionEnd = farmer?.subscriptionEndDate
     ? new Date(farmer.subscriptionEndDate).toLocaleDateString("en-IN")
     : null;
+
+  if (farmer?.role === "vet") {
+    return (
+      <Suspense fallback={<div>Loading Portal...</div>}>
+        <VetDashboard />
+      </Suspense>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
