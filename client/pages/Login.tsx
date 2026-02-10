@@ -174,14 +174,32 @@ export default function Login() {
 
           <div className="text-center text-sm text-slate-500 mt-6">
             <p className="mb-2">For Demo Purposes:</p>
-            <div className="flex justify-center gap-4 text-xs">
-               <button onClick={() => navigate("/vet")} className="text-blue-600 hover:underline">
-                 View Vet Dashboard
-               </button>
-               <span>|</span>
-               <button onClick={() => navigate("/admin")} className="text-blue-600 hover:underline">
-                 View Admin Dashboard
-               </button>
+            <div className="flex justify-center gap-2 text-xs">
+               <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => {
+                  // Simulate vet login
+                  login({ ...farmer, role: 'vet', name: 'Dr. John Doe' } as any);
+                  navigate("/dashboard");
+                }}
+                className="text-blue-600 hover:text-blue-800"
+               >
+                 Login as Vet
+               </Button>
+               <span className="self-center">|</span>
+               <Button 
+                variant="ghost" 
+                size="sm" 
+                 onClick={() => {
+                  // Simulate admin login
+                  login({ ...farmer, role: 'admin', name: 'Authority' } as any);
+                  navigate("/dashboard");
+                }}
+                className="text-blue-600 hover:text-blue-800"
+               >
+                 Login as Admin
+               </Button>
             </div>
           </div>
         </CardContent>
