@@ -33,7 +33,7 @@ export const logTreatment: RequestHandler = async (req, res) => {
     };
 
     // 1. Add to Ledger (Blockchain)
-    const block = ledger.addBlock(logEntry);
+    const block = await ledger.addBlock(logEntry);
 
     // 2. Add to Local DB (Persistent)
     await DrugLog.create(logEntry);

@@ -222,3 +222,18 @@ const drugLogSchema = new mongoose.Schema(
 export const DrugLog: any = USE_MEMORY
   ? new InMemoryCollection("DrugLog")
   : mongoose.models.DrugLog || mongoose.model("DrugLog", drugLogSchema);
+
+const blockSchema = new mongoose.Schema(
+  {
+    index: { type: Number, required: true },
+    timestamp: { type: String, required: true },
+    data: { type: mongoose.Schema.Types.Mixed, required: true },
+    previousHash: { type: String, required: true },
+    hash: { type: String, required: true },
+  },
+  { timestamps: true },
+);
+
+export const Block: any = USE_MEMORY
+  ? new InMemoryCollection("Block")
+  : mongoose.models.Block || mongoose.model("Block", blockSchema);
