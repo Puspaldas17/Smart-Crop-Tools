@@ -20,6 +20,7 @@ const Analytics = lazy(() => import("@/components/features/Analytics"));
 const Chatbot = lazy(() => import("@/components/features/Chatbot"));
 const PestDetector = lazy(() => import("@/components/features/PestDetector"));
 const VetDashboard = lazy(() => import("./VetDashboard"));
+const AdminDashboard = lazy(() => import("./AdminDashboard"));
 
 interface AdvisoryRecord {
   _id?: string;
@@ -92,6 +93,22 @@ export default function Dashboard() {
     return (
       <Suspense fallback={<div>Loading Portal...</div>}>
         <VetDashboard />
+      </Suspense>
+    );
+  }
+
+  if (farmer?.role === "admin") {
+    return (
+      <Suspense fallback={<div>Loading Authority Dashboard...</div>}>
+        <AdminDashboard />
+      </Suspense>
+    );
+  }
+
+  if (farmer?.role === "admin") {
+    return (
+      <Suspense fallback={<div>Loading Authority Dashboard...</div>}>
+        <AdminDashboard />
       </Suspense>
     );
   }
