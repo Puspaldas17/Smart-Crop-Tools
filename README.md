@@ -10,16 +10,50 @@
 
 ## ✨ Key Features
 
-- **🗣️ Multilingual AI Chatbot**: Voice-enabled assistant that understands local languages (Hindi, Odia, English) and provides context-aware farming advice.
-- **💹 Real-time Market Prices**: Access live Mandi rates for various crops to make informed selling decisions.
-- **🌦️ Localized Weather Alerts**: Precise weather forecasts with alerts for extreme conditions like high humidity or temp.
-- **🐛 Pest & Disease Detection**: AI-powered image analysis to detect crop diseases and recommend treatments (Powered by Python AI Service).
-- **📝 Gamified Learning**: Missions and rewards to encourage sustainable farming habits.
-- **💊 AMU & Livestock Health**: Track antimicrobial usage and manage livestock health records.
+### 🌍 **Multilingual & Accessible**
+
+- **3 Language Support**: Fully localized in **English**, **Hindi (हिंदी)**, and **Odia (ଓଡ଼ିଆ)**.
+- **Voice-Enabled Chatbot**: Talk to the AI assistant in your native language for farming advice.
+- **Offline Capabilities**: PWA support ensures key features work even with spotty internet.
+
+### 🎮 **Gamified Farming**
+
+- **Daily Missions**: Complete tasks like "Upload Soil Photo" or "Check Market Prices" to earn XP.
+- **Leveling System**: Earn XP, level up, and maintain daily streaks to stay motivated.
+- **Badges & Rewards**: Unlock achievements like "Green Thumb" or "Market Guru" for consistent activity.
+- **Leaderboard**: Compete with other farmers (locally or regionally) to improve farming practices.
+
+### 🤖 **AI & Smart Advisory**
+
+- **Crop Advisory**: Personalized fertilizer, irrigation, and seed recommendations based on your soil type and land size.
+- **Pest & Disease Detection**: Upload a photo of your crop, and our **Python-based AI Service** (TensorFlow/CNN) detects diseases and suggests remedies instantly.
+- **Chatbot Assistant**: Ask anything about weather, crops, or government schemes.
+
+### 📊 **Real-Time Data**
+
+- **Market Intelligence**: Live Mandi rates (APMC prices) for various crops to help you sell at the best price.
+- **Weather Forecasts**: Localized 3-day weather predictions with alerts for extreme conditions (drought, heavy rain).
+
+### 🛠️ **Farm Management Tools**
+
+- **Dashboard**: A unified view of your farm's health, recent advisories, and subscription status.
+- **AMU & Livestock**: Track antimicrobial usage and manage cattle/livestock health records.
+- **Subscription Plans**: Manage Free vs. Premium tiers for advanced analytics and priority support.
 
 ---
 
-## 🛠️ Technology Stack
+## � Why AgriVerse? (Unique Features)
+
+What sets AgriVerse apart from standard farming apps:
+
+1.  **🗣️ Voice-First for Low Literacy**: Unlike text-heavy apps, AgriVerse is built for accessibility. Farmers can simply **speak** in their native dialect to get answers, making technology usable for everyone.
+2.  **🎮 Behavior Change via Gamification**: We don't just give advice; we motivate action. By turning farming tasks into "Missions" with streaks and badges, we encourage long-term adoption of sustainable practices.
+3.  **⚡ Offline-First Architecture**: Farming happens in the field, often far from cell towers. Our PWA design ensures that critical features like previous advisories and crop tools work **without an internet connection**.
+4.  **🔗 Holistic Ecosystem**: Most apps focus on _one_ thing (just weather, or just market prices). AgriVerse connects the dots: **Weather + Soil + Market + Pest Detection** all in one place to give truly unified advice.
+
+---
+
+## �🛠️ Technology Stack
 
 | Layer          | Technology                            |
 | :------------- | :------------------------------------ |
@@ -27,7 +61,7 @@
 | **Backend**    | Node.js, Express.js (Express 5)       |
 | **AI Service** | Python (FastAPI, TensorFlow/PyTorch)  |
 | **Database**   | MongoDB (Mongoose)                    |
-| **Auth**       | Custom Auth / Supabase (Optional)     |
+| **Auth**       | Custom JWT Auth                       |
 
 ---
 
@@ -87,7 +121,7 @@ You need to run the **Web App** and the **AI Service** in separate terminals.
 npm run dev
 ```
 
-> Access the app at: [http://localhost:8080](http://localhost:8080)
+> 🟢 Access the app at: [http://localhost:8080](http://localhost:8080)
 
 **Terminal 2: Start AI Service**
 
@@ -96,7 +130,13 @@ cd ai_service
 python main.py
 ```
 
-> AI Service runs at: [http://localhost:8000](http://localhost:8000)
+> 🟢 AI Service runs at: [http://localhost:8000](http://localhost:8000)
+
+### 4. Verification
+
+1.  Open [http://localhost:8080](http://localhost:8080) in your browser.
+2.  Use the **Language Switcher** in the top bar to test Hindi/Odia.
+3.  Go to **Dashboard** -> **Pest Detector** to test the connection to the Python AI Service.
 
 ---
 
@@ -104,17 +144,19 @@ python main.py
 
 ```
 AgriVerse/
-├── client/              # React Frontend
-├── server/              # Node.js/Express Backend
-├── ai_service/          # Python AI API (FastAPI)
-├── shared/              # Shared Types/Utils
-└── scripts/             # Utility scripts (seeding, etc.)
+├── client/              # React Frontend (Vite)
+│   ├── components/      # UI & Feature Components
+│   ├── pages/           # Route Pages (Dashboard, Index, etc.)
+│   └── i18n.ts          # Language Configuration
+├── server/              # Node.js/Express Backend API
+├── ai_service/          # Python AI API (FastAPI + ML Models)
+└── shared/              # Shared Types/Utils
 ```
 
 ## 🧰 Troubleshooting
 
 - **Port Conflicts**: If port `8080` is in use, set `PORT=9090 npm run dev` (PowerShell: `$env:PORT=9090; npm run dev`).
-- **AI Service Error**: Ensure Python dependencies are installed and the service is running on port `8000`.
+- **AI Service Error**: Ensure Python dependencies are installed (`pip install -r requirements.txt`) and the service is running on port `8000`.
 - **Database**: If you don't have MongoDB installed, the app will run in "Demo Mode" with in-memory data.
 
 ---
