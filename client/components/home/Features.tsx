@@ -11,33 +11,33 @@ export default function Features() {
   const features = [
     {
       icon: Sprout,
-      title: "Crop advisory",
-      desc: "Fertilizer, irrigation and crop selection guidance.",
+      title: "Smart Crop Advisory",
+      desc: "Expert guidance on seeds, fertilizers, and irrigation tailored to your soil.",
     },
     {
       icon: CloudSun,
-      title: "Weather alerts",
-      desc: "Localized forecasts and actionable notifications.",
+      title: "Precision Weather",
+      desc: "Hyper-local forecasts to help you plan sowing and harvesting with confidence.",
     },
     {
       icon: Brain,
-      title: "Insights",
-      desc: "Chatbot for quick answers and best practices.",
+      title: "AI Farming Assistant",
+      desc: "Instant answers to your farming queries, available 24/7.",
     },
     {
       icon: Languages,
-      title: "Multilingual",
-      desc: "Voice‑first UX in native languages.",
+      title: "Native Language Support",
+      desc: "Interact naturally with voice commands in your local dialect.",
     },
     {
       icon: Camera,
-      title: "Pest detection",
-      desc: "On‑device image analysis for pests and diseases.",
+      title: "Instant Disease Detection",
+      desc: "Snap a photo to identify pests and get immediate remedy suggestions.",
     },
     {
       icon: Shield,
-      title: "Privacy by design",
-      desc: "Secure handling of farmer data and preferences.",
+      title: "Secure & Private",
+      desc: "Your farm data is yours. We ensure complete privacy and security.",
     },
   ];
   return (

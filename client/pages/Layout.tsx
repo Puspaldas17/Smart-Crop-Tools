@@ -81,13 +81,14 @@ function HeaderAuth() {
   );
 }
 
+
 export default function RootLayout() {
   const scrolled = useScrollTop(10);
   const { farmer } = useAuth();
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-transparent text-foreground">
+    <div className="min-h-screen bg-transparent text-foreground relative">
       <a
         href="#content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow"

@@ -101,40 +101,22 @@
     scroll-behavior: smooth;
   }
 
+  /* suppress css-lint-unknown-at-rule */
   body {
-    @apply bg-background text-foreground antialiased;
-    overflow-x: hidden;
-    /* Agricultural Landscape Background (CSS Fallback) */
-    background: 
-      /* Sun */
-      radial-gradient(circle at 80% 20%, rgba(255, 223, 100, 0.6) 0%, transparent 20%),
-      /* Rolling Hills / Field Texture */
-      radial-gradient(ellipse at 50% 100%, hsla(120, 39%, 92%, 1) 0%, transparent 70%),
-      radial-gradient(ellipse at 20% 100%, hsla(122, 39%, 88%, 1) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, hsla(43, 96%, 90%, 1) 0%, transparent 60%),
-      /* Saturated Sky/Horizon Gradient */
-      linear-gradient(to bottom, #f0fdf4 0%, #dcfce7 60%, #bbf7d0 100%);
-    
-    background-size: 100% 100%;
+    /* 
+     * Using linear-gradient as an overlay to ensure text readability 
+     * against the high-res background image.
+     */
+    background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/bg-agri-realistic.jpg');
+    background-size: cover;
+    background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
   }
 
-  /* Keyframe animation removed for performance/visual stability with complex gradient */
-
+  /* suppress css-lint-unknown-at-rule */
   .dark body {
-    background: 
-      /* Moon/Night Light */
-      radial-gradient(circle at 80% 20%, rgba(200, 220, 255, 0.15) 0%, transparent 20%),
-      /* Dark Hills/Fields */
-      radial-gradient(ellipse at 50% 100%, hsla(120, 40%, 8%, 1) 0%, transparent 70%),
-      radial-gradient(ellipse at 20% 100%, hsla(120, 40%, 10%, 1) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, hsla(120, 40%, 6%, 1) 0%, transparent 60%),
-      /* Night Sky Gradient */
-      linear-gradient(to bottom, #051005 0%, #0a1f0a 60%, #0d260d 100%);
-    
-    background-size: 100% 100%;
-    background-attachment: fixed;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('/bg-agri-realistic.jpg');
   }
 
   h1 {
