@@ -1,13 +1,16 @@
 import * as React from "react";
+
 export default function PestDetector() {
   const [preds, setPreds] = React.useState<
     { className: string; probability: number }[]
   >([]);
+  const [soilInfo, setSoilInfo] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
   const imgRef = React.useRef<HTMLImageElement | null>(null);
 
   async function serverPredict(file: File) {
     setLoading(true);
+    setSoilInfo(null);
     try {
       const fd = new FormData();
       fd.append("image", file, file.name);
@@ -20,6 +23,9 @@ export default function PestDetector() {
             probability: p.probability,
           })),
         );
+        if (data.soilInfo) {
+          setSoilInfo(data.soilInfo);
+        }
       } else {
         setPreds([]);
       }
@@ -43,8 +49,7 @@ export default function PestDetector() {
         Image-based Pest/Disease Detection
       </h3>
       <p className="mt-1 text-sm text-slate-600">
-        Upload a leaf/crop image. Analysis runs on the server for maximum
-        compatibility in this preview.
+        Upload a leaf/crop image. Analysis runs on the server.
       </p>
       <div className="mt-4 flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
@@ -66,22 +71,57 @@ export default function PestDetector() {
             Using server-side prediction for reliability.
           </div>
         </div>
-        <div className="flex-1">
-          {loading && <div className="text-sm text-slate-500">Analyzing…</div>}
-          {!loading && preds.length > 0 && (
-            <ul className="space-y-2">
-              {preds.slice(0, 5).map((p, i) => (
-                <li
-                  key={i}
-                  className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm"
-                >
-                  <span>{p.className}</span>
-                  <span className="font-medium">
-                    {Math.round(p.probability * 100)}%
-                  </span>
-                </li>
-              ))}
-            </ul>
+        <div className="flex-1 space-y-6">
+          <div>
+            <h4 className="font-medium text-slate-900 mb-2">Analysis Results</h4>
+            {loading && <div className="text-sm text-slate-500">Analyzing…</div>}
+            {!loading && preds.length > 0 ? (
+              <ul className="space-y-2">
+                {preds.slice(0, 5).map((p, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm"
+                  >
+                    <span>{p.className}</span>
+                    <span className="font-medium">
+                      {Math.round(p.probability * 100)}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              !loading && <div className="text-sm text-slate-400">No results yet.</div>
+            )}
+          </div>
+
+          {soilInfo && (
+            <div className="border-t border-slate-100 pt-4">
+              <h4 className="font-medium text-slate-900 mb-2">Soil Recommendations (Based on Crop)</h4>
+              <div className="rounded-lg bg-slate-50 p-4 text-sm space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="text-slate-500 block text-xs">Soil Type</span>
+                    <span className="font-medium">{soilInfo.type}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-xs">pH Level</span>
+                    <span className="font-medium">{soilInfo.ph}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-xs">Moisture</span>
+                    <span className="font-medium">{soilInfo.moisture}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-xs">Temperature</span>
+                    <span className="font-medium">{soilInfo.temperature}</span>
+                  </div>
+                </div>
+                <div className="pt-2 border-t border-slate-200 mt-2">
+                  <span className="text-slate-500 block text-xs">Notes</span>
+                  <p className="text-slate-700">{soilInfo.notes}</p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
