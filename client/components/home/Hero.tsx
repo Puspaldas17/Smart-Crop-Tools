@@ -10,14 +10,15 @@ export default function Hero() {
         <div className="mx-auto max-w-[min(70vw,800px)] text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-accent/50 bg-background/70 px-3 py-1 text-xs font-medium text-accent-foreground shadow-sm backdrop-blur-sm">
             <Sprout className="h-4 w-4" />
-            Built for small & marginal farmers
+            Built for the future of farming
           </div>
-          <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-6xl">
-            AgriVerse
+          <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-6xl drop-shadow-md">
+            Cultivating Success,
+            <span className="block text-primary">Harvesting Innovation</span>
           </h1>
-          <p className="mt-4 mx-auto max-w-[65ch] text-muted-foreground md:text-lg leading-relaxed">
-            One unified platform for crop advice, market prices, weather alerts
-            and pest detection — multilingual and voice‑enabled.
+          <p className="mt-4 mx-auto max-w-[65ch] text-muted-foreground md:text-lg leading-relaxed font-medium">
+            Empowering every harvest with precision data. Get unified crop advice,
+            real-time market prices, and advanced pest detection—all in your local language.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <a
