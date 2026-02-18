@@ -19,6 +19,7 @@ const PestDetector = React.lazy(
   () => import("@/components/features/PestDetector"),
 );
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 const FeatureTiles = React.lazy(
   () => import("@/components/features/FeatureTiles"),
@@ -154,6 +155,8 @@ function ToolsSuite() {
 
 export default function Index() {
   const { farmer } = useAuth();
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-8 md:space-y-16">
       {!farmer && (
@@ -172,12 +175,10 @@ export default function Index() {
         <div id="solution" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
-              Proposed Solution
+              {t('landing.solution.title')}
             </h2>
             <p className="mt-2 max-w-prose text-muted-foreground">
-              A mobile app and chatbot that work online and offline to deliver
-              personalized crop, fertilizer, irrigation and pest
-              management—backed by real‑time weather and market data.
+              {t('landing.solution.text')}
             </p>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
@@ -223,7 +224,7 @@ export default function Index() {
         <div id="tech" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
-              Technical Approach
+              {t('landing.tech.title')}
             </h2>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
@@ -256,7 +257,7 @@ export default function Index() {
         <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
-              Feasibility and Viability
+              {t('landing.feasibility.title')}
             </h2>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2 lg:grid-cols-3">
@@ -294,7 +295,7 @@ export default function Index() {
         <div id="impact" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
-              Impact and Benefits
+              {t('landing.impact.title')}
             </h2>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
@@ -324,7 +325,7 @@ export default function Index() {
         <div id="research" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
           <header className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight">
-              Research and References
+              {t('landing.research.title')}
             </h2>
           </header>
           <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">

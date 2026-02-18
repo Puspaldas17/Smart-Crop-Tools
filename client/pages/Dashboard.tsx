@@ -127,13 +127,13 @@ export default function Dashboard() {
               <h1 className="text-3xl font-bold">{farmer?.name}</h1>
               <div className="flex items-center gap-3 mt-1">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold border border-yellow-200">
-                  <Star className="w-3 h-3 fill-yellow-800" /> Lvl {level}
+                  <Star className="w-3 h-3 fill-yellow-800" /> {t('dash.level')} {level}
                 </span>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 text-xs font-bold border border-orange-200">
-                  <Flame className="w-3 h-3 fill-orange-800" /> {streak} Day Streak
+                  <Flame className="w-3 h-3 fill-orange-800" /> {streak} {t('dash.streak')}
                 </span>
                 <span className="text-sm text-slate-500">
-                  {xp} XP
+                  {xp} {t('dash.xp')}
                 </span>
               </div>
             </div>
@@ -151,8 +151,8 @@ export default function Dashboard() {
           {/* XP Progress Bar */}
           <div className="mb-6">
             <div className="flex justify-between text-xs mb-1">
-               <span className="text-xs text-muted-foreground">Progress to Level {level + 1}</span>
-               <span className="text-xs font-medium">{xp % 100} / 100 XP</span>
+               <span className="text-xs text-muted-foreground">{t('dash.progress')} {level + 1}</span>
+               <span className="text-xs font-medium">{xp % 100} / 100 {t('dash.xp')}</span>
             </div>
             <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                <div 
@@ -164,21 +164,21 @@ export default function Dashboard() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <p className="text-sm text-slate-600">Phone</p>
+              <p className="text-sm text-slate-600">{t('dash.phone')}</p>
               <p className="font-medium">{farmer?.phone || "—"}</p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Soil Type</p>
+              <p className="text-sm text-slate-600">{t('dash.soil')}</p>
               <p className="font-medium">
                 {farmer?.soilType || "Not specified"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Land Size</p>
+              <p className="text-sm text-slate-600">{t('dash.land')}</p>
               <p className="font-medium">{farmer?.landSize || "—"} acres</p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Language</p>
+              <p className="text-sm text-slate-600">{t('dash.language')}</p>
               <p className="font-medium">{farmer?.language || "en-IN"}</p>
             </div>
           </div>
@@ -205,14 +205,14 @@ export default function Dashboard() {
                   <>
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                     <span className="text-sm font-medium text-green-700">
-                      Premium
+                      {t('dash.plan.premium')}
                     </span>
                   </>
                 ) : (
                   <>
                     <AlertCircle className="h-4 w-4 text-slate-600" />
                     <span className="text-sm font-medium text-slate-700">
-                      Free Plan
+                      {t('dash.plan.free')}
                     </span>
                   </>
                 )}
@@ -221,17 +221,17 @@ export default function Dashboard() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded-lg border border-slate-200 p-4">
-                <p className="text-sm text-slate-600">Advisories Generated</p>
+                <p className="text-sm text-slate-600">{t('dash.stats.advisories')}</p>
                 <p className="text-2xl font-bold mt-1">{history.length}</p>
               </div>
               <div className="rounded-lg border border-slate-200 p-4">
-                <p className="text-sm text-slate-600">Status</p>
+                <p className="text-sm text-slate-600">{t('dash.stats.status')}</p>
                 <p className="text-lg font-bold mt-1">
-                  {isPremium ? "Premium Active" : "Free"}
+                  {isPremium ? t('dash.plan.premium') : "Free"}
                 </p>
               </div>
               <div className="rounded-lg border border-slate-200 p-4">
-                <p className="text-sm text-slate-600">Member Since</p>
+                <p className="text-sm text-slate-600">{t('dash.stats.member_since')}</p>
                 <p className="text-sm font-medium mt-1">
                   {farmer?.createdAt
                     ? new Date(farmer.createdAt).toLocaleDateString("en-IN")
@@ -243,7 +243,7 @@ export default function Dashboard() {
             {isPremium && subscriptionEnd && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
                 <p className="text-blue-900">
-                  Your premium subscription is active until{" "}
+                  {t('dash.plan.active_until')}{" "}
                   <span className="font-semibold">{subscriptionEnd}</span>
                 </p>
               </div>
@@ -252,7 +252,7 @@ export default function Dashboard() {
             {!isPremium && (
               <div className="mt-4">
                 <button className="px-4 py-2 bg-gradient-to-r from-[#ff8a00] to-[#2ea043] text-white font-medium rounded-md hover:opacity-90">
-                  Upgrade to Premium
+                  {t('dash.plan.upgrade')}
                 </button>
               </div>
             )}
@@ -329,7 +329,7 @@ export default function Dashboard() {
               <div className="grid gap-6 md:grid-cols-3">
                 <div className="md:col-span-2 space-y-6">
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Daily Missions</h3>
+                    <h3 className="font-semibold text-lg mb-3">{t('dash.missions.title')}</h3>
                     <div className="grid gap-4 sm:grid-cols-2">
                        {missions.map(mission => (
                          <MissionCard key={mission.id} mission={mission} />
@@ -363,9 +363,9 @@ export default function Dashboard() {
                 {farmer?.isGuest ? (
                   <div className="text-center py-12">
                      <Crop className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                     <h3 className="text-lg font-medium text-slate-900">Guest Mode</h3>
+                     <h3 className="text-lg font-medium text-slate-900">{t('dash.guest_mode')}</h3>
                      <p className="text-slate-600 mb-4 max-w-xs mx-auto">
-                       History is not saved for guest users. Create an account to save your advisories.
+                       {t('dash.guest_msg')}
                      </p>
                      <button 
                        onClick={() => {
@@ -374,19 +374,18 @@ export default function Dashboard() {
                        }}
                        className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium"
                      >
-                       Sign Up Now
+                       {t('dash.signup')}
                      </button>
                   </div>
                 ) : loading ? (
                   <div className="text-center py-8 text-slate-500">
-                    Loading history...
+                    {t('dash.history_loading')}
                   </div>
                 ) : history.length === 0 ? (
                   <div className="text-center py-12">
                     <Crop className="h-12 w-12 text-slate-300 mx-auto mb-3" />
                     <p className="text-slate-600">
-                      No advisories yet. Get started by generating your first
-                      advisory!
+                      {t('dash.no_history')}
                     </p>
                   </div>
                 ) : (
@@ -425,14 +424,14 @@ export default function Dashboard() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 p-4 border border-slate-200">
                     <p className="text-sm text-slate-600 mb-1">
-                      Total Advisories
+                      {t('dash.stats.advisories')}
                     </p>
                     <p className="text-3xl font-bold">{history.length}</p>
                   </div>
                   <div className="rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 p-4 border border-blue-200">
-                    <p className="text-sm text-blue-700 mb-1">Status</p>
+                    <p className="text-sm text-blue-700 mb-1">{t('dash.stats.status')}</p>
                     <p className="text-xl font-bold text-blue-900">
-                      {isPremium ? "Premium" : "Free"}
+                      {isPremium ? t('dash.plan.premium') : "Free"}
                     </p>
                   </div>
                 </div>

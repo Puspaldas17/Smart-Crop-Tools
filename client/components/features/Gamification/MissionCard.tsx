@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CheckCircle2, Circle } from "lucide-react";
 import { Mission, useGamification } from "@/context/GamificationContext";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,8 @@ interface MissionCardProps {
 export function MissionCard({ mission }: MissionCardProps) {
   const { completeMission } = useGamification();
   const [isAnimating, setIsAnimating] = useState(false);
+  const { t } = useTranslation();
+
 
   const handleComplete = () => {
     if (mission.completed) return;
@@ -46,10 +49,10 @@ export function MissionCard({ mission }: MissionCardProps) {
                 mission.completed && "text-muted-foreground line-through",
               )}
             >
-              {mission.title}
+              {t(mission.title)}
             </h3>
             <p className="text-sm text-muted-foreground">
-              {mission.description}
+              {t(mission.description)}
             </p>
           </div>
         </div>
@@ -81,7 +84,7 @@ export function MissionCard({ mission }: MissionCardProps) {
           +{mission.xpReward} XP
         </span>
         {mission.completed && (
-          <span className="text-xs font-medium text-green-600">Completed!</span>
+          <span className="text-xs font-medium text-green-600">{t('missions.completed')}</span>
         )}
       </div>
 
