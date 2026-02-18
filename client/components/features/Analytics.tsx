@@ -116,7 +116,7 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-slate-200 flex gap-4">
+      <div className="border-b border-slate-200 flex gap-4 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveTab("overview")}
           className={`pb-3 font-medium ${

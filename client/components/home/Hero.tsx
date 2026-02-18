@@ -6,7 +6,7 @@ export default function Hero() {
       <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
       <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
 
-      <div className="relative z-10 grid items-center gap-8 min-[577px]:grid-cols-2">
+      <div className="relative z-10 grid items-center gap-8 grid-cols-1 md:grid-cols-2">
         <div className="mx-auto max-w-[min(70vw,800px)] text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-accent/50 bg-background/70 px-3 py-1 text-xs font-medium text-accent-foreground shadow-sm backdrop-blur-sm">
             <Sprout className="h-4 w-4" />

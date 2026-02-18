@@ -181,7 +181,7 @@ export default function Index() {
               {t('landing.solution.text')}
             </p>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
             <Card title="Detailed explanation">
               <List
                 items={[
@@ -227,7 +227,7 @@ export default function Index() {
               {t('landing.tech.title')}
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
             <Card title="Technologies (MERN)">
               <List
                 items={[
@@ -260,7 +260,7 @@ export default function Index() {
               {t('landing.feasibility.title')}
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <Card title="Feasibility">
               <List
                 items={[
@@ -298,7 +298,7 @@ export default function Index() {
               {t('landing.impact.title')}
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
             <Card title="Impact on audience">
               <List
                 items={[
@@ -328,7 +328,7 @@ export default function Index() {
               {t('landing.research.title')}
             </h2>
           </header>
-          <div className="grid gap-6 md:gap-8 min-[577px]:grid-cols-2">
+          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
             <Card title="Sources">
               <List
                 items={[
