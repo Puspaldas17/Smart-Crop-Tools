@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ModeToggle } from "@/components/mode-toggle";
 import { useTranslation } from "react-i18next";
 
 function HeaderAuth() {
@@ -41,8 +42,8 @@ function HeaderAuth() {
       </a>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 text-sm">
-            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
+          <button className="inline-flex items-center gap-2 rounded-md border border-input px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
               {farmer.name?.charAt(0)?.toUpperCase() || "F"}
             </span>
             <span className="max-w-[10rem] truncate">{farmer.name}</span>
@@ -67,7 +68,7 @@ function HeaderAuth() {
     <div className="flex items-center gap-2">
       <Link
         to="/login"
-        className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+        className="rounded-md border border-input bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
       >
         {t('btn.farmer_login')}
       </Link>
@@ -124,6 +125,7 @@ export default function RootLayout() {
           </nav>
           <div className="flex items-center gap-3">
              <LanguageSwitcher />
+            <ModeToggle />
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>

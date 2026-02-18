@@ -14,6 +14,7 @@
 
 - **3 Language Support**: Fully localized in **English**, **Hindi (हिंदी)**, and **Odia (ଓଡ଼ିଆ)**.
 - **Voice-Enabled Chatbot**: Talk to the AI assistant in your native language for farming advice.
+- **Dark Mode**: Switch between Light and Dark themes for comfortable viewing in any lighting condition.
 - **Offline Capabilities**: PWA support ensures key features work even with spotty internet.
 
 ### 🎮 **Gamified Farming**

@@ -1,5 +1,6 @@
 import "./global.css";
 import "./i18n";
+import { ThemeProvider } from "@/components/theme-provider";
 
 import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
@@ -55,27 +56,29 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <GamificationProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <ErrorBoundary>
-              <Routes>
-                <Route element={<RootLayout />}>
-                  <Route index element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/amu" element={<AMUManager />} />
-                  <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/vet" element={<VetDashboard />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Route>
-              </Routes>
-            </ErrorBoundary>
-          </BrowserRouter>
-        </TooltipProvider>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <ErrorBoundary>
+                <Routes>
+                  <Route element={<RootLayout />}>
+                    <Route index element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/amu" element={<AMUManager />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/vet" element={<VetDashboard />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
+                </Routes>
+              </ErrorBoundary>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
       </GamificationProvider>
     </AuthProvider>
   </QueryClientProvider>

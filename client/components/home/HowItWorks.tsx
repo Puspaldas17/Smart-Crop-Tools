@@ -26,7 +26,7 @@ export default function HowItWorks() {
   return (
     <section
       aria-labelledby="how-title"
-      className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 px-4 md:px-8 py-8 md:py-16"
+      className="rounded-2xl border border-border bg-gradient-to-br from-card to-secondary/30 px-4 md:px-8 py-8 md:py-16"
     >
       <h2 id="how-title" className="text-2xl font-bold tracking-tight">
         How it works
@@ -35,19 +35,19 @@ export default function HowItWorks() {
         {steps.map(({ icon: Icon, title, desc }, i) => (
           <li
             key={title}
-            className="rounded-xl border border-slate-200 bg-white p-6"
+            className="rounded-xl border border-border bg-card p-6"
           >
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 font-semibold text-emerald-700">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 font-semibold text-primary">
                 {i + 1}
               </span>
               Step {i + 1}
             </div>
-            <Icon className="mt-4 h-5 w-5 text-emerald-600" />
-            <div className="mt-3 text-base font-semibold text-slate-900">
+            <Icon className="mt-4 h-5 w-5 text-primary" />
+            <div className="mt-3 text-base font-semibold text-foreground">
               {title}
             </div>
-            <div className="mt-1 text-sm text-slate-600 leading-relaxed">
+            <div className="mt-1 text-sm text-muted-foreground leading-relaxed">
               {desc}
             </div>
           </li>
