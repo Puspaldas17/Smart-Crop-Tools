@@ -44,11 +44,13 @@ export default function Dashboard() {
   >("missions");
 
   useEffect(() => {
-    if (!farmer || farmer.isGuest) {
+    if (!farmer) {
       navigate("/login", { replace: true });
       return;
     }
-    fetchHistory();
+    if (!farmer.isGuest) {
+      fetchHistory();
+    }
   }, [farmer, navigate]);
 
   // ... (keeping existing functions fetchHistory, formatDate, etc. unchanged)
@@ -105,13 +107,6 @@ export default function Dashboard() {
     );
   }
 
-  if (farmer?.role === "admin") {
-    return (
-      <Suspense fallback={<div>Loading Authority Dashboard...</div>}>
-        <AdminDashboard />
-      </Suspense>
-    );
-  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -365,7 +360,24 @@ export default function Dashboard() {
 
             {activeTab === "history" && (
               <div>
-                {loading ? (
+                {farmer?.isGuest ? (
+                  <div className="text-center py-12">
+                     <Crop className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                     <h3 className="text-lg font-medium text-slate-900">Guest Mode</h3>
+                     <p className="text-slate-600 mb-4 max-w-xs mx-auto">
+                       History is not saved for guest users. Create an account to save your advisories.
+                     </p>
+                     <button 
+                       onClick={() => {
+                         logout();
+                         navigate("/login");
+                       }}
+                       className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium"
+                     >
+                       Sign Up Now
+                     </button>
+                  </div>
+                ) : loading ? (
                   <div className="text-center py-8 text-slate-500">
                     Loading history...
                   </div>
