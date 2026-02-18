@@ -2,20 +2,20 @@ import { ArrowRight, Sprout, CloudSun, Bot } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-white to-emerald-50 px-4 md:px-8 py-8 md:py-16 min-h-[45vh] sm:min-h-[50vh] md:min-h-[65vh] lg:min-h-[75vh]">
-      <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-amber-200/40 blur-3xl" />
-      <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
+    <section className="relative overflow-hidden rounded-3xl bg-secondary/20 px-4 md:px-8 py-8 md:py-16 min-h-[45vh] sm:min-h-[50vh] md:min-h-[65vh] lg:min-h-[75vh]">
+      <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
+      <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
 
       <div className="relative z-10 grid items-center gap-8 min-[577px]:grid-cols-2">
         <div className="mx-auto max-w-[min(70vw,800px)] text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/70 px-3 py-1 text-xs font-medium text-amber-700 shadow-sm backdrop-blur-sm">
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-accent/50 bg-background/70 px-3 py-1 text-xs font-medium text-accent-foreground shadow-sm backdrop-blur-sm">
             <Sprout className="h-4 w-4" />
             Built for small & marginal farmers
           </div>
-          <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
+          <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-6xl">
             AgriVerse
           </h1>
-          <p className="mt-4 mx-auto max-w-[65ch] text-slate-600 md:text-lg leading-relaxed">
+          <p className="mt-4 mx-auto max-w-[65ch] text-muted-foreground md:text-lg leading-relaxed">
             One unified platform for crop advice, market prices, weather alerts
             and pest detection — multilingual and voice‑enabled.
           </p>
@@ -29,12 +29,12 @@ export default function Hero() {
             </a>
             <a
               href="/#tech"
-              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-accent/10"
             >
               Technical Approach
             </a>
           </div>
-          <div className="mt-6 flex flex-wrap gap-4 text-sm text-slate-600">
+          <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
               <CloudSun className="h-4 w-4 text-emerald-600" /> Weather aware
             </span>
@@ -44,9 +44,9 @@ export default function Hero() {
           </div>
         </div>
         <div className="order-first md:order-none">
-          <div className="mx-auto w-full max-w-lg rounded-2xl bg-white/80 p-6 shadow-sm ring-1 ring-slate-200 backdrop-blur">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-xl ring-1 ring-slate-200/60">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-amber-50" />
+          <div className="mx-auto w-full max-w-lg rounded-2xl bg-card/80 p-6 shadow-sm ring-1 ring-border backdrop-blur">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-xl ring-1 ring-border/60">
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary/30 via-background to-accent/20" />
               <svg
                 viewBox="0 0 800 500"
                 className="absolute inset-0 h-full w-full"
@@ -104,14 +104,14 @@ export default function Hero() {
               </svg>
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.6),transparent_60%)]" />
               <div className="absolute bottom-3 left-3 flex gap-2">
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
-                  <CloudSun className="h-4 w-4 text-emerald-600" /> Weather
+                <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs font-medium text-foreground ring-1 ring-border">
+                  <CloudSun className="h-4 w-4 text-primary" /> Weather
                 </span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
-                  <Sprout className="h-4 w-4 text-emerald-600" /> Advisory
+                <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs font-medium text-foreground ring-1 ring-border">
+                  <Sprout className="h-4 w-4 text-primary" /> Advisory
                 </span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
-                  <Bot className="h-4 w-4 text-emerald-600" /> Chat
+                <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs font-medium text-foreground ring-1 ring-border">
+                  <Bot className="h-4 w-4 text-primary" /> Chat
                 </span>
               </div>
             </div>

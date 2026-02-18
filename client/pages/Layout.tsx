@@ -87,7 +87,7 @@ export default function RootLayout() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-slate-100 text-slate-900">
+    <div className="min-h-screen bg-transparent text-foreground">
       <a
         href="#content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow"
@@ -96,8 +96,8 @@ export default function RootLayout() {
       </a>
       <header
         className={
-          "sticky top-0 z-40 w-full border-b border-slate-200/60 backdrop-blur " +
-          (scrolled ? "bg-white/80 shadow-sm" : "bg-white/60")
+          "sticky top-0 z-40 w-full border-b border-border/60 backdrop-blur " +
+          (scrolled ? "bg-background/80 shadow-sm" : "bg-background/60")
         }
       >
         <div className="container max-w-[1400px] px-4 md:px-8 flex items-center justify-between py-6">
@@ -115,7 +115,7 @@ export default function RootLayout() {
               <a
                 key={i.href}
                 href={i.href}
-                className="text-sm text-slate-600 hover:text-slate-900"
+                className="text-sm text-foreground/80 hover:text-foreground"
               >
                 {i.label}
               </a>
@@ -146,7 +146,7 @@ export default function RootLayout() {
                       <a
                         key={i.href}
                         href={i.href}
-                        className="text-base font-medium text-slate-800"
+                        className="text-base font-medium text-foreground"
                       >
                         {i.label}
                       </a>
@@ -165,19 +165,19 @@ export default function RootLayout() {
       >
         <Outlet />
       </main>
-      <footer className="border-t border-slate-200/60 bg-white/60 py-12">
+      <footer className="border-t border-border/60 bg-background/60 py-12">
         <div className="container max-w-[1400px] px-4 md:px-8 flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} AgriVerse
           </p>
           <div className="flex items-center gap-4 text-sm">
             <a
               href="/#research"
-              className="text-slate-600 hover:text-slate-900"
+              className="text-muted-foreground hover:text-foreground"
             >
               References
             </a>
-            <a href="/#impact" className="text-slate-600 hover:text-slate-900">
+            <a href="/#impact" className="text-muted-foreground hover:text-foreground">
               Benefits
             </a>
           </div>
