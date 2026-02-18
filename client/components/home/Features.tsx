@@ -48,7 +48,7 @@ export default function Features() {
       <h2 id="features-title" className="text-2xl font-bold tracking-tight">
         What you get
       </h2>
-      <div className="mt-6 grid gap-6 md:gap-8 min-[577px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-6 grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {features.map(({ icon: Icon, title, desc }) => (
           <div
             key={title}

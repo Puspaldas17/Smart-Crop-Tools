@@ -134,7 +134,7 @@ export default function AdminDashboard() {
       </div>
       
       {/* QUICK LINKS */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         <Link to="/amu" className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 font-medium">
            View AMU Ledger
         </Link>

@@ -113,6 +113,8 @@
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: hsl(var(--foreground));
+    overflow-x: hidden;
+    width: 100%;
   }
 
   /* suppress css-lint-unknown-at-rule */
