@@ -113,7 +113,7 @@ export default function Dashboard() {
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate("/#tools")}
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900"
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-5 w-5" />
           {t('nav.tools')}
@@ -121,7 +121,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-8">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-border bg-card text-card-foreground p-6 shadow-sm">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold">{farmer?.name}</h1>
@@ -132,7 +132,7 @@ export default function Dashboard() {
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 text-xs font-bold border border-orange-200">
                   <Flame className="w-3 h-3 fill-orange-800" /> {streak} {t('dash.streak')}
                 </span>
-                <span className="text-sm text-slate-500">
+                <span className="text-sm text-muted-foreground">
                   {xp} {t('dash.xp')}
                 </span>
               </div>
@@ -142,7 +142,7 @@ export default function Dashboard() {
                 logout();
                 navigate("/login");
               }}
-              className="px-3 py-2 text-sm rounded-md border border-slate-300 hover:bg-slate-50"
+              className="px-3 py-2 text-sm rounded-md border border-input hover:bg-accent hover:text-accent-foreground"
             >
               {t('nav.logout')}
             </button>
@@ -154,7 +154,7 @@ export default function Dashboard() {
                <span className="text-xs text-muted-foreground">{t('dash.progress')} {level + 1}</span>
                <span className="text-xs font-medium">{xp % 100} / 100 {t('dash.xp')}</span>
             </div>
-            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
                <div 
                  className="h-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500" 
                  style={{ width: `${Math.min(100, xp % 100)}%` }}
@@ -164,21 +164,21 @@ export default function Dashboard() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <p className="text-sm text-slate-600">{t('dash.phone')}</p>
+              <p className="text-sm text-muted-foreground">{t('dash.phone')}</p>
               <p className="font-medium">{farmer?.phone || "—"}</p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">{t('dash.soil')}</p>
+              <p className="text-sm text-muted-foreground">{t('dash.soil')}</p>
               <p className="font-medium">
                 {farmer?.soilType || "Not specified"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">{t('dash.land')}</p>
+              <p className="text-sm text-muted-foreground">{t('dash.land')}</p>
               <p className="font-medium">{farmer?.landSize || "—"} acres</p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">{t('dash.language')}</p>
+              <p className="text-sm text-muted-foreground">{t('dash.language')}</p>
               <p className="font-medium">{farmer?.language || "en-IN"}</p>
             </div>
           </div>
@@ -193,14 +193,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          <div className="border-b border-slate-200 p-6">
+        <div className="rounded-xl border border-border bg-card text-card-foreground overflow-hidden shadow-sm">
+          <div className="border-b border-border p-6">
             <h2 className="text-xl font-bold">{t('dash.subscription.title')}</h2>
           </div>
 
           <div className="p-6">
             <div className="flex items-center gap-4 mb-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary">
                 {isPremium ? (
                   <>
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
@@ -220,18 +220,18 @@ export default function Dashboard() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border border-slate-200 p-4">
-                <p className="text-sm text-slate-600">{t('dash.stats.advisories')}</p>
+              <div className="rounded-lg border border-border p-4">
+                <p className="text-sm text-muted-foreground">{t('dash.stats.advisories')}</p>
                 <p className="text-2xl font-bold mt-1">{history.length}</p>
               </div>
-              <div className="rounded-lg border border-slate-200 p-4">
-                <p className="text-sm text-slate-600">{t('dash.stats.status')}</p>
+              <div className="rounded-lg border border-border p-4">
+                <p className="text-sm text-muted-foreground">{t('dash.stats.status')}</p>
                 <p className="text-lg font-bold mt-1">
                   {isPremium ? t('dash.plan.premium') : "Free"}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-200 p-4">
-                <p className="text-sm text-slate-600">{t('dash.stats.member_since')}</p>
+              <div className="rounded-lg border border-border p-4">
+                <p className="text-sm text-muted-foreground">{t('dash.stats.member_since')}</p>
                 <p className="text-sm font-medium mt-1">
                   {farmer?.createdAt
                     ? new Date(farmer.createdAt).toLocaleDateString("en-IN")
@@ -259,14 +259,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          <div className="border-b border-slate-200 p-6 flex gap-4 overflow-x-auto remove-scrollbar">
+        <div className="rounded-xl border border-border bg-card text-card-foreground overflow-hidden shadow-sm">
+          <div className="border-b border-border p-6 flex gap-4 overflow-x-auto remove-scrollbar">
             <button
               onClick={() => setActiveTab("missions")}
               className={`font-medium pb-2 border-b-2 whitespace-nowrap inline-flex items-center gap-2 ${
                 activeTab === "missions"
                   ? "border-primary text-primary"
-                  : "border-transparent text-slate-600"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               <Target className="w-4 h-4" />
@@ -277,7 +277,7 @@ export default function Dashboard() {
               className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "chat"
                   ? "border-primary text-primary"
-                  : "border-transparent text-slate-600"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {t('dash.tab.assistant')}
@@ -287,7 +287,7 @@ export default function Dashboard() {
               className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "pest"
                   ? "border-primary text-primary"
-                  : "border-transparent text-slate-600"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {t('dash.tab.pest')}
@@ -297,7 +297,7 @@ export default function Dashboard() {
               className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "history"
                   ? "border-primary text-primary"
-                  : "border-transparent text-slate-600"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {t('dash.tab.history')}
@@ -307,7 +307,7 @@ export default function Dashboard() {
               className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "subscription"
                   ? "border-primary text-primary"
-                  : "border-transparent text-slate-600"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {t('dash.tab.stats')}
@@ -317,7 +317,7 @@ export default function Dashboard() {
               className={`font-medium pb-2 border-b-2 whitespace-nowrap ${
                 activeTab === "analytics"
                   ? "border-primary text-primary"
-                  : "border-transparent text-slate-600"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {t('dash.tab.analytics')}
@@ -362,9 +362,9 @@ export default function Dashboard() {
               <div>
                 {farmer?.isGuest ? (
                   <div className="text-center py-12">
-                     <Crop className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                     <h3 className="text-lg font-medium text-slate-900">{t('dash.guest_mode')}</h3>
-                     <p className="text-slate-600 mb-4 max-w-xs mx-auto">
+                     <Crop className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+                     <h3 className="text-lg font-medium text-foreground">{t('dash.guest_mode')}</h3>
+                     <p className="text-muted-foreground mb-4 max-w-xs mx-auto">
                        {t('dash.guest_msg')}
                      </p>
                      <button 
@@ -378,13 +378,13 @@ export default function Dashboard() {
                      </button>
                   </div>
                 ) : loading ? (
-                  <div className="text-center py-8 text-slate-500">
+                  <div className="text-center py-8 text-muted-foreground">
                     {t('dash.history_loading')}
                   </div>
                 ) : history.length === 0 ? (
                   <div className="text-center py-12">
-                    <Crop className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                    <p className="text-slate-600">
+                    <Crop className="h-12 w-12 text-muted-foreground/50 mx-auto mb-3" />
+                    <p className="text-muted-foreground">
                       {t('dash.no_history')}
                     </p>
                   </div>
@@ -393,20 +393,20 @@ export default function Dashboard() {
                     {history.map((record) => (
                       <div
                         key={record._id}
-                        className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition"
+                        className="p-4 border border-border rounded-lg hover:bg-accent/50 transition"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <Crop className="h-4 w-4 text-slate-500" />
-                              <p className="font-semibold text-slate-900">
+                              <Crop className="h-4 w-4 text-muted-foreground" />
+                              <p className="font-semibold text-foreground">
                                 {record.crop}
                               </p>
                             </div>
-                            <p className="text-sm text-slate-600 line-clamp-2">
+                            <p className="text-sm text-muted-foreground line-clamp-2">
                               {record.advisory}
                             </p>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+                            <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                               <Calendar className="h-3 w-3" />
                               {formatDate(record.createdAt)}
                             </div>
@@ -422,8 +422,8 @@ export default function Dashboard() {
             {activeTab === "subscription" && (
               <div className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 p-4 border border-slate-200">
-                    <p className="text-sm text-slate-600 mb-1">
+                  <div className="rounded-lg bg-secondary/20 p-4 border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">
                       {t('dash.stats.advisories')}
                     </p>
                     <p className="text-3xl font-bold">{history.length}</p>
@@ -436,7 +436,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="p-4 border border-slate-200 rounded-lg bg-slate-50">
+                <div className="p-4 border border-border rounded-lg bg-card">
                   <h3 className="font-semibold mb-3">Plan Features</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">

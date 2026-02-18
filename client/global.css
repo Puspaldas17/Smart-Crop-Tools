@@ -112,6 +112,7 @@
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
+    color: hsl(var(--foreground));
   }
 
   /* suppress css-lint-unknown-at-rule */

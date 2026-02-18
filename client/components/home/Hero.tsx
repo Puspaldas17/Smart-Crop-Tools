@@ -37,10 +37,10 @@ export default function Hero() {
           </div>
           <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
-              <CloudSun className="h-4 w-4 text-emerald-600" /> Weather aware
+              <CloudSun className="h-4 w-4 text-primary" /> Weather aware
             </span>
             <span className="inline-flex items-center gap-2">
-              <Bot className="h-4 w-4 text-emerald-600" /> Voice & chat
+              <Bot className="h-4 w-4 text-primary" /> Voice & chat
             </span>
           </div>
         </div>
