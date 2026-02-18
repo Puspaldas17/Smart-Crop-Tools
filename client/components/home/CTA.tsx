@@ -1,29 +1,39 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { ArrowRight } from "lucide-react";
 
 export default function CTA() {
-  const { farmer } = useAuth();
-  const href = farmer ? "/#tools" : "/login";
-  const label = farmer ? "Open Tools" : "Get Started";
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-amber-500 px-4 md:px-8 py-8 md:py-16 text-white">
-      <div className="absolute -inset-12 opacity-20 [background:radial-gradient(circle_at_center,white_0,transparent_60%)]" />
-      <div className="relative z-10 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
-        <div>
-          <h3 className="text-2xl font-bold tracking-tight">
-            Ready to try AgriVerse?
-          </h3>
-          <p className="mt-1 text-white/90">
-            Personalized guidance, market prices and weather alerts at your
-            fingertips.
-          </p>
+    <section className="rounded-3xl bg-secondary px-4 py-12 text-center md:px-8 md:py-16 relative overflow-hidden">
+      {/* Decorative patterns */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-primary rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+      </div>
+
+      <div className="relative z-10">
+        <h2 className="mx-auto max-w-[20ch] text-3xl font-bold tracking-tight text-secondary-foreground md:text-4xl">
+          Ready to modernize your farming?
+        </h2>
+        <p className="mx-auto mt-4 max-w-[60ch] text-secondary-foreground/80 md:text-lg">
+          Join thousands of farmers using AgriVerse to make data-driven
+          decisions and increase yields.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow hover:brightness-110"
+          >
+            Get Started Now
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <a
+            href="/#about"
+            className="inline-flex items-center gap-2 rounded-md bg-background/50 px-6 py-3 text-base font-semibold text-foreground hover:bg-background/80 transition-colors"
+          >
+            Learn More
+          </a>
         </div>
-        <a
-          href={href}
-          className="rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow hover:bg-white/90"
-        >
-          {label}
-        </a>
       </div>
     </section>
   );

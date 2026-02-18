@@ -41,10 +41,10 @@ function ToolsSuiteInner() {
     <div className="grid gap-8">
       <Suspense
         fallback={
-          <div className="rounded-xl border border-slate-200 bg-white p-6">
+          <div className="rounded-xl border border-border bg-card p-6">
             <div className="animate-pulse space-y-3">
-              <div className="h-5 w-40 rounded bg-slate-200" />
-              <div className="h-24 rounded bg-slate-200" />
+              <div className="h-5 w-40 rounded bg-muted" />
+              <div className="h-24 rounded bg-muted" />
             </div>
           </div>
         }
@@ -53,10 +53,10 @@ function ToolsSuiteInner() {
       </Suspense>
       <Suspense
         fallback={
-          <div className="rounded-xl border border-slate-200 bg-white p-6">
+          <div className="rounded-xl border border-border bg-card p-6">
             <div className="animate-pulse space-y-3">
-              <div className="h-5 w-48 rounded bg-slate-200" />
-              <div className="h-24 rounded bg-slate-200" />
+              <div className="h-5 w-48 rounded bg-muted" />
+              <div className="h-24 rounded bg-muted" />
             </div>
           </div>
         }
@@ -66,7 +66,7 @@ function ToolsSuiteInner() {
       <div id="advisory">
         <Suspense
           fallback={
-            <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+            <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
               Loading…
             </div>
           }
@@ -78,10 +78,10 @@ function ToolsSuiteInner() {
         <div id="chat">
           <Suspense
             fallback={
-              <div className="rounded-xl border border-slate-200 bg-white p-6">
+              <div className="rounded-xl border border-border bg-card p-6">
                 <div className="animate-pulse space-y-3">
-                  <div className="h-5 w-32 rounded bg-slate-200" />
-                  <div className="h-24 rounded bg-slate-200" />
+                  <div className="h-5 w-32 rounded bg-muted" />
+                  <div className="h-24 rounded bg-muted" />
                 </div>
               </div>
             }
@@ -92,7 +92,7 @@ function ToolsSuiteInner() {
         <div id="market" className="contents">
           <Suspense
             fallback={
-              <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+              <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
                 Loading market…
               </div>
             }
@@ -101,7 +101,7 @@ function ToolsSuiteInner() {
           </Suspense>
           <Suspense
             fallback={
-              <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+              <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
                 Loading weather…
               </div>
             }
@@ -113,7 +113,7 @@ function ToolsSuiteInner() {
       <div id="pest">
         <Suspense
           fallback={
-            <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+            <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
               Loading detector…
             </div>
           }
@@ -174,7 +174,7 @@ export default function Index() {
             <h2 className="text-2xl font-bold tracking-tight">
               Proposed Solution
             </h2>
-            <p className="mt-2 max-w-prose text-slate-600">
+            <p className="mt-2 max-w-prose text-muted-foreground">
               A mobile app and chatbot that work online and offline to deliver
               personalized crop, fertilizer, irrigation and pest
               management—backed by real‑time weather and market data.
@@ -339,7 +339,7 @@ export default function Index() {
                 ]}
               />
             </Card>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               <h3 className="text-lg font-semibold">Key Capabilities</h3>
               <div className="mt-4 grid gap-3">
                 {[
@@ -352,7 +352,7 @@ export default function Index() {
                 ].map(({ icon: Icon, text }) => (
                   <div key={text} className="flex items-center gap-3">
                     <Icon className="h-5 w-5 text-emerald-600" />
-                    <span className="text-slate-700">{text}</span>
+                    <span className="text-foreground/80">{text}</span>
                   </div>
                 ))}
               </div>
@@ -366,9 +366,9 @@ export default function Index() {
 
 function Item({ title, text }: { title: string; text: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 p-4">
-      <div className="text-sm font-semibold text-slate-900">{title}</div>
-      <div className="mt-1 text-sm text-slate-700">{text}</div>
+    <div className="rounded-lg border border-border p-4">
+      <div className="text-sm font-semibold text-foreground">{title}</div>
+      <div className="mt-1 text-sm text-muted-foreground">{text}</div>
     </div>
   );
 }
@@ -381,9 +381,9 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-      <div className="mt-4 text-slate-700 leading-relaxed max-w-prose">
+    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <h3 className="text-lg font-semibold text-card-foreground">{title}</h3>
+      <div className="mt-4 text-muted-foreground leading-relaxed max-w-prose">
         {children}
       </div>
     </div>

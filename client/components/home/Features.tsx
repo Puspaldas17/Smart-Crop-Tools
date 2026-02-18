@@ -43,7 +43,7 @@ export default function Features() {
   return (
     <section
       aria-labelledby="features-title"
-      className="rounded-2xl bg-white px-4 md:px-8 py-8 md:py-16 ring-1 ring-slate-200"
+      className="rounded-2xl bg-card px-4 md:px-8 py-8 md:py-16 ring-1 ring-border"
     >
       <h2 id="features-title" className="text-2xl font-bold tracking-tight">
         What you get
@@ -52,13 +52,13 @@ export default function Features() {
         {features.map(({ icon: Icon, title, desc }) => (
           <div
             key={title}
-            className="rounded-xl border border-slate-200 p-6 hover:shadow-sm"
+            className="rounded-xl border border-border p-6 hover:shadow-sm"
           >
-            <Icon className="h-5 w-5 text-emerald-600" />
-            <div className="mt-3 text-base font-semibold text-slate-900">
+            <Icon className="h-5 w-5 text-primary" />
+            <div className="mt-3 text-base font-semibold text-foreground">
               {title}
             </div>
-            <div className="mt-1 text-sm text-slate-600 leading-relaxed">
+            <div className="mt-1 text-sm text-muted-foreground leading-relaxed">
               {desc}
             </div>
           </div>
