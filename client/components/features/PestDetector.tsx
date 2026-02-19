@@ -1,22 +1,16 @@
+```typescript
 import * as React from "react";
 export default function PestDetector() {
   const [preds, setPreds] = React.useState<
     { className: string; probability: number }[]
   >([]);
+  const [soilInfo, setSoilInfo] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
   const imgRef = React.useRef<HTMLImageElement | null>(null);
 
-  // Soil data state
-  const [soilData, setSoilData] = React.useState<{
-    ph: number;
-    moisture: string;
-    organicMatter: string;
-    temperature: string;
-  } | null>(null);
-
   async function serverPredict(file: File) {
     setLoading(true);
-    setSoilData(null); // Reset previous data
+    setSoilInfo(null);
     try {
       const fd = new FormData();
       fd.append("image", file, file.name);
@@ -29,20 +23,14 @@ export default function PestDetector() {
             probability: p.probability,
           })),
         );
-        // Mock Soil Data on successful detection
-        setSoilData({
-          ph: 6.5 + Math.random() * 1.0, // Random pH between 6.5 and 7.5
-          moisture: "High (Surface)",
-          organicMatter: "Medium-High",
-          temperature: "24°C",
-        });
+        if (data.soilInfo) {
+          setSoilInfo(data.soilInfo);
+        }
       } else {
         setPreds([]);
-        setSoilData(null);
       }
     } catch (err) {
       setPreds([]);
-      setSoilData(null);
     }
     setLoading(false);
   }
@@ -61,8 +49,7 @@ export default function PestDetector() {
         Image-based Pest/Disease Detection
       </h3>
       <p className="mt-1 text-sm text-slate-600">
-        Upload a leaf/crop image. Analysis runs on the server for maximum
-        compatibility in this preview.
+        Upload a leaf/crop image. Analysis runs on the server.
       </p>
       <div className="mt-4 flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
@@ -85,83 +72,55 @@ export default function PestDetector() {
           </div>
         </div>
         <div className="flex-1 space-y-6">
-          {/* Analysis Section */}
           <div>
-            {loading && (
-              <div className="text-sm text-slate-500">Analyzing…</div>
-            )}
-            {!loading && preds.length > 0 && (
-              <div className="space-y-3">
-                <h4 className="font-medium text-slate-900">Analysis Results</h4>
-                <ul className="space-y-2">
-                  {preds.slice(0, 5).map((p, i) => (
-                    <li
-                      key={i}
-                      className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm"
-                    >
-                      <span>{p.className}</span>
-                      <span className="font-medium">
-                        {Math.round(p.probability * 100)}%
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <h4 className="font-medium text-slate-900 mb-2">Analysis Results</h4>
+            {loading && <div className="text-sm text-slate-500">Analyzing…</div>}
+            {!loading && preds.length > 0 ? (
+              <ul className="space-y-2">
+                {preds.slice(0, 5).map((p, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm"
+                  >
+                    <span>{p.className}</span>
+                    <span className="font-medium">
+                      {Math.round(p.probability * 100)}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              !loading && <div className="text-sm text-slate-400">No results yet.</div>
             )}
           </div>
 
-          {/* Soil Report Section */}
-          {!loading && soilData && (
-            <div className="rounded-lg border border-indigo-100 bg-indigo-50 p-4">
-              <h4 className="flex items-center gap-2 font-medium text-indigo-900">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-sprout"
-                >
-                  <path d="M7 20h10" />
-                  <path d="M10 20c5.5-2.5.8-6.4 3-10" />
-                  <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.2.4-4.8-.4-1.2-.6-2.1-1.9-2-3.3a2.94 2.94 0 0 1 2.5-2.8c1.2-.1 2.5.5 3 1.6z" />
-                  <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-3.8A3 3 0 0 0 16.5 2c-1.2-.1-2.5.5-3 1.6z" />
-                </svg>
-                Soil Assessment Report
-              </h4>
-              <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded bg-white p-2 shadow-sm">
-                  <div className="text-xs text-slate-500">Soil pH</div>
-                  <div className="font-semibold text-slate-800">
-                    {soilData.ph.toFixed(1)}
+          {soilInfo && (
+            <div className="border-t border-slate-100 pt-4">
+              <h4 className="font-medium text-slate-900 mb-2">Soil Recommendations (Based on Crop)</h4>
+              <div className="rounded-lg bg-slate-50 p-4 text-sm space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="text-slate-500 block text-xs">Soil Type</span>
+                    <span className="font-medium">{soilInfo.type}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-xs">pH Level</span>
+                    <span className="font-medium">{soilInfo.ph}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-xs">Moisture</span>
+                    <span className="font-medium">{soilInfo.moisture}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-xs">Temperature</span>
+                    <span className="font-medium">{soilInfo.temperature}</span>
                   </div>
                 </div>
-                <div className="rounded bg-white p-2 shadow-sm">
-                  <div className="text-xs text-slate-500">Moisture</div>
-                  <div className="font-semibold text-slate-800">
-                    {soilData.moisture}
-                  </div>
-                </div>
-                <div className="rounded bg-white p-2 shadow-sm">
-                  <div className="text-xs text-slate-500">Organic Matter</div>
-                  <div className="font-semibold text-slate-800">
-                    {soilData.organicMatter}
-                  </div>
-                </div>
-                <div className="rounded bg-white p-2 shadow-sm">
-                  <div className="text-xs text-slate-500">Est. Temp</div>
-                  <div className="font-semibold text-slate-800">
-                    {soilData.temperature}
-                  </div>
+                <div className="pt-2 border-t border-slate-200 mt-2">
+                  <span className="text-slate-500 block text-xs">Notes</span>
+                  <p className="text-slate-700">{soilInfo.notes}</p>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-indigo-800">
-                * Based on crop type and environmental data.
-              </p>
             </div>
           )}
         </div>
