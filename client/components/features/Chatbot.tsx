@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSpeech, languages } from "./useSpeech";
 import { Mic, StopCircle, Send } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -47,7 +47,7 @@ export default function Chatbot() {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) setMessages(parsed);
       }
-    } catch {}
+    } catch { }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [farmer?.phone]);
 
@@ -56,7 +56,7 @@ export default function Chatbot() {
     const key = farmer?.phone ? `chat:${farmer.phone}` : "chat:anon";
     try {
       localStorage.setItem(key, JSON.stringify(messages));
-    } catch {}
+    } catch { }
   }, [messages, farmer?.phone]);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function Chatbot() {
       setVoiceMode(true);
       try {
         speak(t('chat.mic_prompt'));
-      } catch {}
+      } catch { }
       const el = document.getElementById("chat");
       el?.scrollIntoView({ behavior: "smooth" });
     };
@@ -98,7 +98,8 @@ export default function Chatbot() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, ...(coords || {}) }),
+        // Pass 'lang' to server so it knows which language to reply in
+        body: JSON.stringify({ message: msg, lang, ...(coords || {}) }),
         signal: controller.signal,
       });
       clearTimeout(id);
@@ -109,7 +110,7 @@ export default function Chatbot() {
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
       try {
         speak(reply);
-      } catch {}
+      } catch { }
     } catch (e) {
       const reply = "Network unavailable — please try again later.";
       setMessages((m) => [...m, { role: "assistant", content: reply }]);

@@ -12,7 +12,7 @@ type AnyDoc = Record<string, any> & {
 
 class InMemoryCollection<T extends AnyDoc> {
   private items: T[] = [];
-  constructor(private name: string) {}
+  constructor(private name: string) { }
 
   private genId() {
     return (
@@ -37,12 +37,28 @@ class InMemoryCollection<T extends AnyDoc> {
     return found ? (structuredClone(found) as T) : null;
   }
 
-  async find(filter: Partial<T>): Promise<T[]> {
-    return this.items
+  find(filter: Partial<T>): any {
+    const filtered = this.items
       .filter((d) =>
         Object.entries(filter).every(([k, v]) => (d as any)[k] === v),
       )
       .map((d) => structuredClone(d) as T);
+
+    return {
+      items: filtered,
+      sort(criteria: Record<string, 1 | -1>) {
+        const [key, order] = Object.entries(criteria)[0];
+        this.items.sort((a: any, b: any) => {
+          if (a[key] < b[key]) return order === 1 ? -1 : 1;
+          if (a[key] > b[key]) return order === 1 ? 1 : -1;
+          return 0;
+        });
+        return this;
+      },
+      then(resolve: (value: T[]) => void) {
+        resolve(this.items);
+      },
+    };
   }
 
   async findOneAndUpdate(
@@ -92,6 +108,28 @@ class InMemoryCollection<T extends AnyDoc> {
     }
 
     return null;
+  }
+  async findOne(filter: Partial<T>): Promise<T | null> {
+    const found = this.items.find((d) =>
+      Object.entries(filter).every(([k, v]) => (d as any)[k] === v),
+    );
+    return found ? (structuredClone(found) as T) : null;
+  }
+
+  async findByIdAndDelete(id: string): Promise<T | null> {
+    const idx = this.items.findIndex((d) => String(d._id) === String(id));
+    if (idx === -1) return null;
+    const [deleted] = this.items.splice(idx, 1);
+    return structuredClone(deleted) as T;
+  }
+
+  async deleteOne(filter: Partial<T>): Promise<boolean> {
+    const idx = this.items.findIndex((d) =>
+      Object.entries(filter).every(([k, v]) => (d as any)[k] === v),
+    );
+    if (idx === -1) return false;
+    this.items.splice(idx, 1);
+    return true;
   }
 }
 
@@ -200,12 +238,12 @@ export const Advisory: any = USE_MEMORY
 export const AdvisoryHistory: any = USE_MEMORY
   ? new InMemoryCollection("AdvisoryHistory")
   : mongoose.models.AdvisoryHistory ||
-    mongoose.model("AdvisoryHistory", advisoryHistorySchema);
+  mongoose.model("AdvisoryHistory", advisoryHistorySchema);
 
 export const AnalyticsData: any = USE_MEMORY
   ? new InMemoryCollection("AnalyticsData")
   : mongoose.models.AnalyticsData ||
-    mongoose.model("AnalyticsData", analyticsDataSchema);
+  mongoose.model("AnalyticsData", analyticsDataSchema);
 
 const drugLogSchema = new mongoose.Schema(
   {

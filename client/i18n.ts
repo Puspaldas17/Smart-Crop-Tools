@@ -54,7 +54,7 @@ const resources = {
       "chat.clear": "Clear",
       "common.loading": "Loading...",
       "common.error": "Something went wrong",
-      
+
       // New additions for Dashboard & Gamification
       "dash.level": "Lvl",
       "dash.streak": "Day Streak",
@@ -85,7 +85,7 @@ const resources = {
       "missions.m3.title": "Listen to Weather Alert",
       "missions.m3.desc": "Check the local forecast for the next 3 days.",
       "missions.completed": "Completed!",
-      
+
       // Landing Page Sections
       "landing.solution.title": "Proposed Solution",
       "landing.solution.text": "A mobile app and chatbot that work online and offline to deliver personalized crop, fertilizer, irrigation and pest management—backed by real‑time weather and market data.",
@@ -93,6 +93,31 @@ const resources = {
       "landing.feasibility.title": "Feasibility and Viability",
       "landing.impact.title": "Impact and Benefits",
       "landing.research.title": "Research and References",
+
+      // Pest Detector & Soil Info
+      "pest.title": "Image-based Pest/Disease Detection",
+      "pest.subtitle": "Upload a leaf/crop image. Analysis runs on the server.",
+      "pest.server_note": "Using server-side prediction for reliability.",
+      "pest.results": "Analysis Results",
+      "pest.no_results": "No results yet.",
+      "pest.soil.title": "Soil Recommendations (Based on Crop)",
+      "pest.soil.type": "Soil Type",
+      "pest.soil.ph": "pH Level",
+      "pest.soil.moisture": "Moisture",
+      "pest.soil.temp": "Temperature",
+      "pest.soil.notes": "Notes",
+
+      "soil.type.clay": "Clay or Clay Loam",
+      "soil.type.loam": "Well-drained Loam",
+      "soil.type.sandy_loam": "Sandy Loam",
+      "soil.type.loam_clay": "Loam or Clay Loam",
+
+      "soil.notes.rice": "Rice require standing water for part of its growth cycle.",
+      "soil.notes.corn": "Requires nitrogen-rich soil.",
+      "soil.notes.potato": "Acidic soil helps prevent scab disease.",
+      "soil.notes.wheat": "Does not tolerate waterlogging well.",
+      "soil.notes.tomato": "Needs calcium to prevent blossom end rot.",
+      "soil.notes.default": "Standard agricultural soil conditions.",
     },
   },
   hi: {
@@ -184,6 +209,31 @@ const resources = {
       "landing.feasibility.title": "व्यावहारिकता और व्यवहार्यता",
       "landing.impact.title": "प्रभाव और लाभ",
       "landing.research.title": "अनुसंधान और संदर्भ",
+
+      // Pest Detector & Soil Info (Hindi)
+      "pest.title": "छवि-आधारित कीट/रोग पहचान",
+      "pest.subtitle": "पत्ती/फसल की छवि अपलोड करें। विश्लेषण सर्वर पर चलता है।",
+      "pest.server_note": "विश्वसनीयता के लिए सर्वर-साइड भविष्यवाणी का उपयोग करना।",
+      "pest.results": "विश्लेषण परिणाम",
+      "pest.no_results": "अभी तक कोई परिणाम नहीं।",
+      "pest.soil.title": "मिट्टी की सिफारिशें (फसल के आधार पर)",
+      "pest.soil.type": "मिट्टी का प्रकार",
+      "pest.soil.ph": "pH स्तर",
+      "pest.soil.moisture": "नमी",
+      "pest.soil.temp": "तापमान",
+      "pest.soil.notes": "नोट्स",
+
+      "soil.type.clay": "चिकनी मिट्टी (Clay) या दोमट",
+      "soil.type.loam": "अच्छी जल निकासी वाली दोमट",
+      "soil.type.sandy_loam": "रेतीली दोमट",
+      "soil.type.loam_clay": "दोमट या चिकनी मिट्टी",
+
+      "soil.notes.rice": "चावल को अपने विकास चक्र के कुछ हिस्सों के लिए खड़े पानी की आवश्यकता होती है।",
+      "soil.notes.corn": "नाइट्रोजन युक्त मिट्टी की आवश्यकता है।",
+      "soil.notes.potato": "अम्लीय मिट्टी स्कैब रोग को रोकने में मदद करती है।",
+      "soil.notes.wheat": "जलभराव को अच्छी तरह सहन नहीं करता है।",
+      "soil.notes.tomato": "ब्लसम एंड रोट को रोकने के लिए कैल्शियम की आवश्यकता होती है।",
+      "soil.notes.default": "मानक कृषि मिट्टी की स्थिति।",
     },
   },
   or: {
@@ -268,13 +318,38 @@ const resources = {
       "missions.m3.desc": "ଆସନ୍ତା 3 ଦିନ ପାଇଁ ସ୍ଥାନୀୟ ପୂର୍ବାନୁମାନ ଯାଞ୍ଚ କରନ୍ତୁ |",
       "missions.completed": "ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି!",
 
-       // Landing Page Sections (Odia)
+      // Landing Page Sections (Odia)
       "landing.solution.title": "ପ୍ରସ୍ତାବିତ ସମାଧାନ",
       "landing.solution.text": "ଏକ ମୋବାଇଲ୍ ଆପ୍ ଏବଂ ଚାଟବଟ୍ ଯାହା ଅନଲାଇନ୍ ଏବଂ ଅଫଲାଇନ୍ କାମ କରେ ଯାହା ବ୍ୟକ୍ତିଗତ ଫସଲ, ସାର, ଜଳସେଚନ ଏବଂ କୀଟ ପରିଚାଳନା ପ୍ରଦାନ କରେ - ଯାହା ପ୍ରକୃତ ସମୟର ପାଣିପାଗ ଏବଂ ବଜାର ତଥ୍ୟ ଦ୍ୱାରା ସମର୍ଥିତ |",
       "landing.tech.title": "ଯାନ୍ତ୍ରିକ ଦୃଷ୍ଟିକୋଣ",
       "landing.feasibility.title": "ବ୍ୟବହାରିକତା ଏବଂ ସମ୍ଭାବନା",
       "landing.impact.title": "ପ୍ରଭାବ ଏବଂ ଲାଭ",
       "landing.research.title": "ଗବେଷଣା ଏବଂ ସନ୍ଦର୍ଭ",
+
+      // Pest Detector & Soil Info (Odia)
+      "pest.title": "ଚିତ୍ର-ଆଧାରିତ ପୋକ/ରୋଗ ଚିହ୍ନଟ",
+      "pest.subtitle": "ଗୋଟିଏ ପତ୍ର/ଫସଲ ଛବି ଅପଲୋଡ୍ କରନ୍ତୁ | ସର୍ଭରରେ ବିଶ୍ଳେଷଣ ଚାଲିଥାଏ |",
+      "pest.server_note": "ବିଶ୍ୱାସଯୋଗ୍ୟତା ପାଇଁ ସର୍ଭର-ପାର୍ଶ୍ୱ ପୂର୍ବାନୁମାନ ବ୍ୟବହାର କରିବା |",
+      "pest.results": "ବିଶ୍ଳେଷଣ ଫଳାଫଳ",
+      "pest.no_results": "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଫଳାଫଳ ନାହିଁ |",
+      "pest.soil.title": "ମାଟି ସୁପାରିଶ (ଫସଲ ଉପରେ ଆଧାର କରି)",
+      "pest.soil.type": "ମାଟି ପ୍ରକାର",
+      "pest.soil.ph": "pH ସ୍ତର",
+      "pest.soil.moisture": "ଆର୍ଦ୍ରତା",
+      "pest.soil.temp": "ତାପମାତ୍ରା",
+      "pest.soil.notes": "ଟିପ୍ପଣୀ",
+
+      "soil.type.clay": "ଦୋରସା ମାଟି କିମ୍ବା ମଟାଳ ମାଟି",
+      "soil.type.loam": "ଭଲ ଜଳ ନିଷ୍କାସନ ବାଲିଆ ଦୋରସା ମାଟି",
+      "soil.type.sandy_loam": "ବାଲିଆ ଦୋରସା ମାଟି",
+      "soil.type.loam_clay": "ଦୋରସା କିମ୍ବା ମଟାଳ ମାଟି",
+
+      "soil.notes.rice": "ଧାନ ଚାଷ ଚକ୍ରର ଏକ ଅଂଶ ପାଇଁ ଛିଡା ହୋଇଥିବା ପାଣି ଆବଶ୍ୟକ କରେ |",
+      "soil.notes.corn": "ନାଇଟ୍ରୋଜେନ୍ ଯୁକ୍ତ ମାଟି ଆବଶ୍ୟକ କରେ |",
+      "soil.notes.potato": "ଅମ୍ଳୀୟ ମାଟି ସ୍କାବ ରୋଗକୁ ରୋକିବାରେ ସାହାଯ୍ୟ କରେ |",
+      "soil.notes.wheat": "ଜଳବନ୍ଦୀକୁ ଭଲ ଭାବରେ ସହ୍ୟ କରେ ନାହିଁ |",
+      "soil.notes.tomato": "ଫୁଲ ଶେଷ ପଚାକୁ ରୋକିବା ପାଇଁ କ୍ୟାଲସିୟମ୍ ଆବଶ୍ୟକ କରେ |",
+      "soil.notes.default": "ମାନକ କୃଷି ମାଟି ଅବସ୍ଥା |",
     },
   },
 };
