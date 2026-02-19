@@ -1,11 +1,52 @@
 import { RequestHandler } from "express";
 import multer from "multer";
 import { fetchWithTimeout, retry } from "../utils/http";
-import { getSoilInfo } from "../utils/soilData";
 
 const upload = multer();
 
 export const uploadMiddleware = upload.single("image");
+
+// Inline helper since utils/soilData might be missing/conflicted
+function getSoilInfo(name: string) {
+  const lower = name.toLowerCase();
+  
+  if (lower.includes("rice") || lower.includes("paddy")) {
+    return {
+      type: "Clay / Loam",
+      ph: "5.5 - 6.5",
+      moisture: "High (Flooded)",
+      temperature: "20-35°C",
+      notes: "Rice requires standing water during early growth stages. Ensure good water retention."
+    };
+  }
+  if (lower.includes("corn") || lower.includes("maize")) {
+    return {
+      type: "Loamy / Sandy Loam",
+      ph: "5.8 - 7.0",
+      moisture: "Moderate",
+      temperature: "18-27°C",
+      notes: "Corn needs well-drained soil rich in organic matter. Avoid waterlogging."
+    };
+  }
+  if (lower.includes("potato")) {
+    return {
+      type: "Sandy Loam",
+      ph: "4.8 - 5.5",
+      moisture: "Consistent",
+      temperature: "15-20°C",
+      notes: "Potatoes prefer loose soil for tuber development. Monitor moisture to prevent rot."
+    };
+  }
+  
+  // Default / Generic
+  return {
+    type: "Loamy (Generic)",
+    ph: "6.0 - 7.0",
+    moisture: "Moderate",
+    temperature: "20-25°C",
+    notes: "General best conditions for most crops. Test soil for specific needs."
+  };
+}
 
 async function runHuggingFace(image: Buffer) {
   const token = process.env.HF_TOKEN || process.env.HUGGINGFACE_TOKEN;
@@ -41,7 +82,6 @@ async function runHuggingFace(image: Buffer) {
   }
 }
 
-// UPDATE: runLocalAIService now returns the raw result, handling normalization in main handler
 async function runLocalAIService(file: any) {
   try {
     const formData = new FormData();
@@ -54,7 +94,23 @@ async function runLocalAIService(file: any) {
     });
 
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      const analysis = data.analysis;
+      
+      // Adapt Python service output to frontend 'predictions' format
+      let predictions: { className: string; probability: number }[] = [];
+      
+      if (analysis) {
+        const name = analysis.disease || analysis.status || "Unknown";
+        const prob = analysis.confidence || 0;
+        predictions.push({ className: name, probability: prob });
+      }
+
+      return {
+        source: "local-ai-service",
+        predictions,
+        analysis: data.analysis,
+      };
     }
   } catch (error) {
     console.log("Local AI service unreachable, using fallback");
@@ -82,9 +138,6 @@ export const predictHandler: RequestHandler = async (req, res) => {
         className: localResult.analysis.disease,
         probability: localResult.analysis.confidence
       }];
-      // Try to infer crop from filename or disease name if possible, 
-      // but for now we might rely on filename passed or improve Python service to return crop.
-      // Let's use filename as a hint for soil info.
     } else {
       predictions = [{
         className: localResult.analysis.status || "Healthy",
