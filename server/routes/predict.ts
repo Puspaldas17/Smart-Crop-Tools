@@ -6,7 +6,7 @@ const upload = multer();
 
 export const uploadMiddleware = upload.single("image");
 
-// Inline helper since utils/soilData might be missing
+// Inline helper since utils/soilData might be missing/conflicted
 function getSoilInfo(name: string) {
   const lower = name.toLowerCase();
   
@@ -94,7 +94,23 @@ async function runLocalAIService(file: any) {
     });
 
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      const analysis = data.analysis;
+      
+      // Adapt Python service output to frontend 'predictions' format
+      let predictions: { className: string; probability: number }[] = [];
+      
+      if (analysis) {
+        const name = analysis.disease || analysis.status || "Unknown";
+        const prob = analysis.confidence || 0;
+        predictions.push({ className: name, probability: prob });
+      }
+
+      return {
+        source: "local-ai-service",
+        predictions,
+        analysis: data.analysis,
+      };
     }
   } catch (error) {
     console.log("Local AI service unreachable, using fallback");
