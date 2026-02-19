@@ -1,4 +1,4 @@
-```typescript
+
 import * as React from "react";
 export default function PestDetector() {
   const [preds, setPreds] = React.useState<
