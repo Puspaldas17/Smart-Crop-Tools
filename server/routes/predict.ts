@@ -95,16 +95,15 @@ async function runLocalAIService(file: any) {
 
     if (res.ok) {
       const data = await res.json();
-      const analysis = data.analysis;
+      const analysis = data.analysis || {};
       
-      // Adapt Python service output to frontend 'predictions' format
-      let predictions: { className: string; probability: number }[] = [];
-      
-      if (analysis) {
-        const name = analysis.disease || analysis.status || "Unknown";
-        const prob = analysis.confidence || 0;
-        predictions.push({ className: name, probability: prob });
-      }
+      // Map analysis to predictions format for frontend (Soil Analysis)
+      // The frontend displays "className" and "probability" (as percentage)
+      const predictions = [
+        { className: `Status: ${analysis.status || 'Unknown'}`, probability: 1 },
+        { className: `Type: ${analysis.disease || 'General'}`, probability: 1 },
+        { className: `Details: ${analysis.recommendation || 'No details'}`, probability: 1 }
+      ];
 
       return {
         source: "local-ai-service",
@@ -124,26 +123,22 @@ export const predictHandler: RequestHandler = async (req, res) => {
 
   let predictions: { className: string; probability: number }[] = [];
   let source = "server-mock";
-  let detectedCrop = "unknown";
-
+  
   // 1. Try Local Python AI Service
   const localResult = await runLocalAIService(file);
 
-  if (localResult && localResult.analysis) {
-    source = "local-ai-service";
-    // Normalize Local AI result to our standard list format for the frontend
-    // The Python service returns: { status, disease, confidence, recommendation }
-    if (localResult.analysis.disease) {
-      predictions = [{
-        className: localResult.analysis.disease,
-        probability: localResult.analysis.confidence
-      }];
-    } else {
-      predictions = [{
-        className: localResult.analysis.status || "Healthy",
-        probability: localResult.analysis.confidence || 0.99
-      }];
-    }
+  if (localResult && localResult.predictions) {
+    source = localResult.source;
+    predictions = localResult.predictions;
+  } else if (localResult && localResult.analysis) {
+     // Fallback if predictions were not pre-calculated (shouldn't happen with new logic)
+     source = "local-ai-service";
+     if (localResult.analysis.disease) {
+       predictions = [{
+         className: localResult.analysis.disease,
+         probability: localResult.analysis.confidence
+       }];
+     }
   }
 
   // 2. Try Hugging Face (if local failed)
@@ -183,7 +178,7 @@ export const predictHandler: RequestHandler = async (req, res) => {
           { className: "Rice Blast", probability: 0.02 },
         ];
       }
-    }
+    } 
     // Corn / Maize
     else if (lower.includes("corn") || lower.includes("maize")) {
       if (lower.includes("rust")) {
@@ -199,7 +194,7 @@ export const predictHandler: RequestHandler = async (req, res) => {
           { className: "Healthy Corn", probability: 0.03 },
         ];
       } else {
-        predictions = [
+         predictions = [
           { className: "Healthy Corn", probability: 0.96 },
           { className: "Common Rust", probability: 0.03 },
           { className: "Gray Leaf Spot", probability: 0.01 },
@@ -208,7 +203,7 @@ export const predictHandler: RequestHandler = async (req, res) => {
     }
     // Potato
     else if (lower.includes("potato")) {
-      if (lower.includes("early")) {
+       if (lower.includes("early")) {
         predictions = [
           { className: "Early Blight", probability: 0.89 },
           { className: "Late Blight", probability: 0.07 },
@@ -221,7 +216,7 @@ export const predictHandler: RequestHandler = async (req, res) => {
           { className: "Healthy Potato", probability: 0.02 },
         ];
       } else {
-        predictions = [
+         predictions = [
           { className: "Healthy Potato", probability: 0.97 },
           { className: "Early Blight", probability: 0.02 },
           { className: "Late Blight", probability: 0.01 },
