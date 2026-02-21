@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Bell, X, AlertTriangle, TrendingUp, CloudRain, Bug, CheckCircle2 } from "lucide-react";
+import { Bell, X, TrendingUp, CloudRain, Bug, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type NotifType = "pest" | "market" | "weather" | "mission" | "system";
@@ -24,20 +24,21 @@ const INITIAL_NOTIFS: Notification[] = [
 ];
 
 const NOTIF_CONFIG: Record<NotifType, { icon: React.ElementType; color: string; bg: string }> = {
-  pest: { icon: Bug, color: "text-red-600", bg: "bg-red-100 dark:bg-red-950/30" },
-  market: { icon: TrendingUp, color: "text-green-600", bg: "bg-green-100 dark:bg-green-950/30" },
-  weather: { icon: CloudRain, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-950/30" },
+  pest:    { icon: Bug,          color: "text-red-600",    bg: "bg-red-100 dark:bg-red-950/30"    },
+  market:  { icon: TrendingUp,   color: "text-green-600",  bg: "bg-green-100 dark:bg-green-950/30" },
+  weather: { icon: CloudRain,    color: "text-blue-600",   bg: "bg-blue-100 dark:bg-blue-950/30"  },
   mission: { icon: CheckCircle2, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-950/30" },
-  system: { icon: Bell, color: "text-orange-600", bg: "bg-orange-100 dark:bg-orange-950/30" },
+  system:  { icon: Bell,         color: "text-orange-600", bg: "bg-orange-100 dark:bg-orange-950/30" },
 };
 
 interface NotificationCenterProps {
   open: boolean;
   onClose: () => void;
+  notifs: Notification[];
+  setNotifs: React.Dispatch<React.SetStateAction<Notification[]>>;
 }
 
-export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
-  const [notifs, setNotifs] = useState<Notification[]>(INITIAL_NOTIFS);
+export function NotificationCenter({ open, onClose, notifs, setNotifs }: NotificationCenterProps) {
   const [filter, setFilter] = useState<NotifType | "all">("all");
 
   const unreadCount = notifs.filter((n) => !n.read).length;
@@ -115,7 +116,7 @@ export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
                   key={notif.id}
                   onClick={() => markRead(notif.id)}
                   className={cn(
-                    "flex gap-3 px-4 py-4 cursor-pointer hover:bg-muted/30 transition-colors relative",
+                    "group flex gap-3 px-4 py-4 cursor-pointer hover:bg-muted/30 transition-colors relative",
                     !notif.read && "bg-primary/5",
                   )}
                 >
@@ -123,7 +124,7 @@ export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
                     <span className="absolute left-2 top-5 h-1.5 w-1.5 rounded-full bg-primary" />
                   )}
                   <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", bg)}>
-                    <Icon className={cn("h-4.5 w-4.5", color)} />
+                    <Icon className={cn("h-4 w-4", color)} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className={cn("text-sm font-semibold leading-snug", !notif.read && "text-foreground")}>
@@ -134,7 +135,7 @@ export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); dismiss(notif.id); }}
-                    className="shrink-0 text-muted-foreground hover:text-foreground p-1 opacity-0 group-hover:opacity-100"
+                    className="shrink-0 text-muted-foreground hover:text-foreground p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -148,10 +149,14 @@ export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
   );
 }
 
-// Bell button to embed in nav
+// Bell button to embed in nav — owns shared state so badge updates reactively
 export function NotificationBell() {
+  // FIX: state lives here so unread count and panel are always in sync
+  const [notifs, setNotifs] = useState<Notification[]>(INITIAL_NOTIFS);
   const [open, setOpen] = useState(false);
-  const unread = INITIAL_NOTIFS.filter((n) => !n.read).length;
+
+  // FIX: computed from reactive state, not stale INITIAL_NOTIFS constant
+  const unread = notifs.filter((n) => !n.read).length;
 
   return (
     <>
@@ -160,14 +165,19 @@ export function NotificationBell() {
         className="relative inline-flex items-center justify-center h-9 w-9 rounded-md border border-input hover:bg-accent hover:text-accent-foreground transition-colors"
         aria-label="Notifications"
       >
-        <Bell className="h-4.5 w-4.5" />
+        <Bell className="h-4 w-4" />
         {unread > 0 && (
           <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
             {unread}
           </span>
         )}
       </button>
-      <NotificationCenter open={open} onClose={() => setOpen(false)} />
+      <NotificationCenter
+        open={open}
+        onClose={() => setOpen(false)}
+        notifs={notifs}
+        setNotifs={setNotifs}
+      />
     </>
   );
 }

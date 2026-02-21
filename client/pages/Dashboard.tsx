@@ -64,8 +64,6 @@ export default function Dashboard() {
     }
   }, [farmer, navigate]);
 
-  // ... (keeping existing functions fetchHistory, formatDate, etc. unchanged)
-
   async function fetchHistory() {
     try {
       setLoading(true);
