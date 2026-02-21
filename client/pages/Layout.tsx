@@ -108,8 +108,10 @@ export default function RootLayout() {
       </a>
       <header
         className={
-          "sticky top-0 z-40 w-full border-b border-border/60 backdrop-blur " +
-          (scrolled ? "bg-background/80 shadow-sm" : "bg-background/60")
+          "sticky top-0 z-40 w-full border-b transition-all duration-300 " +
+          (scrolled
+            ? "border-border/50 bg-background/85 backdrop-blur-md shadow-[0_2px_20px_hsl(var(--primary)/0.08)]"
+            : "border-transparent bg-background/40 backdrop-blur-sm")
         }
       >
         <div className="container max-w-[1400px] px-4 md:px-8 flex items-center justify-between py-6">
@@ -180,11 +182,11 @@ export default function RootLayout() {
       </header>
       <main
         id="content"
-        className="container max-w-[1400px] px-4 md:px-8 py-8 md:py-16"
+        className="container max-w-[1400px] px-4 md:px-8 py-5 md:py-8"
       >
         <Outlet />
       </main>
-      <footer className="border-t border-border/60 bg-background/60 py-12">
+      <footer className="border-t border-border/60 bg-background/60 py-5">
         <div className="container max-w-[1400px] px-4 md:px-8 flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} AgriVerse

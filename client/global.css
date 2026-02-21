@@ -8,12 +8,11 @@
 @layer base {
   /**
    * Tailwind CSS theme
-   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
-   * A different format will require also updating the theme in tailwind.config.ts.
-  */
+   * tailwind.config.ts expects the following color variables expressed as HSL values.
+   */
   :root {
-    --background: 60 20% 97%; /* Soft Earth Cream */
-    --foreground: 120 40% 10%; /* Dark Green/Black text */
+    --background: 60 20% 97%;
+    --foreground: 120 40% 10%;
 
     --card: 60 20% 98%;
     --card-foreground: 120 40% 10%;
@@ -21,16 +20,16 @@
     --popover: 60 20% 98%;
     --popover-foreground: 120 40% 10%;
 
-    --primary: 120 39% 29%; /* Deep Forest Green */
+    --primary: 120 39% 29%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 122 39% 49%; /* Fresh Sprout Green */
+    --secondary: 122 39% 49%;
     --secondary-foreground: 120 39% 10%;
 
     --muted: 120 10% 90%;
     --muted-foreground: 120 5% 40%;
 
-    --accent: 43 96% 58%; /* Golden Harvest */
+    --accent: 43 96% 58%;
     --accent-foreground: 120 39% 15%;
 
     --destructive: 0 84.2% 60.2%;
@@ -39,7 +38,6 @@
     --border: 120 15% 85%;
     --input: 120 15% 85%;
     --ring: 120 39% 29%;
-
     --radius: 0.5rem;
 
     --sidebar-background: 120 30% 96%;
@@ -50,45 +48,57 @@
     --sidebar-accent-foreground: 120 39% 15%;
     --sidebar-border: 120 15% 85%;
     --sidebar-ring: 120 39% 29%;
+
+    /* === Gradient orb HSL values — light mode === */
+    --orb-1: 134 60% 78%;   /* soft lime-green */
+    --orb-2: 43  90% 80%;   /* warm golden harvest */
+    --orb-3: 185 60% 80%;   /* sky teal */
+    --orb-4: 160 55% 85%;   /* cool mint */
   }
 
   .dark {
-    --background: 120 40% 5%; /* Deep dark green */
-    --foreground: 60 10% 90%; /* Soft off-white */
+    --background: 222 47% 7%;
+    --foreground: 60 10% 90%;
 
-    --card: 120 30% 8%;
+    --card: 222 40% 10%;
     --card-foreground: 60 10% 90%;
 
-    --popover: 120 30% 8%;
+    --popover: 222 40% 10%;
     --popover-foreground: 60 10% 90%;
 
-    --primary: 120 39% 49%; /* Fresh Sprout Green */
+    --primary: 120 39% 49%;
     --primary-foreground: 120 40% 5%;
 
-    --secondary: 120 39% 20%; /* Darker green */
+    --secondary: 120 39% 20%;
     --secondary-foreground: 60 10% 90%;
 
-    --muted: 120 20% 15%;
-    --muted-foreground: 120 10% 60%;
+    --muted: 220 25% 16%;
+    --muted-foreground: 220 15% 55%;
 
-    --accent: 43 96% 58%; /* Golden Harvest */
+    --accent: 43 96% 58%;
     --accent-foreground: 120 40% 5%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 120 20% 15%;
-    --input: 120 20% 15%;
+    --border: 220 25% 18%;
+    --input: 220 25% 18%;
     --ring: 120 39% 49%;
 
-    --sidebar-background: 120 30% 6%;
-    --sidebar-foreground: 120 10% 80%;
+    --sidebar-background: 222 47% 5%;
+    --sidebar-foreground: 120 10% 70%;
     --sidebar-primary: 120 39% 49%;
     --sidebar-primary-foreground: 120 40% 5%;
-    --sidebar-accent: 120 30% 12%;
+    --sidebar-accent: 220 30% 14%;
     --sidebar-accent-foreground: 120 39% 49%;
-    --sidebar-border: 120 20% 15%;
+    --sidebar-border: 220 25% 15%;
     --sidebar-ring: 120 39% 49%;
+
+    /* === Gradient orb HSL values — dark mode === */
+    --orb-1: 142 55% 16%;   /* deep emerald */
+    --orb-2: 260 50% 17%;   /* indigo-violet */
+    --orb-3: 185 55% 13%;   /* dark teal */
+    --orb-4: 38  60% 14%;   /* amber warmth */
   }
 }
 
@@ -101,27 +111,65 @@
     scroll-behavior: smooth;
   }
 
-  /* suppress css-lint-unknown-at-rule */
   body {
-    /* 
-     * Using linear-gradient as an overlay to ensure text readability 
-     * against the high-res background image.
-     */
-    background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/bg-agri-realistic.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
     color: hsl(var(--foreground));
     overflow-x: hidden;
     width: 100%;
+    position: relative;
+    background-color: hsl(var(--background));
+    font-family: "Inter", sans-serif;
   }
 
-  /* suppress css-lint-unknown-at-rule */
-  .dark body {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('/bg-agri-realistic.jpg');
+  /* ── Mesh gradient orb layer ── */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 72% 56% at 4%   0%,  hsl(var(--orb-1) / 0.55) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 48% at 96%  4%,  hsl(var(--orb-2) / 0.48) 0%, transparent 60%),
+      radial-gradient(ellipse 52% 52% at 8%  58%,  hsl(var(--orb-3) / 0.38) 0%, transparent 65%),
+      radial-gradient(ellipse 58% 44% at 92% 52%,  hsl(var(--orb-4) / 0.32) 0%, transparent 62%),
+      radial-gradient(ellipse 80% 30% at 50% 100%, hsl(var(--orb-1) / 0.18) 0%, transparent 70%),
+      hsl(var(--background));
+    animation: meshDrift 22s ease-in-out infinite alternate;
   }
 
+  /* ── Subtle noise texture for premium depth ── */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.030;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 300px 300px;
+  }
+
+  @keyframes meshDrift {
+    0%   {
+      background-position:
+        4% 0%, 96% 4%, 8% 58%, 92% 52%, 50% 100%, center;
+    }
+    33%  {
+      background-position:
+        2% 6%, 94% 2%, 5% 63%, 96% 45%, 52% 98%, center;
+    }
+    66%  {
+      background-position:
+        6% 3%, 98% 7%, 11% 54%, 89% 56%, 48% 102%, center;
+    }
+    100% {
+      background-position:
+        3% 5%, 96% 5%, 9% 60%, 93% 50%, 50% 99%, center;
+    }
+  }
+
+  /* ── Typography ── */
   h1 {
     font-size: clamp(1.75rem, 1.2rem + 2vw, 3.25rem);
     line-height: 1.1;
@@ -135,14 +183,60 @@
     line-height: 1.3;
   }
 
-  img,
-  video,
-  canvas,
-  svg {
+  img, video, canvas, svg {
     max-width: 100%;
     height: auto;
   }
+
   .container {
     max-width: 100%;
   }
+}
+
+/* ─── Utility: Glassmorphism ─── */
+@layer utilities {
+  .glass-card {
+    background: hsl(var(--card) / 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid hsl(var(--border) / 0.55);
+    box-shadow:
+      0 4px 24px hsl(var(--primary) / 0.07),
+      0 1px 4px  hsl(var(--primary) / 0.04);
+    transition: box-shadow 0.25s ease;
+  }
+  .glass-card:hover {
+    box-shadow:
+      0 8px 32px hsl(var(--primary) / 0.12),
+      0 2px 8px  hsl(var(--primary) / 0.06);
+  }
+
+  /* Gradient-shimmer border on hover */
+  .gradient-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .gradient-border::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.35),
+      hsl(var(--accent)  / 0.22),
+      hsl(185 60% 70% / 0.30)
+    );
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .gradient-border:hover::after {
+    opacity: 1;
+  }
+
+  /* Scrollbar hide */
+  .remove-scrollbar::-webkit-scrollbar { display: none; }
+  .remove-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }

@@ -2,7 +2,7 @@ import { ArrowRight, Sprout, CloudSun, Bot } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-secondary/20 px-4 md:px-8 py-8 md:py-16 min-h-[45vh] sm:min-h-[50vh] md:min-h-[65vh] lg:min-h-[75vh]">
+    <section className="relative overflow-hidden rounded-3xl bg-secondary/20 px-4 md:px-8 py-6 md:py-10 min-h-0">
       <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
       <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
 

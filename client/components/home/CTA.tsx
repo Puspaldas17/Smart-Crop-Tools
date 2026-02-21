@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function CTA() {
   return (
-    <section className="rounded-3xl bg-secondary px-4 py-12 text-center md:px-8 md:py-16 relative overflow-hidden">
+    <section className="rounded-3xl bg-secondary px-4 py-8 text-center md:px-8 md:py-12 relative overflow-hidden">
       {/* Decorative patterns */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-0 left-0 w-64 h-64 bg-primary rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>

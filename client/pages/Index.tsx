@@ -158,7 +158,7 @@ export default function Index() {
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-8 md:space-y-16">
+    <div className="space-y-5 md:space-y-6">
       {!farmer && (
         <>
           <Hero />
