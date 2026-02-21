@@ -95,7 +95,7 @@ export default function Profile() {
 
   const completedMissions = missions.filter((m) => m.completed).length;
   const unlockedBadges = badges.filter((b) => b.unlocked).length;
-  const xpToNext = (level * 100) - xp;
+  const xpToNext = 100 - (xp % 100);
   const xpProgress = ((xp % 100) / 100) * 100;
 
   return (

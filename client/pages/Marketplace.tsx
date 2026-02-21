@@ -187,12 +187,15 @@ export default function Marketplace() {
               <p className="text-2xl font-bold tracking-wide">{contactListing.phone}</p>
               <p className="text-xs text-muted-foreground mt-1">Call or WhatsApp to negotiate directly</p>
             </div>
-            <button
-              onClick={() => { setContactListing(null); toast.success("Opening WhatsApp..."); }}
-              className="mt-4 w-full py-2.5 bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-xl font-medium text-sm transition-colors"
+            <a
+              href={`https://wa.me/91${contactListing.phone.replace(/\s/g, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setContactListing(null)}
+              className="mt-4 block w-full py-2.5 bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-xl font-medium text-sm transition-colors text-center"
             >
               Open in WhatsApp
-            </button>
+            </a>
           </div>
         </div>
       )}
