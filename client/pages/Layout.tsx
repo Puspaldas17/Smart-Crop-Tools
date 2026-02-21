@@ -59,6 +59,12 @@ function HeaderAuth() {
           <DropdownMenuItem asChild>
             <Link to="/profile">{t('nav.profile')}</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/leaderboard">🏆 Leaderboard</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/marketplace">🛒 Marketplace</Link>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout}>{t('nav.logout')}</DropdownMenuItem>
         </DropdownMenuContent>
@@ -138,7 +144,11 @@ export default function RootLayout() {
                     {[
                       ...(farmer ? [{ href: "/#tools", label: t('nav.tools') }] : []),
                       ...(farmer && !farmer.isGuest
-                        ? [{ href: "/dashboard", label: t('nav.dashboard') }]
+                        ? [
+                            { href: "/dashboard", label: t('nav.dashboard') },
+                            { href: "/leaderboard", label: "🏆 Leaderboard" },
+                            { href: "/marketplace", label: "🛒 Marketplace" },
+                          ]
                         : []),
                       { href: "/#about", label: t('nav.about') },
                       {

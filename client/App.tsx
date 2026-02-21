@@ -19,6 +19,7 @@ import AMUManager from "./pages/AMUManager";
 import AdminDashboard from "./pages/AdminDashboard";
 import VetDashboard from "./pages/VetDashboard";
 import Leaderboard from "./pages/Leaderboard";
+import Marketplace from "./pages/Marketplace";
 import { AuthProvider } from "@/hooks/useAuth";
 import { GamificationProvider } from "@/context/GamificationContext";
 
@@ -73,6 +74,7 @@ const App = () => (
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/vet" element={<VetDashboard />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route path="/marketplace" element={<Marketplace />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Route>
