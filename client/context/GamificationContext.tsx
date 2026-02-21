@@ -183,10 +183,37 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({
     return saved ? JSON.parse(saved) : BASE_BADGES;
   });
 
-  const [streak] = useState<number>(() => {
+  const [streak, setStreak] = useState<number>(() => {
     const saved = localStorage.getItem("agriverse_streak");
-    return saved ? parseInt(saved) : 3;
+    return saved ? parseInt(saved) : 1;
   });
+
+  // Real daily streak tracking on mount
+  useEffect(() => {
+    const today = new Date().toDateString();
+    const lastLogin = localStorage.getItem("agriverse_last_login");
+
+    if (!lastLogin) {
+      // First ever login
+      localStorage.setItem("agriverse_last_login", today);
+      setStreak(1);
+      localStorage.setItem("agriverse_streak", "1");
+    } else if (lastLogin === today) {
+      // Already logged in today — do nothing
+    } else {
+      const lastDate = new Date(lastLogin);
+      const todayDate = new Date(today);
+      const diffDays = Math.round(
+        (todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      setStreak((prev) => {
+        const newStreak = diffDays === 1 ? prev + 1 : 1;
+        localStorage.setItem("agriverse_streak", newStreak.toString());
+        return newStreak;
+      });
+      localStorage.setItem("agriverse_last_login", today);
+    }
+  }, []);
 
   const level = Math.floor(xp / 100) + 1;
   const nextResetHours = getHoursUntilMidnight();

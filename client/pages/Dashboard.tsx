@@ -16,6 +16,7 @@ import { MissionCard } from "@/components/features/Gamification/MissionCard";
 import { LeaderboardWidget } from "@/components/features/Gamification/LeaderboardWidget";
 import { BadgesGallery } from "@/components/features/Gamification/BadgesGallery";
 import { UpgradeModal } from "@/components/features/UpgradeModal";
+import { PestAlertWidget } from "@/components/features/PestAlertWidget";
 
 const Analytics = lazy(() => import("@/components/features/Analytics"));
 const Chatbot = lazy(() => import("@/components/features/Chatbot"));
@@ -345,6 +346,9 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <LeaderboardWidget />
+                  <div className="mt-4">
+                    <PestAlertWidget />
+                  </div>
                 </div>
               </div>
             )}
