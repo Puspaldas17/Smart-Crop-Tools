@@ -27,6 +27,7 @@ import {
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useTranslation } from "react-i18next";
+import { NotificationBell } from "@/components/features/NotificationCenter";
 
 function HeaderAuth() {
   const { farmer, logout } = useAuth();
@@ -64,6 +65,9 @@ function HeaderAuth() {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/marketplace">🛒 Marketplace</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/calendar">📅 Crop Calendar</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout}>{t('nav.logout')}</DropdownMenuItem>
@@ -131,6 +135,7 @@ export default function RootLayout() {
           </nav>
           <div className="flex items-center gap-3">
              <LanguageSwitcher />
+            <NotificationBell />
             <ModeToggle />
             <div className="md:hidden">
               <Sheet>
@@ -148,6 +153,7 @@ export default function RootLayout() {
                             { href: "/dashboard", label: t('nav.dashboard') },
                             { href: "/leaderboard", label: "🏆 Leaderboard" },
                             { href: "/marketplace", label: "🛒 Marketplace" },
+                            { href: "/calendar", label: "📅 Crop Calendar" },
                           ]
                         : []),
                       { href: "/#about", label: t('nav.about') },
