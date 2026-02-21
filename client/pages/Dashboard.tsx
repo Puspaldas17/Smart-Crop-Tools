@@ -15,6 +15,7 @@ import { useGamification } from "@/context/GamificationContext";
 import { MissionCard } from "@/components/features/Gamification/MissionCard";
 import { LeaderboardWidget } from "@/components/features/Gamification/LeaderboardWidget";
 import { BadgesGallery } from "@/components/features/Gamification/BadgesGallery";
+import { UpgradeModal } from "@/components/features/UpgradeModal";
 
 const Analytics = lazy(() => import("@/components/features/Analytics"));
 const Chatbot = lazy(() => import("@/components/features/Chatbot"));
@@ -42,6 +43,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<
     "missions" | "history" | "subscription" | "analytics" | "chat" | "pest"
   >("missions");
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   useEffect(() => {
     if (!farmer) {
@@ -251,7 +253,10 @@ export default function Dashboard() {
 
             {!isPremium && (
               <div className="mt-4">
-                <button className="px-4 py-2 bg-gradient-to-r from-[#ff8a00] to-[#2ea043] text-white font-medium rounded-md hover:opacity-90">
+                <button
+                  onClick={() => setShowUpgrade(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-[#ff8a00] to-[#2ea043] text-white font-medium rounded-md hover:opacity-90"
+                >
                   {t('dash.plan.upgrade')}
                 </button>
               </div>
@@ -483,6 +488,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </div>
   );
 }

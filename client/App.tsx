@@ -18,6 +18,7 @@ import Dashboard from "./pages/Dashboard";
 import AMUManager from "./pages/AMUManager";
 import AdminDashboard from "./pages/AdminDashboard";
 import VetDashboard from "./pages/VetDashboard";
+import Leaderboard from "./pages/Leaderboard";
 import { AuthProvider } from "@/hooks/useAuth";
 import { GamificationProvider } from "@/context/GamificationContext";
 
@@ -71,6 +72,7 @@ const App = () => (
                     <Route path="/amu" element={<AMUManager />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/vet" element={<VetDashboard />} />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Route>
