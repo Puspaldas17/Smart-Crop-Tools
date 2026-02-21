@@ -15,7 +15,8 @@ interface Listing {
   unit: string;
   price: number;
   seller: string;
-  location: string;
+  location: string;   // city / district
+  state: string;      // Indian state
   phone: string;
   category: string;
   isOrganic: boolean;
@@ -23,36 +24,73 @@ interface Listing {
 }
 
 const LISTINGS: Listing[] = [
-  { id: 1, crop: "Wheat", emoji: "🌾", quantity: 500, unit: "kg", price: 28, seller: "Ramesh Patel", location: "Bhubaneswar", phone: "98765 43210", category: "Grain", isOrganic: false, postedDaysAgo: 1 },
-  { id: 2, crop: "Tomatoes", emoji: "🍅", quantity: 200, unit: "kg", price: 22, seller: "Anita Devi", location: "Cuttack", phone: "91234 56789", category: "Vegetable", isOrganic: true, postedDaysAgo: 0 },
-  { id: 3, crop: "Rice (Basmati)", emoji: "🍚", quantity: 1000, unit: "kg", price: 60, seller: "Suresh Kumar", location: "Puri", phone: "97890 12345", category: "Grain", isOrganic: true, postedDaysAgo: 2 },
-  { id: 4, crop: "Onion", emoji: "🧅", quantity: 800, unit: "kg", price: 18, seller: "Mohan Das", location: "Sambalpur", phone: "94567 89012", category: "Vegetable", isOrganic: false, postedDaysAgo: 3 },
-  { id: 5, crop: "Mango", emoji: "🥭", quantity: 150, unit: "kg", price: 80, seller: "Priya Sharma", location: "Berhampur", phone: "98001 23456", category: "Fruit", isOrganic: true, postedDaysAgo: 0 },
-  { id: 6, crop: "Potato", emoji: "🥔", quantity: 600, unit: "kg", price: 14, seller: "Vikram Singh", location: "Rourkela", phone: "99887 76543", category: "Vegetable", isOrganic: false, postedDaysAgo: 4 },
-  { id: 7, crop: "Maize", emoji: "🌽", quantity: 400, unit: "kg", price: 20, seller: "Geeta Bai", location: "Balasore", phone: "93456 78901", category: "Grain", isOrganic: false, postedDaysAgo: 1 },
-  { id: 8, crop: "Banana", emoji: "🍌", quantity: 300, unit: "dozen", price: 35, seller: "Ravi Nair", location: "Puri", phone: "92345 67890", category: "Fruit", isOrganic: true, postedDaysAgo: 2 },
+  // Odisha
+  { id: 1,  crop: "Rice (Basmati)",  emoji: "🍚", quantity: 1000, unit: "kg",     price: 60,  seller: "Suresh Kumar",    location: "Puri",           state: "Odisha",         phone: "97890 12345", category: "Grain",     isOrganic: true,  postedDaysAgo: 0 },
+  { id: 2,  crop: "Tomatoes",         emoji: "🍅", quantity: 200,  unit: "kg",     price: 22,  seller: "Anita Devi",      location: "Cuttack",        state: "Odisha",         phone: "91234 56789", category: "Vegetable", isOrganic: true,  postedDaysAgo: 1 },
+  // Punjab
+  { id: 3,  crop: "Wheat",            emoji: "🌾", quantity: 2000, unit: "kg",     price: 26,  seller: "Gurpreet Singh",  location: "Ludhiana",       state: "Punjab",         phone: "98140 33210", category: "Grain",     isOrganic: false, postedDaysAgo: 0 },
+  { id: 4,  crop: "Mustard",          emoji: "🌿", quantity: 800,  unit: "kg",     price: 55,  seller: "Harjit Kaur",    location: "Amritsar",       state: "Punjab",         phone: "98720 11234", category: "Grain",     isOrganic: false, postedDaysAgo: 2 },
+  // Uttar Pradesh
+  { id: 5,  crop: "Potato",           emoji: "🥔", quantity: 3000, unit: "kg",     price: 12,  seller: "Rambharose Yadav",location: "Agra",           state: "Uttar Pradesh",  phone: "94156 78901", category: "Vegetable", isOrganic: false, postedDaysAgo: 1 },
+  { id: 6,  crop: "Sugarcane",        emoji: "🎋", quantity: 5000, unit: "kg",     price: 4,   seller: "Shyam Lal",      location: "Muzaffarnagar",  state: "Uttar Pradesh",  phone: "99350 22345", category: "Grain",     isOrganic: false, postedDaysAgo: 3 },
+  // Maharashtra
+  { id: 7,  crop: "Onion",            emoji: "🧅", quantity: 1500, unit: "kg",     price: 20,  seller: "Pandurang Shinde",location: "Nashik",         state: "Maharashtra",    phone: "98220 44567", category: "Vegetable", isOrganic: false, postedDaysAgo: 0 },
+  { id: 8,  crop: "Grapes",           emoji: "🍇", quantity: 600,  unit: "kg",     price: 95,  seller: "Sujata Kale",    location: "Sangli",         state: "Maharashtra",    phone: "97300 55678", category: "Fruit",     isOrganic: true,  postedDaysAgo: 1 },
+  // Andhra Pradesh
+  { id: 9,  crop: "Chilli (Red)",     emoji: "🌶️",quantity: 700,  unit: "kg",     price: 140, seller: "Venkatesh Rao",  location: "Guntur",         state: "Andhra Pradesh", phone: "94401 66789", category: "Vegetable", isOrganic: false, postedDaysAgo: 2 },
+  { id: 10, crop: "Mango (Alphonso)", emoji: "🥭", quantity: 300,  unit: "kg",     price: 180, seller: "Radha Krishna",  location: "Vijayawada",     state: "Andhra Pradesh", phone: "99890 77890", category: "Fruit",     isOrganic: true,  postedDaysAgo: 0 },
+  // Karnataka
+  { id: 11, crop: "Coffee (Arabica)", emoji: "☕", quantity: 200,  unit: "kg",     price: 350, seller: "Mahesh Gowda",   location: "Coorg",          state: "Karnataka",      phone: "98440 88901", category: "Grain",     isOrganic: true,  postedDaysAgo: 3 },
+  { id: 12, crop: "Coconut",          emoji: "🥥", quantity: 500,  unit: "dozen",  price: 40,  seller: "Lakshmi Narayana",location: "Tumkur",        state: "Karnataka",      phone: "97420 99012", category: "Fruit",     isOrganic: false, postedDaysAgo: 1 },
+  // Tamil Nadu
+  { id: 13, crop: "Banana (Nendran)", emoji: "🍌", quantity: 400,  unit: "dozen",  price: 48,  seller: "Murugesan P.",   location: "Thanjavur",      state: "Tamil Nadu",     phone: "98430 10123", category: "Fruit",     isOrganic: true,  postedDaysAgo: 0 },
+  { id: 14, crop: "Turmeric",         emoji: "🟡", quantity: 500,  unit: "kg",     price: 120, seller: "Selvaraj M.",    location: "Erode",          state: "Tamil Nadu",     phone: "95000 21234", category: "Vegetable", isOrganic: false, postedDaysAgo: 2 },
+  // Madhya Pradesh
+  { id: 15, crop: "Soybean",          emoji: "🫘", quantity: 1200, unit: "kg",     price: 45,  seller: "Bhagwandas Jain",location: "Indore",         state: "Madhya Pradesh", phone: "98260 32345", category: "Grain",     isOrganic: false, postedDaysAgo: 1 },
+  { id: 16, crop: "Garlic",           emoji: "🧄", quantity: 600,  unit: "kg",     price: 90,  seller: "Sunita Patidar", location: "Mandsaur",       state: "Madhya Pradesh", phone: "94250 43456", category: "Vegetable", isOrganic: false, postedDaysAgo: 4 },
+  // Rajasthan
+  { id: 17, crop: "Bajra (Pearl Millet)",emoji:"🌾",quantity: 900, unit: "kg",     price: 22,  seller: "Manohar Meena",  location: "Jaipur",         state: "Rajasthan",      phone: "98290 54567", category: "Grain",     isOrganic: false, postedDaysAgo: 2 },
+  { id: 18, crop: "Cumin (Jeera)",    emoji: "🌿", quantity: 300,  unit: "kg",     price: 220, seller: "Hemant Sharma",  location: "Jodhpur",        state: "Rajasthan",      phone: "97290 65678", category: "Vegetable", isOrganic: true,  postedDaysAgo: 0 },
+  // Gujarat
+  { id: 19, crop: "Groundnut",        emoji: "🥜", quantity: 1000, unit: "kg",     price: 65,  seller: "Naresh Patel",   location: "Rajkot",         state: "Gujarat",        phone: "99090 76789", category: "Grain",     isOrganic: false, postedDaysAgo: 1 },
+  { id: 20, crop: "Cotton (Raw)",      emoji: "🌿", quantity: 2000, unit: "kg",     price: 62,  seller: "Ashaben Parmar", location: "Surat",          state: "Gujarat",        phone: "94270 87890", category: "Grain",     isOrganic: false, postedDaysAgo: 3 },
+  // West Bengal
+  { id: 21, crop: "Jute",             emoji: "🌿", quantity: 1500, unit: "kg",     price: 55,  seller: "Subrata Ghosh",  location: "Murshidabad",    state: "West Bengal",    phone: "98310 98901", category: "Grain",     isOrganic: false, postedDaysAgo: 2 },
+  { id: 22, crop: "Hilsa Fish",        emoji: "🐟", quantity: 50,   unit: "kg",     price: 900, seller: "Tapas Mandal",   location: "Kolkata",        state: "West Bengal",    phone: "97310 09012", category: "Vegetable", isOrganic: true,  postedDaysAgo: 0 },
+  // Himachal Pradesh
+  { id: 23, crop: "Apple",            emoji: "🍎", quantity: 400,  unit: "kg",     price: 130, seller: "Deepak Thakur",  location: "Shimla",         state: "Himachal Pradesh",phone: "98160 11345", category: "Fruit",     isOrganic: true,  postedDaysAgo: 1 },
+  // Kerala
+  { id: 24, crop: "Black Pepper",     emoji: "⚫", quantity: 150,  unit: "kg",     price: 450, seller: "Rajan Nair",     location: "Wayanad",        state: "Kerala",         phone: "94470 22456", category: "Vegetable", isOrganic: true,  postedDaysAgo: 2 },
 ];
 
+// All Indian states present in listings (for state filter)
+const ALL_STATES = ["All States", ...Array.from(new Set(LISTINGS.map((l) => l.state))).sort()];
 const CATEGORIES = ["All", "Grain", "Vegetable", "Fruit"];
 
 export default function Marketplace() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  const [stateFilter, setStateFilter] = useState("All States");
   const [showPostForm, setShowPostForm] = useState(false);
   const [contactListing, setContactListing] = useState<Listing | null>(null);
-  const [form, setForm] = useState({ crop: "", quantity: "", price: "", location: "", phone: "" });
+  const [form, setForm] = useState({ crop: "", quantity: "", price: "", location: "", state: "", phone: "" });
 
   const filtered = LISTINGS.filter((l) => {
-    const matchSearch = l.crop.toLowerCase().includes(search.toLowerCase()) || l.location.toLowerCase().includes(search.toLowerCase());
+    const q = search.toLowerCase();
+    const matchSearch = l.crop.toLowerCase().includes(q)
+      || l.location.toLowerCase().includes(q)
+      || l.state.toLowerCase().includes(q)
+      || l.seller.toLowerCase().includes(q);
     const matchCat = category === "All" || l.category === category;
-    return matchSearch && matchCat;
+    const matchState = stateFilter === "All States" || l.state === stateFilter;
+    return matchSearch && matchCat && matchState;
   });
 
   const handlePost = (e: React.FormEvent) => {
     e.preventDefault();
     setShowPostForm(false);
-    setForm({ crop: "", quantity: "", price: "", location: "", phone: "" });
+    setForm({ crop: "", quantity: "", price: "", location: "", state: "", phone: "" });
     toast.success("✅ Listing posted! Buyers can now find your produce.");
   };
 
@@ -69,7 +107,7 @@ export default function Marketplace() {
               <ShoppingCart className="h-6 w-6 text-green-600" />
               Farmer Marketplace
             </h1>
-            <p className="text-sm text-muted-foreground">Direct farm-to-consumer produce listings</p>
+            <p className="text-sm text-muted-foreground">All-India direct farm-to-consumer produce listings 🇮🇳</p>
           </div>
         </div>
         <button
@@ -80,19 +118,32 @@ export default function Marketplace() {
         </button>
       </div>
 
-      {/* Search & Filter */}
-      <div className="flex gap-3 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search crop or location..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-          />
+      {/* Search, State & Category Filters */}
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search crop, city, state or seller..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          {/* State filter dropdown */}
+          <select
+            value={stateFilter}
+            onChange={(e) => setStateFilter(e.target.value)}
+            className="px-3 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 min-w-[150px]"
+          >
+            {ALL_STATES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
         </div>
-        <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl">
+        {/* Category pills */}
+        <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl w-fit">
           <Filter className="h-4 w-4 text-muted-foreground ml-2" />
           {CATEGORIES.map((cat) => (
             <button
@@ -133,7 +184,9 @@ export default function Marketplace() {
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                    <MapPin className="h-3 w-3" /> {listing.location}
+                    <MapPin className="h-3 w-3" />
+                    {listing.location},
+                    <span className="font-medium text-foreground/70">{listing.state}</span>
                   </p>
                 </div>
               </div>
@@ -215,7 +268,8 @@ export default function Marketplace() {
                 { label: "Crop Name", key: "crop", placeholder: "e.g., Tomatoes" },
                 { label: "Quantity (kg/dozen)", key: "quantity", placeholder: "e.g., 200" },
                 { label: "Price per unit (₹)", key: "price", placeholder: "e.g., 25" },
-                { label: "Your Location", key: "location", placeholder: "e.g., Bhubaneswar" },
+                { label: "City / District", key: "location", placeholder: "e.g., Nashik" },
+                { label: "State", key: "state", placeholder: "e.g., Maharashtra" },
                 { label: "Phone Number", key: "phone", placeholder: "e.g., 98765 43210" },
               ].map(({ label, key, placeholder }) => (
                 <div key={key}>
