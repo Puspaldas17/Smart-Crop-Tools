@@ -1,112 +1,181 @@
 # 🌾 AgriVerse
 
-**AgriVerse** is a comprehensive, AI-powered digital platform designed to revolutionize sustainable farming practices.
+**AI-powered smart farming platform for India's rural farmers.**
 
-> 📘 **Want to know more?**
-> For detailed features, unique selling points, and our future roadmap, please check out [**Project Details**](PROJECT_DETAILS.md).
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/Puspaldas17/Smart-Crop-Tools)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+[![Stack](https://img.shields.io/badge/stack-MERN%20%2B%20Python-informational?style=flat-square)](PROJECT_DETAILS.md)
+[![PWA](https://img.shields.io/badge/PWA-enabled-purple?style=flat-square)](https://web.dev/pwa/)
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tech Stack](https://img.shields.io/badge/stack-MERN-blue)]()
+> 📖 For all features, architecture, and roadmap → **[PROJECT_DETAILS.md](PROJECT_DETAILS.md)**
 
 ---
 
-## Getting Started
+## Prerequisites
 
-Follow these steps to set up and run the full AgriVerse ecosystem (Web App + AI Service).
+| Tool    | Version                                 |
+| ------- | --------------------------------------- |
+| Node.js | v18+ (v20+ recommended)                 |
+| Python  | v3.10+                                  |
+| npm     | Latest                                  |
+| MongoDB | Optional (in-memory fallback available) |
 
-### Prerequisites
+---
 
-- **Node.js** v18+ (Recommended v20+)
-- **Python** v3.10+
-- **npm** or **pnpm**
-
-### 1. Installation
-
-**Clone the repository:**
+## Installation
 
 ```bash
-git clone https://github.com/puspaldas05/Smart-Crop-Tools.git
+# 1. Clone the repository
+git clone https://github.com/Puspaldas17/Smart-Crop-Tools.git
 cd Smart-Crop-Tools
-```
 
-**Install Web App Dependencies:**
-
-```bash
+# 2. Install Node.js dependencies (frontend + backend)
 npm install
-```
 
-**Install AI Service Dependencies:**
-
-```bash
+# 3. Install Python AI service dependencies
 cd ai_service
 pip install -r requirements.txt
 cd ..
 ```
 
-_(Note: On Windows, use `pip install --upgrade pillow` if you encounter image library issues.)_
+> **Windows Note:** If you get Pillow errors: `pip install --upgrade pillow`
 
-### 2. Environment Setup
+---
 
-Copy the example environment file:
+## Environment Setup
 
 ```bash
 cp .env.example .env
 ```
 
-- By default, the app uses an **in-memory database** if `MONGODB_URI` is not set.
-- For full features, configure your MongoDB URI in `.env`.
+| Variable         | Description               | Default                 |
+| ---------------- | ------------------------- | ----------------------- |
+| `MONGODB_URI`    | MongoDB connection string | In-memory fallback      |
+| `PORT`           | Server port               | `8080`                  |
+| `AI_SERVICE_URL` | Python AI service URL     | `http://localhost:8000` |
 
-### 3. Running the Project
+> Without `MONGODB_URI`, the app runs in **Demo Mode** with in-memory data — great for local testing.
 
-You need to run the **Web App** and the **AI Service** in separate terminals.
+---
 
-**Terminal 1: Start Web Application (Frontend + Backend)**
+## Running the Project
+
+You need **two terminals** running simultaneously:
+
+**Terminal 1 — Web App (React + Express)**
 
 ```bash
 npm run dev
 ```
 
-> 🟢 Access the app at: [http://localhost:8080](http://localhost:8080)
+🟢 App: **http://localhost:8080**
 
-**Terminal 2: Start AI Service**
+**Terminal 2 — Python AI Service**
 
 ```bash
 cd ai_service
 python main.py
 ```
 
-> 🟢 AI Service runs at: [http://localhost:8000](http://localhost:8000)
-
-### 4. Verification
-
-1.  Open [http://localhost:8080](http://localhost:8080) in your browser.
-2.  Use the **Language Switcher** in the top bar to test Hindi/Odia.
-3.  Go to **Dashboard** -> **Pest Detector** to test the connection to the Python AI Service.
+🟢 AI Service: **http://localhost:8000**
 
 ---
 
-## 📂 Project Structure
+## Verification
+
+1. Open **http://localhost:8080**
+2. Register/Login as a Farmer (Guest Mode also available)
+3. Use the 🌐 button to switch language (EN / Hindi / Odia)
+4. Go to **Dashboard → Pest Detector** to verify AI service is connected
+5. Go to **Dashboard → Analytics** to see charts
+
+---
+
+## Project Structure
 
 ```
 AgriVerse/
-├── client/              # React Frontend (Vite)
-│   ├── components/      # UI & Feature Components
-│   ├── pages/           # Route Pages (Dashboard, Index, etc.)
-│   └── i18n.ts          # Language Configuration
-├── server/              # Node.js/Express Backend API
-├── ai_service/          # Python AI API (FastAPI + ML Models)
-└── shared/              # Shared Types/Utils
+│
+├── client/                          # React 18 Frontend (Vite + TypeScript)
+│   ├── components/
+│   │   ├── features/                # Feature components
+│   │   │   ├── Gamification/        # MissionCard, BadgesGallery, LeaderboardWidget
+│   │   │   ├── Analytics.tsx        # Charts (Recharts) — 4 tabs
+│   │   │   ├── NotificationCenter.tsx
+│   │   │   ├── PestAlertWidget.tsx
+│   │   │   ├── PestDetector.tsx
+│   │   │   ├── UpgradeModal.tsx
+│   │   │   ├── Chatbot.tsx
+│   │   │   ├── MarketCard.tsx
+│   │   │   └── WeatherCard.tsx
+│   │   └── home/                    # Landing page sections (Hero, Stats, CTA…)
+│   │
+│   ├── pages/                       # Route-level pages
+│   │   ├── Dashboard.tsx            # Main dashboard (6 tabs)
+│   │   ├── Leaderboard.tsx          # Full leaderboard with podium
+│   │   ├── Marketplace.tsx          # F2C produce marketplace
+│   │   ├── CropCalendar.tsx         # Sowing/harvest calendar
+│   │   ├── Profile.tsx              # Farmer profile + XP stats
+│   │   ├── VetDashboard.tsx         # Veterinary portal
+│   │   ├── AdminDashboard.tsx       # Admin portal
+│   │   └── Layout.tsx               # Shared layout + navigation
+│   │
+│   ├── context/
+│   │   └── GamificationContext.tsx  # XP, Level, Streak, Missions, Badges state
+│   │
+│   └── i18n.ts                      # EN / Hindi / Odia translations
+│
+├── server/                          # Node.js + Express 5 REST API
+│   ├── routes/                      # /auth, /advisory, /analytics, /market, /amu
+│   └── db.ts                        # MongoDB / in-memory adapter
+│
+├── ai_service/                      # Python FastAPI ML service
+│   ├── main.py                      # Pest/disease detection endpoint
+│   └── requirements.txt
+│
+├── shared/                          # Shared TypeScript types
+├── public/                          # PWA icons, manifest.json
+├── .env.example                     # Environment variable template
+└── PROJECT_DETAILS.md               # Full feature documentation
 ```
-
-## 🧰 Troubleshooting
-
-- **Port Conflicts**: If port `8080` is in use, set `PORT=9090 npm run dev` (PowerShell: `$env:PORT=9090; npm run dev`).
-- **AI Service Error**: Ensure Python dependencies are installed (`pip install -r requirements.txt`) and the service is running on port `8000`.
-- **Database**: If you don't have MongoDB installed, the app will run in "Demo Mode" with in-memory data.
 
 ---
 
-## 📜 License
+## Available Routes
 
-MIT License.
+| Route          | Page                        |
+| -------------- | --------------------------- |
+| `/`            | Landing page                |
+| `/login`       | Farmer login / registration |
+| `/dashboard`   | Main dashboard              |
+| `/leaderboard` | Full leaderboard            |
+| `/marketplace` | F2C marketplace             |
+| `/calendar`    | Crop sowing calendar        |
+| `/profile`     | Farmer profile              |
+| `/vet`         | Veterinary portal           |
+| `/admin`       | Admin portal                |
+
+---
+
+## Troubleshooting
+
+| Problem                   | Solution                                                            |
+| ------------------------- | ------------------------------------------------------------------- |
+| Port 8080 already in use  | PowerShell: `$env:PORT=9090; npm run dev`                           |
+| AI Service not connecting | Make sure `python main.py` is running in `ai_service/` on port 8000 |
+| Analytics shows no charts | Click the tab — it uses smart mock fallback data locally            |
+| MongoDB connection error  | Remove `MONGODB_URI` from `.env` to use in-memory mode              |
+| PWA icons missing         | Run `npm run build` once to generate PWA assets                     |
+
+---
+
+## Author
+
+**Puspal Das** · SOA University (ITER), Bhubaneswar, Odisha  
+GitHub: [@Puspaldas17](https://github.com/Puspaldas17)
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE)
