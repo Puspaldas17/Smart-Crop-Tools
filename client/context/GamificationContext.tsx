@@ -7,7 +7,7 @@ export interface Mission {
   description: string;
   xpReward: number;
   completed: boolean;
-  icon?: string; // Emoji or icon name
+  icon?: string;
 }
 
 export interface Badge {
@@ -24,6 +24,7 @@ interface GamificationState {
   streak: number;
   missions: Mission[];
   badges: Badge[];
+  nextResetHours: number;
 }
 
 interface GamificationContextType extends GamificationState {
@@ -31,8 +32,8 @@ interface GamificationContextType extends GamificationState {
   addXP: (amount: number) => void;
 }
 
-// Initial Mock Data
-const INITIAL_MISSIONS: Mission[] = [
+// 8 Daily Missions
+const BASE_MISSIONS: Mission[] = [
   {
     id: "m1",
     title: "missions.m1.title",
@@ -57,9 +58,49 @@ const INITIAL_MISSIONS: Mission[] = [
     completed: false,
     icon: "🌦️",
   },
+  {
+    id: "m4",
+    title: "missions.m4.title",
+    description: "missions.m4.desc",
+    xpReward: 40,
+    completed: false,
+    icon: "🤖",
+  },
+  {
+    id: "m5",
+    title: "missions.m5.title",
+    description: "missions.m5.desc",
+    xpReward: 25,
+    completed: false,
+    icon: "🌱",
+  },
+  {
+    id: "m6",
+    title: "missions.m6.title",
+    description: "missions.m6.desc",
+    xpReward: 35,
+    completed: false,
+    icon: "🐄",
+  },
+  {
+    id: "m7",
+    title: "missions.m7.title",
+    description: "missions.m7.desc",
+    xpReward: 15,
+    completed: false,
+    icon: "📊",
+  },
+  {
+    id: "m8",
+    title: "missions.m8.title",
+    description: "missions.m8.desc",
+    xpReward: 60,
+    completed: false,
+    icon: "🏆",
+  },
 ];
 
-const INITIAL_BADGES: Badge[] = [
+const BASE_BADGES: Badge[] = [
   {
     id: "b1",
     name: "Green Thumb",
@@ -78,10 +119,39 @@ const INITIAL_BADGES: Badge[] = [
     id: "b3",
     name: "Market Guru",
     icon: "💰",
-    description: "Checked market prices 10 times.",
+    description: "Checked market prices consistently.",
+    unlocked: false,
+  },
+  {
+    id: "b4",
+    name: "Mission Master",
+    icon: "🎯",
+    description: "Completed all daily missions in a single day!",
+    unlocked: false,
+  },
+  {
+    id: "b5",
+    name: "AI Pioneer",
+    icon: "🤖",
+    description: "Used the AI Chatbot assistant 5 times.",
+    unlocked: false,
+  },
+  {
+    id: "b6",
+    name: "XP Legend",
+    icon: "⭐",
+    description: "Earned over 500 XP total.",
     unlocked: false,
   },
 ];
+
+// Calculates hours until midnight (next reset)
+function getHoursUntilMidnight(): number {
+  const now = new Date();
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  return Math.ceil((midnight.getTime() - now.getTime()) / (1000 * 60 * 60));
+}
 
 const GamificationContext = createContext<GamificationContextType | undefined>(
   undefined,
@@ -90,27 +160,36 @@ const GamificationContext = createContext<GamificationContextType | undefined>(
 export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Load from localStorage or default
   const [xp, setXp] = useState<number>(() => {
     const saved = localStorage.getItem("agriverse_xp");
     return saved ? parseInt(saved) : 0;
   });
-  
+
   const [missions, setMissions] = useState<Mission[]>(() => {
-     // Always reset daily missions for demo purposes, or load from local storage if persists
-     const saved = localStorage.getItem("agriverse_missions");
-     return saved ? JSON.parse(saved) : INITIAL_MISSIONS;
+    const savedDate = localStorage.getItem("agriverse_mission_date");
+    const today = new Date().toDateString();
+    // Auto-reset if it's a new day
+    if (savedDate !== today) {
+      localStorage.setItem("agriverse_mission_date", today);
+      localStorage.removeItem("agriverse_missions");
+      return BASE_MISSIONS;
+    }
+    const saved = localStorage.getItem("agriverse_missions");
+    return saved ? JSON.parse(saved) : BASE_MISSIONS;
   });
 
   const [badges, setBadges] = useState<Badge[]>(() => {
-      const saved = localStorage.getItem("agriverse_badges");
-      return saved ? JSON.parse(saved) : INITIAL_BADGES;
+    const saved = localStorage.getItem("agriverse_badges");
+    return saved ? JSON.parse(saved) : BASE_BADGES;
   });
 
-  const [streak] = useState<number>(3); // Mock streak
+  const [streak] = useState<number>(() => {
+    const saved = localStorage.getItem("agriverse_streak");
+    return saved ? parseInt(saved) : 3;
+  });
 
-  // Level calculation: Level 1 = 0-99 XP, Level 2 = 100-299 XP, etc.
   const level = Math.floor(xp / 100) + 1;
+  const nextResetHours = getHoursUntilMidnight();
 
   useEffect(() => {
     localStorage.setItem("agriverse_xp", xp.toString());
@@ -123,25 +202,66 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const completeMission = (id: string) => {
-    setMissions((prev) =>
-      prev.map((m) => {
+    let earnedXp = 0;
+    let updatedMissions: Mission[] = [];
+
+    setMissions((prev) => {
+      updatedMissions = prev.map((m) => {
         if (m.id === id && !m.completed) {
-          addXP(m.xpReward);
+          earnedXp = m.xpReward;
           return { ...m, completed: true };
         }
         return m;
-      }),
-    );
-    
-    // Simple badge unlock logic (Demo)
-    if (xp > 100) {
-        setBadges(prev => prev.map(b => b.id === 'b1' ? {...b, unlocked: true} : b));
+      });
+      return updatedMissions;
+    });
+
+    if (earnedXp > 0) {
+      setXp((prev) => {
+        const newXp = prev + earnedXp;
+
+        // Update badges based on new XP (using newXp, not stale xp)
+        setBadges((prevBadges) =>
+          prevBadges.map((b) => {
+            if (b.id === "b6" && newXp >= 500) return { ...b, unlocked: true };
+            return b;
+          }),
+        );
+
+        return newXp;
+      });
     }
+
+    // Check mission-based badges after state flush
+    setTimeout(() => {
+      setMissions((prev) => {
+        const completedCount = prev.filter((m) => m.completed).length;
+        setBadges((prevBadges) =>
+          prevBadges.map((b) => {
+            if (b.id === "b1" && completedCount >= 5)
+              return { ...b, unlocked: true };
+            if (b.id === "b4" && completedCount === BASE_MISSIONS.length)
+              return { ...b, unlocked: true };
+            return b;
+          }),
+        );
+        return prev;
+      });
+    }, 100);
   };
 
   return (
     <GamificationContext.Provider
-      value={{ xp, level, streak, missions, badges, completeMission, addXP }}
+      value={{
+        xp,
+        level,
+        streak,
+        missions,
+        badges,
+        completeMission,
+        addXP,
+        nextResetHours,
+      }}
     >
       {children}
     </GamificationContext.Provider>
