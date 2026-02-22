@@ -1,15 +1,14 @@
 /** @import must precede all other statements */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
 @layer base {
-  /**
-   * Tailwind CSS theme
-   * tailwind.config.ts expects the following color variables expressed as HSL values.
-   */
   :root {
     --background: 60 20% 97%;
     --foreground: 120 40% 10%;
@@ -49,11 +48,12 @@
     --sidebar-border: 120 15% 85%;
     --sidebar-ring: 120 39% 29%;
 
-    /* === Gradient orb HSL values — light mode === */
-    --orb-1: 134 60% 78%;   /* soft lime-green */
-    --orb-2: 43  90% 80%;   /* warm golden harvest */
-    --orb-3: 185 60% 80%;   /* sky teal */
-    --orb-4: 160 55% 85%;   /* cool mint */
+    /* Orbs — light */
+    --orb-1: 134 60% 75%;
+    --orb-2: 43  90% 78%;
+    --orb-3: 185 60% 78%;
+    --orb-4: 160 55% 82%;
+    --orb-5: 270 50% 80%;
   }
 
   .dark {
@@ -94,22 +94,22 @@
     --sidebar-border: 220 25% 15%;
     --sidebar-ring: 120 39% 49%;
 
-    /* === Gradient orb HSL values — dark mode === */
-    --orb-1: 142 55% 16%;   /* deep emerald */
-    --orb-2: 260 50% 17%;   /* indigo-violet */
-    --orb-3: 185 55% 13%;   /* dark teal */
-    --orb-4: 38  60% 14%;   /* amber warmth */
+    /* Orbs — dark */
+    --orb-1: 142 55% 14%;
+    --orb-2: 260 50% 15%;
+    --orb-3: 185 55% 12%;
+    --orb-4: 38  60% 13%;
+    --orb-5: 300 45% 12%;
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE RESET & TYPOGRAPHY
+═══════════════════════════════════════════════════════════════════════════ */
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
     color: hsl(var(--foreground));
@@ -118,100 +118,233 @@
     position: relative;
     background-color: hsl(var(--background));
     font-family: "Inter", sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* ── Mesh gradient orb layer ── */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    pointer-events: none;
-    background:
-      radial-gradient(ellipse 72% 56% at 4%   0%,  hsl(var(--orb-1) / 0.55) 0%, transparent 65%),
-      radial-gradient(ellipse 60% 48% at 96%  4%,  hsl(var(--orb-2) / 0.48) 0%, transparent 60%),
-      radial-gradient(ellipse 52% 52% at 8%  58%,  hsl(var(--orb-3) / 0.38) 0%, transparent 65%),
-      radial-gradient(ellipse 58% 44% at 92% 52%,  hsl(var(--orb-4) / 0.32) 0%, transparent 62%),
-      radial-gradient(ellipse 80% 30% at 50% 100%, hsl(var(--orb-1) / 0.18) 0%, transparent 70%),
-      hsl(var(--background));
-    animation: meshDrift 22s ease-in-out infinite alternate;
-  }
+  h1 { font-size: clamp(1.75rem, 1.2rem + 2vw, 3.25rem);   line-height: 1.1; font-weight: 800; }
+  h2 { font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);       line-height: 1.2; font-weight: 700; }
+  h3 { font-size: clamp(1.125rem, 0.95rem + 0.8vw, 1.5rem); line-height: 1.3; font-weight: 600; }
 
-  /* ── Subtle noise texture for premium depth ── */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0.030;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 300px 300px;
-  }
-
-  @keyframes meshDrift {
-    0%   {
-      background-position:
-        4% 0%, 96% 4%, 8% 58%, 92% 52%, 50% 100%, center;
-    }
-    33%  {
-      background-position:
-        2% 6%, 94% 2%, 5% 63%, 96% 45%, 52% 98%, center;
-    }
-    66%  {
-      background-position:
-        6% 3%, 98% 7%, 11% 54%, 89% 56%, 48% 102%, center;
-    }
-    100% {
-      background-position:
-        3% 5%, 96% 5%, 9% 60%, 93% 50%, 50% 99%, center;
-    }
-  }
-
-  /* ── Typography ── */
-  h1 {
-    font-size: clamp(1.75rem, 1.2rem + 2vw, 3.25rem);
-    line-height: 1.1;
-  }
-  h2 {
-    font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);
-    line-height: 1.2;
-  }
-  h3 {
-    font-size: clamp(1.125rem, 0.95rem + 0.8vw, 1.5rem);
-    line-height: 1.3;
-  }
-
-  img, video, canvas, svg {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .container {
-    max-width: 100%;
-  }
+  img, video, canvas, svg { max-width: 100%; height: auto; }
+  .container { max-width: 100%; }
 }
 
-/* ─── Utility: Glassmorphism ─── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND SYSTEM
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Layer 1: Dotted grid ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, hsl(var(--primary) / 0.18) 1px, transparent 1px);
+  background-size: 32px 32px;
+  animation: gridPan 60s linear infinite;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+
+/* ── Layer 2: Animated colour orbs ── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at  5%  5%,  hsl(var(--orb-1) / 0.55) 0%, transparent 65%),
+    radial-gradient(ellipse 58% 46% at 94%  6%,  hsl(var(--orb-2) / 0.48) 0%, transparent 60%),
+    radial-gradient(ellipse 52% 50% at  9% 60%,  hsl(var(--orb-3) / 0.40) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 44% at 91% 54%,  hsl(var(--orb-4) / 0.35) 0%, transparent 62%),
+    radial-gradient(ellipse 44% 44% at 50% 50%,  hsl(var(--orb-5) / 0.20) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 28% at 50% 100%, hsl(var(--orb-1) / 0.18) 0%, transparent 72%),
+    hsl(var(--background));
+  animation: orbFloat 28s ease-in-out infinite alternate;
+}
+
+/* ── Layer 3: Noise texture for premium depth ── */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes orbFloat {
+  0%   { background-position:  5%  5%, 94%  6%,  9% 60%, 91% 54%, 50% 50%, 50% 100%, center; }
+  25%  { background-position:  3%  9%, 97%  3%,  6% 65%, 95% 47%, 48% 52%, 52%  98%, center; }
+  50%  { background-position:  7%  3%, 92% 10%, 12% 55%, 87% 60%, 52% 48%, 48% 102%, center; }
+  75%  { background-position:  4%  7%, 96%  5%, 10% 62%, 93% 51%, 50% 50%, 51%  99%, center; }
+  100% { background-position:  6%  2%, 93%  8%,  7% 58%, 90% 56%, 51% 49%, 49% 101%, center; }
+}
+
+@keyframes gridPan {
+  0%   { background-position: 0 0; }
+  100% { background-position: 32px 32px; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px);   }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0     hsl(var(--primary) / 0.3); }
+  50%       { box-shadow: 0 0 24px 6px hsl(var(--primary) / 0.18); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes gradientText {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: hsl(var(--primary) / 0.3); }
+  50%       { border-color: hsl(var(--primary) / 0.8); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1);   opacity: 1;   }
+  50%       { transform: scale(1.5); opacity: 0.6; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATION UTILITY CLASSES
+═══════════════════════════════════════════════════════════════════════════ */
 @layer utilities {
+
+  /* ── Entrance animations ── */
+  .animate-fade-in-up         { animation: fadeInUp   0.6s ease both; }
+  .animate-fade-in-left       { animation: fadeInLeft 0.6s ease both; }
+  .animate-fade-in-right      { animation: fadeInRight 0.6s ease both; }
+  .animate-fade-in            { animation: fadeIn     0.5s ease both; }
+  .animate-scale-in           { animation: scaleIn    0.5s ease both; }
+  .animate-slide-down         { animation: slideDown  0.4s ease both; }
+
+  /* Stagger delays */
+  .delay-100 { animation-delay: 0.10s; }
+  .delay-200 { animation-delay: 0.20s; }
+  .delay-300 { animation-delay: 0.30s; }
+  .delay-400 { animation-delay: 0.40s; }
+  .delay-500 { animation-delay: 0.50s; }
+  .delay-600 { animation-delay: 0.60s; }
+  .delay-700 { animation-delay: 0.70s; }
+  .delay-800 { animation-delay: 0.80s; }
+
+  /* ── Continuous animations ── */
+  .animate-float      { animation: float     4s ease-in-out infinite; }
+  .animate-float-slow { animation: float     7s ease-in-out infinite; }
+  .animate-spin-slow  { animation: spinSlow 20s linear infinite; }
+  .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+  .animate-pulse-dot  { animation: pulseDot  2s ease-in-out infinite; }
+
+  /* ── Gradient animated text ── */
+  .gradient-text {
+    background: linear-gradient(135deg,
+      hsl(var(--primary)),
+      hsl(142 60% 40%),
+      hsl(var(--accent)),
+      hsl(185 70% 45%),
+      hsl(var(--primary))
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientText 6s ease-in-out infinite;
+  }
+
+  /* ── Shimmer effect (loading / highlight) ── */
+  .shimmer {
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      hsl(var(--primary) / 0.12) 50%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+
+  /* ── Glowing border ── */
+  .border-glow { animation: borderGlow 3s ease-in-out infinite; }
+
+  /* ── Glassmorphism card ── */
   .glass-card {
-    background: hsl(var(--card) / 0.72);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: hsl(var(--card) / 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid hsl(var(--border) / 0.55);
     box-shadow:
       0 4px 24px hsl(var(--primary) / 0.07),
-      0 1px 4px  hsl(var(--primary) / 0.04);
-    transition: box-shadow 0.25s ease;
+      0 1px 4px  hsl(var(--primary) / 0.04),
+      inset 0 1px 0 hsl(255 100% 100% / 0.08);
+    transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
   }
   .glass-card:hover {
     box-shadow:
-      0 8px 32px hsl(var(--primary) / 0.12),
-      0 2px 8px  hsl(var(--primary) / 0.06);
+      0 12px 40px hsl(var(--primary) / 0.14),
+      0 4px 12px  hsl(var(--primary) / 0.07),
+      inset 0 1px 0 hsl(255 100% 100% / 0.12);
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary) / 0.25);
   }
 
-  /* Gradient-shimmer border on hover */
+  /* ── Gradient-shimmer border on hover ── */
   .gradient-border {
     position: relative;
     isolation: isolate;
@@ -223,20 +356,119 @@
     border-radius: inherit;
     background: linear-gradient(
       135deg,
-      hsl(var(--primary) / 0.35),
-      hsl(var(--accent)  / 0.22),
-      hsl(185 60% 70% / 0.30)
+      hsl(var(--primary) / 0.40),
+      hsl(var(--accent)  / 0.25),
+      hsl(185 60% 70% / 0.35),
+      hsl(var(--primary) / 0.40)
     );
+    background-size: 200% 200%;
     z-index: -1;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.35s ease;
     pointer-events: none;
+    animation: gradientText 4s ease infinite paused;
   }
   .gradient-border:hover::after {
     opacity: 1;
+    animation-play-state: running;
   }
 
-  /* Scrollbar hide */
+  /* ── Hero glow blob ── */
+  .hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Stat counter card ── */
+  .stat-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+
+  /* ── Section reveal (JS-driven via IntersectionObserver) ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-32px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(32px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ── Scrollbar hide ── */
   .remove-scrollbar::-webkit-scrollbar { display: none; }
   .remove-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ── Nav link underline slide ── */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: hsl(var(--primary));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* ── Button press effect ── */
+  .btn-press {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-press:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px hsl(var(--primary) / 0.2);
+  }
+
+  /* ── Tilt on hover (applied via JS or CSS perspective) ── */
+  .tilt-card {
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+  }
+  .tilt-card:hover {
+    transform: perspective(800px) rotateX(2deg) rotateY(-2deg) scale(1.01);
+  }
+
+  /* ── Highlight badge pulse ── */
+  .badge-pulse {
+    position: relative;
+  }
+  .badge-pulse::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    background: hsl(var(--primary) / 0.25);
+    animation: pulseGlow 2.5s ease-in-out infinite;
+    z-index: -1;
+  }
 }

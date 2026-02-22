@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Trophy, Medal, Crown, Star, ArrowLeft, TrendingUp } from "lucide-react";
 import { useGamification } from "@/context/GamificationContext";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface LeaderboardEntry {
   rank: number;
@@ -29,6 +30,7 @@ export default function Leaderboard() {
   const navigate = useNavigate();
   const { xp, level } = useGamification();
   const [filter, setFilter] = useState<FilterType>("week");
+  const { t } = useTranslation();
 
   // Build leaderboard with real user XP and auto-compute rank
   const buildLeaderboard = (): LeaderboardEntry[] => {
@@ -39,7 +41,7 @@ export default function Leaderboard() {
         xp: Math.floor(f.xp * multiplier),
         level: f.level,
       })),
-      { name: "You", xp, level, badge: "⭐", isCurrentUser: true },
+      { name: t("lb.you"), xp, level, badge: "⭐", isCurrentUser: true },
     ];
 
     return allEntries
@@ -75,14 +77,13 @@ export default function Leaderboard() {
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
-          Back
         </button>
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Trophy className="h-6 w-6 text-yellow-500" />
-            Leaderboard
+            {t("lb.title")}
           </h1>
-          <p className="text-sm text-muted-foreground">Top farmers in your region</p>
+          <p className="text-sm text-muted-foreground">{t("lb.subtitle")}</p>
         </div>
       </div>
 
@@ -99,7 +100,7 @@ export default function Leaderboard() {
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {f === "week" ? "This Week" : f === "month" ? "This Month" : "All Time"}
+            {f === "week" ? t("lb.week") || "This Week" : f === "month" ? t("lb.month") || "This Month" : t("lb.alltime") || "All Time"}
           </button>
         ))}
       </div>

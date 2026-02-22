@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, Sprout, Clock, CheckCircle2, CloudSun } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface CropEntry {
   crop: string;
@@ -35,6 +36,7 @@ export default function CropCalendar() {
   const currentMonth = new Date().getMonth();
   const [filterMonth, setFilterMonth] = useState<number | null>(null);
   const [filterWater, setFilterWater] = useState<string>("All");
+  const { t } = useTranslation();
 
   const displayMonth = filterMonth !== null ? filterMonth : currentMonth;
 
@@ -56,15 +58,15 @@ export default function CropCalendar() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Calendar className="h-6 w-6 text-green-600" />
-            Crop Sowing Calendar
+            {t("cal.title")}
           </h1>
-          <p className="text-sm text-muted-foreground">Best sowing & harvest windows for your crops</p>
+          <p className="text-sm text-muted-foreground">{t("cal.subtitle")}</p>
         </div>
       </div>
 
       {/* Month Strip */}
       <div className="mb-6">
-        <p className="text-xs font-medium text-muted-foreground mb-2">Select Month</p>
+        <p className="text-xs font-medium text-muted-foreground mb-2">{t("cal.select_month")}</p>
         <div className="flex gap-1.5 flex-wrap">
           {MONTHS.map((m, i) => (
             <button
@@ -87,7 +89,7 @@ export default function CropCalendar() {
 
       {/* Water filter */}
       <div className="flex items-center gap-2 mb-5">
-        <span className="text-xs font-medium text-muted-foreground">Water need:</span>
+        <span className="text-xs font-medium text-muted-foreground">{t("cal.water_need")}</span>
         {["All", "Low", "Medium", "High"].map((w) => (
           <button
             key={w}
@@ -108,8 +110,8 @@ export default function CropCalendar() {
       <div className="flex items-center gap-2 mb-4 rounded-xl bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 px-4 py-2.5">
         <CloudSun className="h-4 w-4 text-green-600" />
         <p className="text-sm text-green-800 dark:text-green-300 font-medium">
-          Showing crops for <span className="font-bold">{MONTHS[displayMonth]}</span>
-          {filterMonth === null && <span className="font-normal text-green-600"> (current month)</span>}
+          {t("cal.showing")} <span className="font-bold">{MONTHS[displayMonth]}</span>
+          {filterMonth === null && <span className="font-normal text-green-600"> {t("cal.current_month")}</span>}
         </p>
       </div>
 
@@ -117,7 +119,7 @@ export default function CropCalendar() {
       {filtered.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <Sprout className="h-12 w-12 mx-auto mb-3 opacity-30" />
-          <p>No crops match for this month/filter combination.</p>
+          <p>{t("cal.empty")}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -144,12 +146,12 @@ export default function CropCalendar() {
                       <div className="flex items-center gap-1.5 mt-0.5">
                         {isSowing && (
                           <span className="text-[10px] font-bold bg-green-500 text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                            <Sprout className="h-2.5 w-2.5" /> SOW NOW
+                            <Sprout className="h-2.5 w-2.5" /> {t("cal.sow_now")}
                           </span>
                         )}
                         {isHarvest && (
                           <span className="text-[10px] font-bold bg-orange-500 text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                            <CheckCircle2 className="h-2.5 w-2.5" /> HARVEST
+                            <CheckCircle2 className="h-2.5 w-2.5" /> {t("cal.harvest")}
                           </span>
                         )}
                       </div>
@@ -178,12 +180,12 @@ export default function CropCalendar() {
                   ))}
                 </div>
                 <div className="flex gap-3 text-[10px] text-muted-foreground mb-2">
-                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-green-500" /> Sowing</span>
-                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-orange-400" /> Harvest</span>
+                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-green-500" /> {t("cal.sowing")}</span>
+                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-orange-400" /> {t("cal.harvest_label")}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
-                  <Clock className="h-3.5 w-3.5" /> Duration: <span className="font-medium text-foreground">{crop.duration}</span>
+                  <Clock className="h-3.5 w-3.5" /> {t("cal.duration")}: <span className="font-medium text-foreground">{crop.duration}</span>
                 </div>
                 <p className="text-xs text-muted-foreground border-t border-border/50 pt-2 mt-1">
                   💡 {crop.tip}
