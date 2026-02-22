@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -108,8 +108,10 @@ export default function RootLayout() {
       </a>
       <header
         className={
-          "sticky top-0 z-40 w-full border-b border-border/60 backdrop-blur " +
-          (scrolled ? "bg-background/80 shadow-sm" : "bg-background/60")
+          "sticky top-0 z-40 w-full border-b transition-all duration-300 " +
+          (scrolled
+            ? "border-border/50 bg-background/85 backdrop-blur-md shadow-[0_2px_20px_hsl(var(--primary)/0.08)]"
+            : "border-transparent bg-background/40 backdrop-blur-sm")
         }
       >
         <div className="container max-w-[1400px] px-4 md:px-8 flex items-center justify-between py-6">
@@ -145,7 +147,7 @@ export default function RootLayout() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-4/5 sm:max-w-sm">
-                  <nav className="mt-8 grid gap-4">
+                  <nav className="mt-8 grid gap-1">
                     {[
                       ...(farmer ? [{ href: "/#tools", label: t('nav.tools') }] : []),
                       ...(farmer && !farmer.isGuest
@@ -161,15 +163,22 @@ export default function RootLayout() {
                         href: farmer ? "/profile" : "/login",
                         label: farmer ? t('nav.profile') : t('nav.login'),
                       },
-                    ].map((i) => (
-                      <a
-                        key={i.href}
-                        href={i.href}
-                        className="text-base font-medium text-foreground"
-                      >
-                        {i.label}
-                      </a>
-                    ))}
+                    ].map((i) => {
+                      const isActive = location.pathname === i.href;
+                      return (
+                        <Link
+                          key={i.href}
+                          to={i.href}
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                            isActive
+                              ? "bg-primary/10 text-primary border-l-2 border-primary pl-3"
+                              : "text-foreground/80 hover:bg-muted hover:text-foreground"
+                          }`}
+                        >
+                          {i.label}
+                        </Link>
+                      );
+                    })}
                   </nav>
                 </SheetContent>
               </Sheet>
@@ -180,11 +189,11 @@ export default function RootLayout() {
       </header>
       <main
         id="content"
-        className="container max-w-[1400px] px-4 md:px-8 py-8 md:py-16"
+        className="container max-w-[1400px] px-4 md:px-8 py-5 md:py-8"
       >
         <Outlet />
       </main>
-      <footer className="border-t border-border/60 bg-background/60 py-12">
+      <footer className="border-t border-border/60 bg-background/60 py-5">
         <div className="container max-w-[1400px] px-4 md:px-8 flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} AgriVerse

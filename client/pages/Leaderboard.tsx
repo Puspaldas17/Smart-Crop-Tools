@@ -105,7 +105,7 @@ export default function Leaderboard() {
       </div>
 
       {/* Podium */}
-      <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950/30 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-800/30 p-6 mb-6">
+      <div className="glass-card rounded-2xl bg-gradient-to-br from-green-50/80 to-emerald-100/80 dark:from-green-950/30 dark:to-emerald-900/20 p-6 mb-6">
         <div className="flex items-end justify-center gap-4">
           {podiumOrder.map((entry, i) => {
             if (!entry) return null;
@@ -154,10 +154,10 @@ export default function Leaderboard() {
           <div
             key={entry.rank}
             className={cn(
-              "flex items-center justify-between rounded-xl border px-4 py-3 transition-all",
+              "glass-card flex items-center justify-between rounded-xl px-4 py-3 transition-all",
               entry.isCurrentUser
-                ? "border-primary/30 bg-primary/5 shadow-sm"
-                : "border-border bg-card hover:bg-muted/30",
+                ? "border-primary/40 bg-primary/8 shadow-md ring-1 ring-primary/20"
+                : "hover:shadow-md",
             )}
           >
             <div className="flex items-center gap-3">

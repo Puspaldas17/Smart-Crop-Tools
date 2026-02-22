@@ -226,17 +226,17 @@ export default function Dashboard() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border border-border p-4">
+              <div className="glass-card rounded-lg p-4">
                 <p className="text-sm text-muted-foreground">{t('dash.stats.advisories')}</p>
                 <p className="text-2xl font-bold mt-1">{history.length}</p>
               </div>
-              <div className="rounded-lg border border-border p-4">
+              <div className="glass-card rounded-lg p-4">
                 <p className="text-sm text-muted-foreground">{t('dash.stats.status')}</p>
                 <p className="text-lg font-bold mt-1">
                   {isPremium ? t('dash.plan.premium') : "Free"}
                 </p>
               </div>
-              <div className="rounded-lg border border-border p-4">
+              <div className="glass-card rounded-lg p-4">
                 <p className="text-sm text-muted-foreground">{t('dash.stats.member_since')}</p>
                 <p className="text-sm font-medium mt-1">
                   {farmer?.createdAt

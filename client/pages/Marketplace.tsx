@@ -75,6 +75,7 @@ export default function Marketplace() {
   const [showPostForm, setShowPostForm] = useState(false);
   const [contactListing, setContactListing] = useState<Listing | null>(null);
   const [form, setForm] = useState({ crop: "", quantity: "", price: "", location: "", state: "", phone: "" });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const filtered = LISTINGS.filter((l) => {
     const q = search.toLowerCase();
@@ -89,6 +90,18 @@ export default function Marketplace() {
 
   const handlePost = (e: React.FormEvent) => {
     e.preventDefault();
+    const errors: Record<string, string> = {};
+    if (!form.crop.trim())     errors.crop     = "Crop name is required";
+    if (!form.quantity.trim()) errors.quantity = "Quantity is required";
+    else if (isNaN(Number(form.quantity))) errors.quantity = "Enter a valid number";
+    if (!form.price.trim())    errors.price    = "Price is required";
+    else if (isNaN(Number(form.price)))    errors.price    = "Enter a valid number";
+    if (!form.location.trim()) errors.location = "City / District is required";
+    if (!form.state.trim())    errors.state    = "State is required";
+    if (!form.phone.trim())    errors.phone    = "Phone number is required";
+    else if (!/^[0-9\s]{10,}$/.test(form.phone)) errors.phone = "Enter a valid 10-digit phone";
+    if (Object.keys(errors).length > 0) { setFormErrors(errors); return; }
+    setFormErrors({});
     setShowPostForm(false);
     setForm({ crop: "", quantity: "", price: "", location: "", state: "", phone: "" });
     toast.success("✅ Listing posted! Buyers can now find your produce.");
@@ -170,7 +183,7 @@ export default function Marketplace() {
       {/* Listings Grid */}
       <div className="grid gap-4 sm:grid-cols-2">
         {filtered.map((listing) => (
-          <div key={listing.id} className="rounded-2xl border border-border bg-card hover:shadow-md transition-all p-4">
+          <div key={listing.id} className="glass-card gradient-border rounded-2xl hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{listing.emoji}</span>
@@ -275,13 +288,19 @@ export default function Marketplace() {
                 <div key={key}>
                   <label className="text-xs font-medium text-muted-foreground">{label}</label>
                   <input
-                    required
                     type="text"
                     placeholder={placeholder}
                     value={form[key as keyof typeof form]}
-                    onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-                    className="mt-1 w-full px-3 py-2 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    onChange={(e) => { setForm((f) => ({ ...f, [key]: e.target.value })); setFormErrors((err) => ({ ...err, [key]: "" })); }}
+                    className={`mt-1 w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-background ${
+                      formErrors[key] ? "border-red-400 focus:ring-red-300" : "border-input"
+                    }`}
                   />
+                  {formErrors[key] && (
+                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                      <span>⚠</span> {formErrors[key]}
+                    </p>
+                  )}
                 </div>
               ))}
               <button
