@@ -1,133 +1,79 @@
 import {
-  CheckCircle2,
   Sprout,
   Mic,
   WifiOff,
-  CloudSun,
-  Languages,
   Brain,
   Shield,
+  Cpu,
+  TrendingUp,
+  AlertTriangle,
+  BookOpen,
+  Zap,
+  Users,
+  Leaf,
+  Globe,
+  CheckCircle2,
 } from "lucide-react";
 
-import React, { useState, Suspense, startTransition } from "react";
+import React, { useState, Suspense } from "react";
 const Chatbot = React.lazy(() => import("@/components/features/Chatbot"));
 const MarketCard = React.lazy(() => import("@/components/features/MarketCard"));
-const WeatherCard = React.lazy(
-  () => import("@/components/features/WeatherCard"),
-);
-const PestDetector = React.lazy(
-  () => import("@/components/features/PestDetector"),
-);
+const WeatherCard = React.lazy(() => import("@/components/features/WeatherCard"));
+const PestDetector = React.lazy(() => import("@/components/features/PestDetector"));
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
-const FeatureTiles = React.lazy(
-  () => import("@/components/features/FeatureTiles"),
-);
-const AdvisoryWidget = React.lazy(
-  () => import("@/components/features/AdvisoryWidget"),
-);
-const UnifiedOverview = React.lazy(
-  () => import("@/components/features/UnifiedOverview"),
-);
+const FeatureTiles = React.lazy(() => import("@/components/features/FeatureTiles"));
+const AdvisoryWidget = React.lazy(() => import("@/components/features/AdvisoryWidget"));
+const UnifiedOverview = React.lazy(() => import("@/components/features/UnifiedOverview"));
 import Hero from "@/components/home/Hero";
 import Stats from "@/components/home/Stats";
 import Features from "@/components/home/Features";
 import HowItWorks from "@/components/home/HowItWorks";
 import CTA from "@/components/home/CTA";
 import ToolsSection from "@/components/features/ToolsSection";
+import { cn } from "@/lib/utils";
+import { useEffect } from "react";
+import { setLastTool } from "@/hooks/useLastTool";
 
-function ToolsSuiteInner() {
+// ─── Skeleton ────────────────────────────────────────────────────────────────
+function CardSkeleton({ label }: { label?: string }) {
   return (
-    <div className="grid gap-8">
-      <Suspense
-        fallback={
-          <div className="rounded-xl border border-border bg-card p-6">
-            <div className="animate-pulse space-y-3">
-              <div className="h-5 w-40 rounded bg-muted" />
-              <div className="h-24 rounded bg-muted" />
-            </div>
-          </div>
-        }
-      >
-        <FeatureTiles />
-      </Suspense>
-      <Suspense
-        fallback={
-          <div className="rounded-xl border border-border bg-card p-6">
-            <div className="animate-pulse space-y-3">
-              <div className="h-5 w-48 rounded bg-muted" />
-              <div className="h-24 rounded bg-muted" />
-            </div>
-          </div>
-        }
-      >
-        <UnifiedOverview />
-      </Suspense>
-      <div id="advisory">
-        <Suspense
-          fallback={
-            <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-              Loading…
-            </div>
-          }
-        >
-          <AdvisoryWidget />
-        </Suspense>
-      </div>
-      <div className="grid gap-8 min-[577px]:grid-cols-3">
-        <div id="chat">
-          <Suspense
-            fallback={
-              <div className="rounded-xl border border-border bg-card p-6">
-                <div className="animate-pulse space-y-3">
-                  <div className="h-5 w-32 rounded bg-muted" />
-                  <div className="h-24 rounded bg-muted" />
-                </div>
-              </div>
-            }
-          >
-            <Chatbot />
-          </Suspense>
+    <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
+      {label ?? (
+        <div className="animate-pulse space-y-3">
+          <div className="h-5 w-40 rounded bg-muted" />
+          <div className="h-24 rounded bg-muted" />
         </div>
-        <div id="market" className="contents">
-          <Suspense
-            fallback={
-              <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-                Loading market…
-              </div>
-            }
-          >
-            <MarketCard />
-          </Suspense>
-          <Suspense
-            fallback={
-              <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-                Loading weather…
-              </div>
-            }
-          >
-            <WeatherCard />
-          </Suspense>
-        </div>
-      </div>
-      <div id="pest">
-        <Suspense
-          fallback={
-            <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-              Loading detector…
-            </div>
-          }
-        >
-          <PestDetector />
-        </Suspense>
-      </div>
+      )}
     </div>
   );
 }
 
-import { useEffect } from "react";
-import { setLastTool } from "@/hooks/useLastTool";
+// ─── Tools suite (shown only when logged in) ─────────────────────────────────
+function ToolsSuiteInner() {
+  return (
+    <div className="grid gap-8">
+      <Suspense fallback={<CardSkeleton />}><FeatureTiles /></Suspense>
+      <Suspense fallback={<CardSkeleton />}><UnifiedOverview /></Suspense>
+      <div id="advisory">
+        <Suspense fallback={<CardSkeleton label="Loading…" />}><AdvisoryWidget /></Suspense>
+      </div>
+      <div className="grid gap-8 min-[577px]:grid-cols-3">
+        <div id="chat">
+          <Suspense fallback={<CardSkeleton />}><Chatbot /></Suspense>
+        </div>
+        <div id="market" className="contents">
+          <Suspense fallback={<CardSkeleton label="Loading market…" />}><MarketCard /></Suspense>
+          <Suspense fallback={<CardSkeleton label="Loading weather…" />}><WeatherCard /></Suspense>
+        </div>
+      </div>
+      <div id="pest">
+        <Suspense fallback={<CardSkeleton label="Loading detector…" />}><PestDetector /></Suspense>
+      </div>
+    </div>
+  );
+}
 
 function ToolsSuite() {
   const { farmer } = useAuth();
@@ -135,30 +81,293 @@ function ToolsSuite() {
     if (!farmer) return;
     const ids = ["advisory", "chat", "market", "pest"];
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setLastTool(e.target.id as any);
-        });
-      },
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) setLastTool(e.target.id as any); }),
       { rootMargin: "0px 0px -40% 0px", threshold: 0.6 },
     );
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
+    ids.forEach((id) => { const el = document.getElementById(id); if (el) observer.observe(el); });
     return () => observer.disconnect();
   }, [farmer]);
-
   if (!farmer) return null;
   return <ToolsSuiteInner />;
 }
 
-export default function Index() {
-  const { farmer } = useAuth();
+// ─── Deep-dive tabs (Tech / Feasibility / Impact / Research) ─────────────────
+const TABS = [
+  { id: "solution",    label: "Proposed Solution" },
+  { id: "tech",        label: "Tech Stack"         },
+  { id: "feasibility", label: "Feasibility"        },
+  { id: "impact",      label: "Impact"             },
+  { id: "research",    label: "Research"           },
+] as const;
+type TabId = typeof TABS[number]["id"];
+
+function SolutionTab() {
+  const highlights = [
+    { icon: Brain,   color: "text-violet-500", bg: "bg-violet-500/10",  title: "AI Crop Advisory",       desc: "Personalised fertiliser, irrigation and sowing plans generated by ML." },
+    { icon: Zap,     color: "text-amber-500",  bg: "bg-amber-500/10",   title: "Real-time Data",         desc: "Live weather forecasts and mandi market prices fetched automatically." },
+    { icon: Mic,     color: "text-sky-500",    bg: "bg-sky-500/10",     title: "Voice & Multilingual",   desc: "Talk to the chatbot in your native dialect — text or voice, online or offline." },
+    { icon: WifiOff, color: "text-rose-500",   bg: "bg-rose-500/10",    title: "Offline-First",          desc: "Core advisory works without internet; syncs when connectivity returns." },
+    { icon: Sprout,  color: "text-emerald-500",bg: "bg-emerald-500/10", title: "Disease Detection",      desc: "Upload a leaf photo — the CNN model diagnoses pests and suggests remedies instantly." },
+    { icon: Shield,  color: "text-teal-500",   bg: "bg-teal-500/10",    title: "Privacy by Design",      desc: "Your farm data is encrypted and never sold. You own it." },
+  ];
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-muted-foreground leading-relaxed max-w-prose">
+        A <strong>website and chatbot</strong> that work online and offline to deliver personalised crop,
+        fertiliser, irrigation and pest management—backed by real-time weather and market data.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {highlights.map(({ icon: Icon, color, bg, title, desc }) => (
+          <div key={title} className="glass-card gradient-border rounded-xl p-4 tilt-card animate-scale-in">
+            <div className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${bg}`}>
+              <Icon className={`h-4 w-4 ${color}`} />
+            </div>
+            <div className="mt-3 text-sm font-semibold text-foreground">{title}</div>
+            <div className="mt-1 text-xs text-muted-foreground leading-relaxed">{desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TechTab() {
+  const stack = [
+    { label: "Frontend",  value: "React (Vite) + Tailwind · PWA · i18n"              },
+    { label: "Backend",   value: "Node.js + Express (REST API)"                      },
+    { label: "Database",  value: "MongoDB (Atlas / local) via Mongoose"               },
+    { label: "ML",        value: "TensorFlow.js / CNN — pest detection & crop recs"  },
+    { label: "APIs",      value: "IMD / OpenWeather · eNAM · Bhashini / Google STT"  },
+  ];
+  const flow = [
+    "Register once — set language, soil type & field size.",
+    "System fetches live weather, soil history & crop records automatically.",
+    "AI generates a personalised plan: fertiliser, crop schedule & irrigation.",
+    "Upload a leaf photo → ML diagnoses disease & suggests remedies.",
+    "Market prices & alerts keep you informed; your feedback improves the AI.",
+  ];
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <div className="glass-card gradient-border rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Cpu className="h-4 w-4 text-primary" />
+          <h3 className="text-sm font-semibold">MERN Stack</h3>
+        </div>
+        <div className="space-y-2.5">
+          {stack.map(({ label, value }) => (
+            <div key={label} className="flex gap-3 text-sm">
+              <span className="w-20 shrink-0 font-medium text-foreground/80">{label}</span>
+              <span className="text-muted-foreground">{value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="glass-card gradient-border rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Zap className="h-4 w-4 text-primary" />
+          <h3 className="text-sm font-semibold">Methodology & Flow</h3>
+        </div>
+        <ol className="space-y-2.5">
+          {flow.map((step, i) => (
+            <li key={i} className="flex gap-3 text-sm">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-bold text-primary">{i + 1}</span>
+              <span className="text-muted-foreground">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  );
+}
+
+function FeasibilityTab() {
+  const sections = [
+    {
+      icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10", title: "Strengths",
+      items: ["Readily available APIs — weather & mandi rates.", "Open-source datasets — soil, crop & pest imagery.", "Scalable cloud backend; mobile-first, low cost."],
+    },
+    {
+      icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-500/10", title: "Risks",
+      items: ["Limited digital literacy in rural areas.", "Patchy internet connectivity.", "Regional language diversity & user trust."],
+    },
+    {
+      icon: Shield, color: "text-blue-500", bg: "bg-blue-500/10", title: "Mitigation",
+      items: ["Govt & NGO partnerships for credibility.", "Offline-first mode with SMS fallback.", "Voice-first UX in native languages."],
+    },
+  ];
+  return (
+    <div className="grid gap-4 sm:grid-cols-3">
+      {sections.map(({ icon: Icon, color, bg, title, items }) => (
+        <div key={title} className="glass-card gradient-border rounded-xl p-5">
+          <div className={`mb-3 inline-flex items-center gap-1.5 rounded-lg ${bg} px-2.5 py-1`}>
+            <Icon className={`h-3.5 w-3.5 ${color}`} />
+            <span className={`text-xs font-semibold ${color}`}>{title}</span>
+          </div>
+          <ul className="space-y-1.5">
+            {items.map((item) => (
+              <li key={item} className="text-xs text-muted-foreground flex gap-2 leading-relaxed">
+                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-border" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ImpactTab() {
+  const metrics = [
+    { value: "20–30%", label: "Yield increase",         icon: TrendingUp, color: "text-emerald-500" },
+    { value: "86%",    label: "Small farmers in India", icon: Users,      color: "text-blue-500"    },
+    { value: "24×7",   label: "Online advisory",        icon: Zap,        color: "text-amber-500"   },
+    { value: "3+",     label: "Native languages",       icon: Globe,      color: "text-purple-500"  },
+  ];
+  const benefits = [
+    { who: "Farmers",     point: "Reduces crop failures & input cost; science-backed advice."        },
+    { who: "Govt / NGO",  point: "Farm-level data for smarter policy & targeted subsidies."          },
+    { who: "Environment", point: "Prevents chemical overuse; promotes sustainable practices."        },
+    { who: "Economy",     point: "Higher yields, less waste, and improved national food security."   },
+  ];
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {metrics.map(({ value, label, icon: Icon, color }) => (
+          <div key={label} className="glass-card gradient-border rounded-xl p-4 text-center">
+            <Icon className={`h-5 w-5 mx-auto mb-1 ${color}`} />
+            <div className={`text-2xl font-extrabold ${color}`}>{value}</div>
+            <div className="text-xs text-muted-foreground mt-0.5 leading-tight">{label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="glass-card gradient-border rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Leaf className="h-4 w-4 text-emerald-500" />
+          <h3 className="text-sm font-semibold">Who benefits?</h3>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {benefits.map(({ who, point }) => (
+            <div key={who} className="flex gap-3 text-sm">
+              <span className="shrink-0 text-xs font-bold text-primary/70 w-24">{who}</span>
+              <span className="text-muted-foreground">{point}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ResearchTab() {
+  const sources = [
+    { label: "IMD / OpenWeather",      detail: "Real-time & forecast weather data."           },
+    { label: "eNAM / Agri Market API", detail: "Live mandi prices across India."              },
+    { label: "Bhashini / Google STT",  detail: "Multilingual voice-to-text."                  },
+    { label: "PlantVillage Dataset",   detail: "Pest & disease image recognition training."   },
+    { label: "FAO & ICAR studies",     detail: "ICT advisories improve yield by 20–30%."     },
+    { label: "NABARD 2022 Report",     detail: "86% of Indian farmers are small/marginal."    },
+  ];
+  const caps = [
+    { icon: Mic,     text: "Voice-enabled multilingual chatbot"    },
+    { icon: WifiOff, text: "Offline-first with graceful fallback"  },
+    { icon: Brain,   text: "AI-driven, personalised recommendations" },
+    { icon: Shield,  text: "Privacy by design; secure data use"    },
+  ];
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <div className="glass-card gradient-border rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <BookOpen className="h-4 w-4 text-primary" />
+          <h3 className="text-sm font-semibold">Sources & References</h3>
+        </div>
+        <div className="space-y-2.5">
+          {sources.map(({ label, detail }) => (
+            <div key={label} className="text-sm leading-relaxed">
+              <span className="font-medium text-foreground">{label}</span>
+              <span className="text-muted-foreground"> — {detail}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="glass-card gradient-border rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Zap className="h-4 w-4 text-primary" />
+          <h3 className="text-sm font-semibold">Key Capabilities</h3>
+        </div>
+        <div className="space-y-3">
+          {caps.map(({ icon: Icon, text }) => (
+            <div key={text} className="flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <Icon className="h-4 w-4 text-primary" />
+              </div>
+              <span className="text-sm text-foreground/80">{text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DeepDiveTabs() {
+  const [active, setActive] = useState<TabId>("solution");
   const { t } = useTranslation();
+  const titles: Record<TabId, string> = {
+    solution:    t("landing.solution.title"),
+    tech:        t("landing.tech.title"),
+    feasibility: t("landing.feasibility.title"),
+    impact:      t("landing.impact.title"),
+    research:    t("landing.research.title"),
+  };
 
   return (
-    <div className="space-y-5 md:space-y-6">
+    <div id="about" className="scroll-mt-24 glass-card gradient-border rounded-2xl px-4 md:px-8 py-6 md:py-8 space-y-5">
+      {/* Header */}
+      <div>
+        <h2 className="text-xl font-bold tracking-tight">{titles[active]}</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Learn more about the technology, viability, and real-world impact behind this platform.
+        </p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 bg-muted/40 p-1 rounded-xl w-fit flex-wrap">
+        {TABS.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => setActive(id)}
+            className={cn(
+              "px-4 py-1.5 text-sm font-medium rounded-lg transition-all",
+              active === id
+                ? "bg-background shadow text-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      {active === "solution"    && <SolutionTab />}
+      {active === "tech"        && <TechTab />}
+      {active === "feasibility" && <FeasibilityTab />}
+      {active === "impact"      && <ImpactTab />}
+      {active === "research"    && <ResearchTab />}
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default function Index() {
+  const { farmer } = useAuth();
+
+  return (
+    <div className="space-y-6 md:space-y-8">
+
+      {/* ── Landing sections (logged-out only) ── */}
       {!farmer && (
         <>
           <Hero />
@@ -166,242 +375,15 @@ export default function Index() {
           <Features />
           <HowItWorks />
           <CTA />
+          <DeepDiveTabs />
         </>
       )}
 
-      {/* About */}
-      <section id="about" className="scroll-mt-24">
-        {/* Proposed Solution */}
-        <div id="solution" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
-          <header className="mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {t('landing.solution.title')}
-            </h2>
-            <p className="mt-2 max-w-prose text-muted-foreground">
-              {t('landing.solution.text')}
-            </p>
-          </header>
-          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
-            <Card title="Detailed explanation">
-              <List
-                items={[
-                  "Intelligent mobile app and chatbot with multilingual and voice support.",
-                  "Personalized crop, fertilizer and pest advisory using soil, weather and crop history.",
-                  "Real-time market price updates and weather alerts.",
-                  "Image-based pest/disease detection.",
-                ]}
-              />
-            </Card>
-            <Card title="How it addresses the problem">
-              <List
-                items={[
-                  "Enables scientific, data-driven decisions.",
-                  "Reduces dependency on middlemen and shopkeepers.",
-                  "Accessible in native languages with voice guidance.",
-                  "Promotes sustainable farming and cost savings.",
-                ]}
-              />
-            </Card>
-            <Card title="Innovation and uniqueness">
-              <List
-                items={[
-                  "Offline mode for low‑internet areas.",
-                  "Voice-enabled interface for low literacy users.",
-                  "Unified platform: soil, weather, pest and market data.",
-                  "Feedback loop for continuous improvement.",
-                ]}
-              />
-            </Card>
-          </div>
-        </div>
+      {/* ── Working tools (logged-in only) ── */}
+      <ToolsSection show={!!farmer}>
+        <ToolsSuite />
+      </ToolsSection>
 
-        {/* Tools (All working parts in one place) */}
-        <ToolsSection show={!!farmer}>
-          <ToolsSuite />
-        </ToolsSection>
-
-        {/* Technical Approach */}
-        <div id="tech" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
-          <header className="mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {t('landing.tech.title')}
-            </h2>
-          </header>
-          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
-            <Card title="Technologies (MERN)">
-              <List
-                items={[
-                  "Frontend: React (Vite) + Tailwind; PWA + i18n.",
-                  "Backend: Node.js + Express (REST).",
-                  "Database: MongoDB (Atlas/local) via Mongoose.",
-                  "Machine Learning: TFJS/CNN for pest detection; crop recommendation service.",
-                  "APIs: IMD/OpenWeather (weather), eNAM/Agri Market (prices); Bhashini/Google STT for voice.",
-                ]}
-              />
-            </Card>
-            <Card title="Methodology & flow">
-              <List
-                items={[
-                  "Farmer registers profile (soil type, land size, language).",
-                  "System fetches weather + soil + crop data.",
-                  "Generates advisory (fertilizer, crop choice, irrigation).",
-                  "Farmer uploads image; ML detects disease and suggests remedies.",
-                  "App shows market prices and alerts; feedback refines advice.",
-                ]}
-              />
-            </Card>
-          </div>
-        </div>
-
-        {/* Feasibility */}
-        <div className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
-          <header className="mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {t('landing.feasibility.title')}
-            </h2>
-          </header>
-          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            <Card title="Feasibility">
-              <List
-                items={[
-                  "Readily available APIs (weather, mandi rates).",
-                  "Open-source datasets (soil, crop, pest).",
-                  "Scalable cloud backend; mobile‑first and low cost.",
-                ]}
-              />
-            </Card>
-            <Card title="Risks">
-              <List
-                items={[
-                  "Limited digital literacy.",
-                  "Patchy internet in rural areas.",
-                  "Regional language diversity and adoption trust.",
-                ]}
-              />
-            </Card>
-            <Card title="Mitigation">
-              <List
-                items={[
-                  "Govt tie‑ups for credibility; community demos via NGOs.",
-                  "Offline features with SMS fallback.",
-                  "Voice‑first UX in native languages.",
-                ]}
-              />
-            </Card>
-          </div>
-        </div>
-
-        {/* Impact */}
-        <div id="impact" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
-          <header className="mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {t('landing.impact.title')}
-            </h2>
-          </header>
-          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
-            <Card title="Impact on audience">
-              <List
-                items={[
-                  "Saves cost and reduces crop failures.",
-                  "Delivers scientific, personalized advice.",
-                  "Directly benefits small & marginal farmers (86% in India).",
-                ]}
-              />
-            </Card>
-            <Card title="Benefits">
-              <List
-                items={[
-                  "Government/NGO: actionable data for policy.",
-                  "Environmental: prevents chemical overuse, supports sustainability.",
-                  "Economic: 20–30% yield increase; reduced input cost.",
-                  "Social: empowers rural farmers; improves food security.",
-                ]}
-              />
-            </Card>
-          </div>
-        </div>
-
-        {/* Research */}
-        <div id="research" className={`scroll-mt-24 ${farmer ? "hidden" : ""}`}>
-          <header className="mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {t('landing.research.title')}
-            </h2>
-          </header>
-          <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2">
-            <Card title="Sources">
-              <List
-                items={[
-                  "IMD / OpenWeather API – forecasts.",
-                  "Indian Govt APIs – eNAM, Agri Market, Bhashini.",
-                  "PlantVillage dataset – pest/disease recognition.",
-                  "FAO & ICAR studies – ICT advisories improve yield by 20–30%.",
-                  "NABARD 2022 — 86% of Indian farmers are small/marginal.",
-                ]}
-              />
-            </Card>
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-              <h3 className="text-lg font-semibold">Key Capabilities</h3>
-              <div className="mt-4 grid gap-3">
-                {[
-                  { icon: Mic, text: "Voice-enabled multilingual chatbot" },
-                  {
-                    icon: WifiOff,
-                    text: "Offline-first with graceful fallback",
-                  },
-                  { icon: Shield, text: "Privacy by design; secure data use" },
-                ].map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex items-center gap-3">
-                    <Icon className="h-5 w-5 text-emerald-600" />
-                    <span className="text-foreground/80">{text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
-  );
-}
-
-function Item({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="rounded-lg border border-border p-4">
-      <div className="text-sm font-semibold text-foreground">{title}</div>
-      <div className="mt-1 text-sm text-muted-foreground">{text}</div>
-    </div>
-  );
-}
-
-function Card({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-card-foreground">{title}</h3>
-      <div className="mt-4 text-muted-foreground leading-relaxed max-w-prose">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function List({ items }: { items: string[] }) {
-  return (
-    <ul className="space-y-3">
-      {items.map((t) => (
-        <li key={t} className="flex items-start gap-3">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-          <span className="text-sm md:text-base leading-relaxed break-words">
-            {t}
-          </span>
-        </li>
-      ))}
-    </ul>
   );
 }

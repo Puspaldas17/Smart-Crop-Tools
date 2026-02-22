@@ -100,6 +100,8 @@ export default function RootLayout() {
 
   return (
     <div className="min-h-screen bg-transparent text-foreground relative">
+      {/* Premium noise texture layer */}
+      <div className="noise-overlay" aria-hidden />
       <a
         href="#content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow"
@@ -115,11 +117,11 @@ export default function RootLayout() {
         }
       >
         <div className="container max-w-[1400px] px-4 md:px-8 flex items-center justify-between py-6">
-          <Link to="/" className="flex items-center gap-2 font-semibold">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-[#ff8a00] to-[#2ea043] text-white font-bold">
+          <Link to="/" className="flex items-center gap-2 font-semibold group">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-[#ff8a00] to-[#2ea043] text-white font-bold animate-float shadow-lg group-hover:shadow-[0_0_16px_hsl(120_39%_40%/0.5)] transition-shadow duration-300">
               SC
             </span>
-            <span className="text-lg">{t('app.title')}</span>
+            <span className="text-lg font-bold tracking-tight gradient-text">{t('app.title')}</span>
           </Link>
           <nav className="hidden gap-4 md:flex">
             {[
@@ -129,7 +131,7 @@ export default function RootLayout() {
               <a
                 key={i.href}
                 href={i.href}
-                className="text-sm text-foreground/80 hover:text-foreground"
+                className="text-sm text-foreground/80 hover:text-foreground nav-link transition-colors"
               >
                 {i.label}
               </a>
@@ -189,7 +191,7 @@ export default function RootLayout() {
       </header>
       <main
         id="content"
-        className="container max-w-[1400px] px-4 md:px-8 py-5 md:py-8"
+        className="container max-w-[1400px] px-4 md:px-8 py-5 md:py-8 animate-fade-in"
       >
         <Outlet />
       </main>

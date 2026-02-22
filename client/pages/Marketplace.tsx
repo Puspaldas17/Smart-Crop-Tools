@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface Listing {
   id: number;
@@ -65,12 +66,14 @@ const LISTINGS: Listing[] = [
 
 // All Indian states present in listings (for state filter)
 const ALL_STATES = ["All States", ...Array.from(new Set(LISTINGS.map((l) => l.state))).sort()];
-const CATEGORIES = ["All", "Grain", "Vegetable", "Fruit"];
 
 export default function Marketplace() {
+  const { t } = useTranslation();
+
+  const CATEGORIES = [t("market.all"), "Grain", "Vegetable", "Fruit", "Spice", "Pulse", "Other"];
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState(t("market.all"));
   const [stateFilter, setStateFilter] = useState("All States");
   const [showPostForm, setShowPostForm] = useState(false);
   const [contactListing, setContactListing] = useState<Listing | null>(null);
@@ -104,7 +107,7 @@ export default function Marketplace() {
     setFormErrors({});
     setShowPostForm(false);
     setForm({ crop: "", quantity: "", price: "", location: "", state: "", phone: "" });
-    toast.success("✅ Listing posted! Buyers can now find your produce.");
+    toast.success(t("market.post_success"));
   };
 
   return (
@@ -118,16 +121,16 @@ export default function Marketplace() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <ShoppingCart className="h-6 w-6 text-green-600" />
-              Farmer Marketplace
+              {t("market.title")}
             </h1>
-            <p className="text-sm text-muted-foreground">All-India direct farm-to-consumer produce listings 🇮🇳</p>
+            <p className="text-sm text-muted-foreground">{t("market.subtitle")}</p>
           </div>
         </div>
         <button
           onClick={() => setShowPostForm(true)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
         >
-          <Plus className="h-4 w-4" /> Post Listing
+          <Plus className="h-4 w-4" /> {t("market.post")}
         </button>
       </div>
 
@@ -138,7 +141,7 @@ export default function Marketplace() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search crop, city, state or seller..."
+              placeholder={t("market.search_ph")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-9 pr-4 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
@@ -167,7 +170,7 @@ export default function Marketplace() {
                 category === cat ? "bg-background shadow text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {cat}
+              {cat === t("market.all") ? t("market.all") : cat}
             </button>
           ))}
         </div>
@@ -221,7 +224,7 @@ export default function Marketplace() {
                 onClick={() => setContactListing(listing)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors font-medium"
               >
-                <Phone className="h-3.5 w-3.5" /> Contact
+                <Phone className="h-3.5 w-3.5" /> {t("market.contact")}
               </button>
             </div>
           </div>
@@ -231,7 +234,7 @@ export default function Marketplace() {
       {filtered.length === 0 && (
         <div className="text-center py-16 text-muted-foreground">
           <ShoppingCart className="h-12 w-12 mx-auto mb-3 opacity-30" />
-          <p>No listings match your search.</p>
+          <p>{t("market.empty")}</p>
         </div>
       )}
 
@@ -251,7 +254,7 @@ export default function Marketplace() {
             <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-xl p-4 text-center">
               <Phone className="h-8 w-8 text-green-600 mx-auto mb-2" />
               <p className="text-2xl font-bold tracking-wide">{contactListing.phone}</p>
-              <p className="text-xs text-muted-foreground mt-1">Call or WhatsApp to negotiate directly</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("market.call_note")}</p>
             </div>
             <a
               href={`https://wa.me/91${contactListing.phone.replace(/\s/g, "")}`}
@@ -260,7 +263,7 @@ export default function Marketplace() {
               onClick={() => setContactListing(null)}
               className="mt-4 block w-full py-2.5 bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-xl font-medium text-sm transition-colors text-center"
             >
-              Open in WhatsApp
+              {t("market.whatsapp")}
             </a>
           </div>
         </div>
@@ -271,19 +274,19 @@ export default function Marketplace() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <div className="bg-card border border-border rounded-2xl shadow-xl p-6 w-96">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold">Post a Listing</h2>
+              <h2 className="text-lg font-semibold">{t("market.post_title")}</h2>
               <button onClick={() => setShowPostForm(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="h-5 w-5" />
               </button>
             </div>
             <form onSubmit={handlePost} className="space-y-3">
               {[
-                { label: "Crop Name", key: "crop", placeholder: "e.g., Tomatoes" },
-                { label: "Quantity (kg/dozen)", key: "quantity", placeholder: "e.g., 200" },
-                { label: "Price per unit (₹)", key: "price", placeholder: "e.g., 25" },
-                { label: "City / District", key: "location", placeholder: "e.g., Nashik" },
-                { label: "State", key: "state", placeholder: "e.g., Maharashtra" },
-                { label: "Phone Number", key: "phone", placeholder: "e.g., 98765 43210" },
+                { label: t("market.field.crop"),     key: "crop",     placeholder: "e.g., Tomatoes" },
+                { label: t("market.field.quantity"), key: "quantity", placeholder: "e.g., 200" },
+                { label: t("market.field.price"),    key: "price",    placeholder: "e.g., 25" },
+                { label: t("market.field.city"),     key: "location", placeholder: "e.g., Nashik" },
+                { label: t("market.field.state"),    key: "state",    placeholder: "e.g., Maharashtra" },
+                { label: t("market.field.phone"),    key: "phone",    placeholder: "e.g., 98765 43210" },
               ].map(({ label, key, placeholder }) => (
                 <div key={key}>
                   <label className="text-xs font-medium text-muted-foreground">{label}</label>
@@ -307,7 +310,7 @@ export default function Marketplace() {
                 type="submit"
                 className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors mt-2"
               >
-                Post Listing
+                {t("market.submit")}
               </button>
             </form>
           </div>
