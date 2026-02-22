@@ -52,7 +52,7 @@ export default function Features() {
         {features.map(({ icon: Icon, title, desc }) => (
           <div
             key={title}
-            className="rounded-xl border border-border p-4 hover:shadow-sm transition-shadow"
+            className="glass-card gradient-border rounded-xl p-4 hover:shadow-md transition-shadow"
           >
             <Icon className="h-5 w-5 text-primary" />
             <div className="mt-3 text-base font-semibold text-foreground">

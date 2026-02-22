@@ -128,12 +128,12 @@ export default function CropCalendar() {
               <div
                 key={crop.crop}
                 className={cn(
-                  "rounded-2xl border p-4 transition-all hover:shadow-md",
+                  "glass-card rounded-2xl p-4 transition-all hover:shadow-lg",
                   isSowing && isHarvest
-                    ? "border-purple-200 bg-purple-50/50 dark:bg-purple-950/10"
+                    ? "border-purple-300/60 dark:border-purple-700/40"
                     : isSowing
-                      ? "border-green-200 bg-green-50/50 dark:bg-green-950/10"
-                      : "border-orange-200 bg-orange-50/50 dark:bg-orange-950/10",
+                      ? "border-green-300/60 dark:border-green-700/40"
+                      : "border-orange-300/60 dark:border-orange-700/40",
                 )}
               >
                 <div className="flex items-start justify-between mb-3">

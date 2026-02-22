@@ -8,7 +8,7 @@ export default function Stats() {
   return (
     <section
       aria-label="Key stats"
-      className="rounded-2xl border border-border bg-card/70 px-4 md:px-8 py-5 md:py-8 backdrop-blur"
+      className="glass-card rounded-2xl px-4 md:px-8 py-5 md:py-8"
     >
       <div className="grid gap-6 md:gap-8 text-center grid-cols-2 md:grid-cols-4">
         {items.map((it) => (

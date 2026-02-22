@@ -74,7 +74,7 @@ export function PestAlertWidget() {
   const highCount = alerts.filter((a) => a.risk === "high").length;
 
   return (
-    <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+    <div className="glass-card gradient-border rounded-xl text-card-foreground shadow-sm">
       <div className="p-6 pb-4">
         <h3 className="flex items-center gap-2 font-semibold tracking-tight">
           <Bug className="h-5 w-5 text-orange-500" />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -147,7 +147,7 @@ export default function RootLayout() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-4/5 sm:max-w-sm">
-                  <nav className="mt-8 grid gap-4">
+                  <nav className="mt-8 grid gap-1">
                     {[
                       ...(farmer ? [{ href: "/#tools", label: t('nav.tools') }] : []),
                       ...(farmer && !farmer.isGuest
@@ -163,15 +163,22 @@ export default function RootLayout() {
                         href: farmer ? "/profile" : "/login",
                         label: farmer ? t('nav.profile') : t('nav.login'),
                       },
-                    ].map((i) => (
-                      <a
-                        key={i.href}
-                        href={i.href}
-                        className="text-base font-medium text-foreground"
-                      >
-                        {i.label}
-                      </a>
-                    ))}
+                    ].map((i) => {
+                      const isActive = location.pathname === i.href;
+                      return (
+                        <Link
+                          key={i.href}
+                          to={i.href}
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                            isActive
+                              ? "bg-primary/10 text-primary border-l-2 border-primary pl-3"
+                              : "text-foreground/80 hover:bg-muted hover:text-foreground"
+                          }`}
+                        >
+                          {i.label}
+                        </Link>
+                      );
+                    })}
                   </nav>
                 </SheetContent>
               </Sheet>
