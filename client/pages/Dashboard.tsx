@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense, lazy } from "react";
+import { useEffect, useState, Suspense, lazy, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,7 @@ import { LeaderboardWidget } from "@/components/features/Gamification/Leaderboar
 import { BadgesGallery } from "@/components/features/Gamification/BadgesGallery";
 import { UpgradeModal } from "@/components/features/UpgradeModal";
 import { PestAlertWidget } from "@/components/features/PestAlertWidget";
+import { AppointmentBooking } from "@/components/features/Appointments";
 
 const Analytics = lazy(() => import("@/components/features/Analytics"));
 const Chatbot = lazy(() => import("@/components/features/Chatbot"));
@@ -46,7 +47,7 @@ const MOCK_HISTORY: AdvisoryRecord[] = [
 
 
 export default function Dashboard() {
-  const { farmer, logout } = useAuth();
+  const { farmer, logout, authHeaders } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [history, setHistory] = useState<AdvisoryRecord[]>([]);
@@ -68,8 +69,8 @@ export default function Dashboard() {
     setConsultLoading(true);
     try {
       const [cRes, aRes] = await Promise.all([
-        fetch(`/api/farmers/${id}/consultations`),
-        fetch(`/api/farmers/${id}/vet-advisories`),
+        fetch(`/api/farmers/${id}/consultations`, { headers: authHeaders() }),
+        fetch(`/api/farmers/${id}/vet-advisories`, { headers: authHeaders() }),
       ]);
       const cData = await cRes.json();
       const aData = await aRes.json();
@@ -86,7 +87,7 @@ export default function Dashboard() {
     try {
       const res = await fetch("/api/farmers/consult", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ farmerId: farmer._id, ...consultForm }),
       });
       if (!res.ok) throw new Error("Failed");
@@ -111,9 +112,8 @@ export default function Dashboard() {
   async function fetchHistory() {
     try {
       setLoading(true);
-      const res = await fetch(`/api/advisory/history/${farmer?._id}?limit=20`);
+      const res = await fetch(`/api/advisory/history/${farmer?._id}?limit=20`, { headers: authHeaders() });
       const data = await res.json();
-      // Merge API results with mock; if API returns actual records prefer those
       const apiRecords = res.ok && Array.isArray(data) && data.length > 0 ? data : [];
       setHistory(apiRecords.length > 0 ? apiRecords : MOCK_HISTORY);
     } catch {
@@ -690,6 +690,13 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
+
+                {/* Appointment Scheduling */}
+                {!farmer?.isGuest && (
+                  <div className="glass-card gradient-border rounded-2xl p-5">
+                    <AppointmentBooking />
+                  </div>
+                )}
               </div>
             )}
           </div>
