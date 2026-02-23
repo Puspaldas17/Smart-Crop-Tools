@@ -39,10 +39,13 @@ export const getVetConsultations: RequestHandler = async (req, res) => {
     const farmerMap: Record<string, string> = {};
     farmers.forEach((f) => { farmerMap[String(f._id)] = f.name; });
 
-    const enriched = consultations.map((c) => ({
-      ...c,
-      farmerName: farmerMap[String(c.farmerId)] || "Unknown Farmer",
-    }));
+    const enriched = consultations.map((c) => {
+      const obj = typeof c.toObject === "function" ? c.toObject() : { ...c };
+      return {
+        ...obj,
+        farmerName: farmerMap[String(obj.farmerId)] || "Unknown Farmer",
+      };
+    });
     // Newest first
     enriched.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     res.json(enriched);
@@ -52,18 +55,30 @@ export const getVetConsultations: RequestHandler = async (req, res) => {
   }
 };
 
+
 // ─── PATCH /api/vet/consultations/:id ────────────────────────────────────────
-// Vet approves or rejects a consultation and optionally adds a note
+// Vet approves / rejects / re-opens a consultation and optionally adds a note.
+// If `status` is omitted the existing status is preserved (note-only update).
 export const updateConsultation: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, vetNote, vetId } = req.body;
-    if (!["approved", "rejected"].includes(status)) {
-      return res.status(400).json({ error: "status must be approved or rejected" });
+
+    // Build update — status is optional (skip validation if not provided)
+    const update: Record<string, any> = { updatedAt: new Date() };
+    if (vetNote !== undefined) update.vetNote = vetNote;
+    if (vetId !== undefined) update.vetId = vetId || null;
+
+    if (status !== undefined) {
+      if (!["approved", "rejected", "pending"].includes(status)) {
+        return res.status(400).json({ error: "status must be approved, rejected, or pending" });
+      }
+      update.status = status;
     }
+
     const updated = await Consultation.findOneAndUpdate(
       { _id: id },
-      { status, vetNote: vetNote || "", vetId: vetId || null, updatedAt: new Date() },
+      update,
       { new: true },
     );
     if (!updated) return res.status(404).json({ error: "Consultation not found" });
@@ -73,6 +88,7 @@ export const updateConsultation: RequestHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to update consultation" });
   }
 };
+
 
 // ─── POST /api/vet/advisory ───────────────────────────────────────────────────
 // Vet writes an advisory — either for a specific farmer or broadcast to all
@@ -104,15 +120,18 @@ export const getVetAdvisories: RequestHandler = async (req, res) => {
     const { vetId } = req.query as Record<string, string>;
     let advisories = (await VetAdvisory.find({})) as any[];
     if (vetId) advisories = advisories.filter((a) => String(a.vetId) === vetId);
-    // Enrich with vet name
+    // Enrich with vet name — convert to plain object first
     const farmers = (await Farmer.find({})) as any[];
     const farmerMap: Record<string, string> = {};
     farmers.forEach((f) => { farmerMap[String(f._id)] = f.name; });
-    const enriched = advisories.map((a) => ({
-      ...a,
-      vetName: farmerMap[String(a.vetId)] || "Unknown Vet",
-      farmerName: a.farmerId ? (farmerMap[String(a.farmerId)] || "Unknown") : "All Farmers",
-    }));
+    const enriched = advisories.map((a) => {
+      const obj = typeof a.toObject === "function" ? a.toObject() : { ...a };
+      return {
+        ...obj,
+        vetName: farmerMap[String(obj.vetId)] || "Unknown Vet",
+        farmerName: obj.farmerId ? (farmerMap[String(obj.farmerId)] || "Unknown") : "All Farmers",
+      };
+    });
     enriched.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     res.json(enriched);
   } catch (e) {

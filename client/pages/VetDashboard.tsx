@@ -46,6 +46,7 @@ export default function VetDashboard() {
   const [statusFilter, setStatusFilter]   = useState("all");
   const [noteMap, setNoteMap]             = useState<Record<string, string>>({});
   const [processing, setProcessing]       = useState<string | null>(null);
+  const [replying, setReplying]           = useState<string | null>(null);
 
   const loadConsultations = useCallback(() => {
     setCLoading(true);
@@ -56,7 +57,7 @@ export default function VetDashboard() {
   }, [statusFilter]);
   useEffect(() => { if (tab === "consultations") loadConsultations(); }, [tab, loadConsultations]);
 
-  const handleConsultationAction = async (id: string, status: "approved" | "rejected") => {
+  const handleConsultationAction = async (id: string, status: "approved" | "rejected" | "pending") => {
     setProcessing(id);
     try {
       const res = await fetch(`/api/vet/consultations/${id}`, {
@@ -70,6 +71,26 @@ export default function VetDashboard() {
     } catch { toast.error("Update failed"); }
     finally { setProcessing(null); }
   };
+
+  // Send a reply note to the farmer without changing status
+  const handleSendReply = async (id: string) => {
+    const note = noteMap[id]?.trim();
+    if (!note) { toast.error("Write a reply message first"); return; }
+    setReplying(id);
+    try {
+      const res = await fetch(`/api/vet/consultations/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vetNote: note, vetId: farmer?._id }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toast.success("Reply sent to farmer ✓");
+      setNoteMap((p) => ({ ...p, [id]: "" }));
+      loadConsultations();
+    } catch { toast.error("Send failed"); }
+    finally { setReplying(null); }
+  };
+
 
   // ── Advisory ────────────────────────────────────────────────────────────────
   const [advisories, setAdvisories]   = useState<Advisory[]>([]);
@@ -210,16 +231,29 @@ export default function VetDashboard() {
                     </div>
                   )}
 
-                  {c.status === "pending" && (
-                    <div className="mt-4 space-y-2">
-                      <textarea
-                        placeholder="Add a diagnosis note or prescription… (optional)"
-                        rows={2}
-                        value={noteMap[c._id] || ""}
-                        onChange={(e) => setNoteMap((p) => ({ ...p, [c._id]: e.target.value }))}
-                        className="w-full text-sm rounded-lg border border-border bg-background px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-primary"
-                      />
-                      <div className="flex gap-2">
+                  {/* Action area — always visible so vet can change any status */}
+                  <div className="mt-4 space-y-2">
+                    {/* Reply composer */}
+                    <textarea
+                      placeholder="Write a reply / diagnosis note to the farmer…"
+                      rows={2}
+                      value={noteMap[c._id] || ""}
+                      onChange={(e) => setNoteMap((p) => ({ ...p, [c._id]: e.target.value }))}
+                      className="w-full text-sm rounded-lg border border-border bg-background px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                    {/* Send Reply button — saves note WITHOUT changing status */}
+                    <button
+                      onClick={() => handleSendReply(c._id)}
+                      disabled={replying === c._id || !noteMap[c._id]?.trim()}
+                      className="w-full py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                    >
+                      {replying === c._id
+                        ? <RefreshCw className="h-4 w-4 animate-spin" />
+                        : <><Send className="h-4 w-4" /> 💬 Send Reply to Farmer</>}
+                    </button>
+                    {/* Status action buttons */}
+                    <div className="flex gap-2">
+                      {c.status !== "approved" && (
                         <button
                           onClick={() => handleConsultationAction(c._id, "approved")}
                           disabled={processing === c._id}
@@ -227,6 +261,8 @@ export default function VetDashboard() {
                         >
                           {processing === c._id ? <RefreshCw className="h-4 w-4 animate-spin mx-auto" /> : "✓ Approve"}
                         </button>
+                      )}
+                      {c.status !== "rejected" && (
                         <button
                           onClick={() => handleConsultationAction(c._id, "rejected")}
                           disabled={processing === c._id}
@@ -234,9 +270,18 @@ export default function VetDashboard() {
                         >
                           ✕ Reject
                         </button>
-                      </div>
+                      )}
+                      {c.status !== "pending" && (
+                        <button
+                          onClick={() => handleConsultationAction(c._id, "pending")}
+                          disabled={processing === c._id}
+                          className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-amber-300 text-amber-600 hover:bg-amber-50 disabled:opacity-60 transition-colors"
+                        >
+                          ↩ Re-open
+                        </button>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
