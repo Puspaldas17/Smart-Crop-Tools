@@ -50,9 +50,49 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const { xp, level, streak, missions } = useGamification();
   const [activeTab, setActiveTab] = useState<
-    "missions" | "history" | "subscription" | "analytics" | "chat" | "pest"
+    "missions" | "history" | "subscription" | "analytics" | "chat" | "pest" | "vet-inbox"
   >("missions");
   const [showUpgrade, setShowUpgrade] = useState(false);
+
+  // Vet Inbox state
+  const [consultations, setConsultations] = useState<any[]>([]);
+  const [vetAdvisories, setVetAdvisories] = useState<any[]>([]);
+  const [consultForm, setConsultForm] = useState({ animalId: "", disease: "", message: "" });
+  const [consultLoading, setConsultLoading] = useState(false);
+  const [consultSending, setConsultSending] = useState(false);
+
+  const loadVetInbox = async (id: string) => {
+    setConsultLoading(true);
+    try {
+      const [cRes, aRes] = await Promise.all([
+        fetch(`/api/farmers/${id}/consultations`),
+        fetch(`/api/farmers/${id}/vet-advisories`),
+      ]);
+      const cData = await cRes.json();
+      const aData = await aRes.json();
+      setConsultations(Array.isArray(cData) ? cData : []);
+      setVetAdvisories(Array.isArray(aData) ? aData : []);
+    } catch { /* silent */ }
+    finally { setConsultLoading(false); }
+  };
+
+  const handleRequestConsult = async () => {
+    if (!consultForm.disease || !consultForm.message) { toast.error("Describe the disease and message"); return; }
+    if (!farmer?._id) { toast.error("Login required"); return; }
+    setConsultSending(true);
+    try {
+      const res = await fetch("/api/farmers/consult", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ farmerId: farmer._id, ...consultForm }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toast.success("Consultation request sent to vet!");
+      setConsultForm({ animalId: "", disease: "", message: "" });
+      loadVetInbox(farmer._id);
+    } catch { toast.error("Send failed"); }
+    finally { setConsultSending(false); }
+  };
 
   useEffect(() => {
     if (!farmer) {
@@ -61,6 +101,7 @@ export default function Dashboard() {
     }
     if (!farmer.isGuest) {
       fetchHistory();
+      loadVetInbox(farmer._id!);
     }
   }, [farmer, navigate]);
 
@@ -331,6 +372,21 @@ export default function Dashboard() {
             >
               {t('dash.tab.analytics')}
             </button>
+            <button
+              onClick={() => { setActiveTab("vet-inbox"); if (farmer?._id) loadVetInbox(farmer._id); }}
+              className={`font-medium pb-2 border-b-2 whitespace-nowrap flex items-center gap-1.5 ${
+                activeTab === "vet-inbox"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              🩺 Vet Inbox
+              {consultations.filter((c) => c.status === "pending").length > 0 && (
+                <span className="ml-1 bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {consultations.filter((c) => c.status === "pending").length}
+                </span>
+              )}
+            </button>
           </div>
 
           <div className="p-6">
@@ -508,6 +564,130 @@ export default function Dashboard() {
               >
                 <Analytics farmerId={farmer._id} />
               </Suspense>
+            )}
+
+            {activeTab === "vet-inbox" && (
+              <div className="space-y-6">
+                {/* Request consultation form */}
+                <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    🩺 Request Vet Consultation
+                  </h3>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Animal / Livestock ID (optional)</label>
+                      <input
+                        value={consultForm.animalId}
+                        onChange={(e) => setConsultForm((p) => ({ ...p, animalId: e.target.value }))}
+                        placeholder="e.g. COW-A12"
+                        className="w-full text-sm rounded-lg border border-border bg-background px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Disease / Symptom *</label>
+                      <input
+                        value={consultForm.disease}
+                        onChange={(e) => setConsultForm((p) => ({ ...p, disease: e.target.value }))}
+                        placeholder="e.g. Foot-and-mouth disease"
+                        className="w-full text-sm rounded-lg border border-border bg-background px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-medium mb-1">Message to Vet *</label>
+                      <textarea
+                        rows={3}
+                        value={consultForm.message}
+                        onChange={(e) => setConsultForm((p) => ({ ...p, message: e.target.value }))}
+                        placeholder="Describe symptoms, duration, number of animals affected…"
+                        className="w-full text-sm rounded-lg border border-border bg-background px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleRequestConsult}
+                    disabled={consultSending || farmer?.isGuest}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold shadow hover:brightness-105 disabled:opacity-60 transition-all"
+                  >
+                    {consultSending ? "Sending…" : "📨 Send to Vet"}
+                  </button>
+                  {farmer?.isGuest && (
+                    <p className="text-xs text-muted-foreground">Register to request vet consultations.</p>
+                  )}
+                </div>
+
+                {/* My Consultations */}
+                <div>
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    📋 My Consultation Requests
+                    <span className="text-xs text-muted-foreground font-normal">({consultations.length})</span>
+                  </h4>
+                  {consultLoading ? (
+                    <div className="text-center py-6 text-muted-foreground text-sm">Loading…</div>
+                  ) : consultations.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+                      No consultations yet. Request one above!
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {consultations.map((c: any) => (
+                        <div key={c._id} className={`rounded-xl border p-4 ${
+                          c.status === "approved" ? "border-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/10"
+                          : c.status === "rejected" ? "border-rose-200 bg-rose-50/50 dark:bg-rose-950/10"
+                          : "border-amber-200 bg-amber-50/50 dark:bg-amber-950/10"
+                        }`}>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <div className="font-medium text-sm">{c.disease}</div>
+                              {c.animalId && <div className="text-xs text-muted-foreground">🐄 {c.animalId}</div>}
+                              <p className="text-xs text-muted-foreground mt-1">{c.message}</p>
+                            </div>
+                            <span className={`shrink-0 text-xs font-semibold rounded-full px-2.5 py-0.5 ${
+                              c.status === "approved" ? "bg-emerald-100 text-emerald-700"
+                              : c.status === "rejected" ? "bg-rose-100 text-rose-700"
+                              : "bg-amber-100 text-amber-700"
+                            }`}>
+                              {c.status === "approved" ? "✅ Approved" : c.status === "rejected" ? "❌ Rejected" : "⏳ Pending"}
+                            </span>
+                          </div>
+                          {c.vetNote && (
+                            <div className="mt-2 text-xs rounded-lg bg-background/80 border border-border px-3 py-2">
+                              <span className="font-semibold">Vet Note:</span> {c.vetNote}
+                            </div>
+                          )}
+                          <div className="mt-1 text-[10px] text-muted-foreground">{new Date(c.createdAt).toLocaleDateString("en-IN")}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Vet Advisories */}
+                <div>
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    📣 Vet Advisories for You
+                    <span className="text-xs text-muted-foreground font-normal">({vetAdvisories.length})</span>
+                  </h4>
+                  {vetAdvisories.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+                      No advisories from vets yet.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {vetAdvisories.map((a: any) => (
+                        <div key={a._id} className="rounded-xl border border-border bg-card p-4">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="font-semibold text-sm">{a.title}</div>
+                            <span className="text-[10px] text-muted-foreground whitespace-nowrap">{new Date(a.createdAt).toLocaleDateString("en-IN")}</span>
+                          </div>
+                          {a.crop && <div className="text-xs text-primary mt-0.5">🌾 {a.crop}</div>}
+                          <p className="text-xs text-muted-foreground mt-1">{a.body}</p>
+                          <div className="mt-2 text-[10px] text-muted-foreground">by Dr. {a.vetName}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         </div>

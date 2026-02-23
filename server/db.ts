@@ -275,3 +275,39 @@ const blockSchema = new mongoose.Schema(
 export const Block: any = USE_MEMORY
   ? new InMemoryCollection("Block")
   : mongoose.models.Block || mongoose.model("Block", blockSchema);
+
+// ── Consultation (Farmer ↔ Vet) ──────────────────────────────────────────────
+const consultationSchema = new mongoose.Schema(
+  {
+    farmerId:  { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    vetId:     { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" }, // assigned vet
+    animalId:  { type: String },
+    disease:   { type: String, required: true },
+    message:   { type: String, required: true },
+    status:    { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    vetNote:   { type: String },
+  },
+  { timestamps: true },
+);
+
+export const Consultation: any = USE_MEMORY
+  ? new InMemoryCollection("Consultation")
+  : mongoose.models.Consultation || mongoose.model("Consultation", consultationSchema);
+
+// ── VetAdvisory (Vet → Farmer / All) ─────────────────────────────────────────
+const vetAdvisorySchema = new mongoose.Schema(
+  {
+    vetId:      { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    farmerId:   { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" }, // null = all farmers
+    title:      { type: String, required: true },
+    body:       { type: String, required: true },
+    crop:       { type: String },
+    targetRole: { type: String, enum: ["all", "farmer"], default: "all" },
+  },
+  { timestamps: true },
+);
+
+export const VetAdvisory: any = USE_MEMORY
+  ? new InMemoryCollection("VetAdvisory")
+  : mongoose.models.VetAdvisory || mongoose.model("VetAdvisory", vetAdvisorySchema);
+

@@ -26,6 +26,30 @@ import {
 } from "./routes/analytics";
 import { getPostById } from "./routes/neon";
 import { logTreatment, getAnimalStatus, getLedger } from "./routes/amu";
+import {
+  getAdminOverview,
+  listFarmers,
+  updateFarmer,
+  deleteFarmer,
+  getAmuLedger,
+  sendBroadcast,
+  getBroadcasts,
+  createUser,
+  seedDefaultUsers,
+  getAdminConsultations,
+} from "./routes/admin";
+import {
+  getVetFarmers,
+  getVetConsultations,
+  updateConsultation,
+  createVetAdvisory,
+  getVetAdvisories,
+} from "./routes/vet";
+import {
+  requestConsultation,
+  getFarmerConsultations,
+  getFarmerVetAdvisories,
+} from "./routes/farmers";
 
 export function createServer() {
   const app = express();
@@ -58,6 +82,9 @@ export function createServer() {
   // Domain routes
   app.post("/api/farmers", createFarmer);
   app.get("/api/farmers/:id", getFarmer);
+  app.post("/api/farmers/consult",                  requestConsultation);
+  app.get("/api/farmers/:id/consultations",          getFarmerConsultations);
+  app.get("/api/farmers/:id/vet-advisories",         getFarmerVetAdvisories);
   app.get("/api/weather", getWeather);
   app.post("/api/advisories", createAdvisory);
   app.get("/api/market", getMarketPrices);
@@ -91,6 +118,25 @@ export function createServer() {
 
   // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
   app.get("/api/neon/posts/:id", getPostById);
+
+  // Admin routes
+  app.get("/api/admin/overview",           getAdminOverview);
+  app.get("/api/admin/farmers",            listFarmers);
+  app.patch("/api/admin/farmers/:id",      updateFarmer);
+  app.delete("/api/admin/farmers/:id",     deleteFarmer);
+  app.get("/api/admin/amu",                getAmuLedger);
+  app.post("/api/admin/broadcast",         sendBroadcast);
+  app.get("/api/admin/broadcasts",         getBroadcasts);
+  app.post("/api/admin/create-user",       createUser);
+  app.post("/api/admin/seed",              seedDefaultUsers);
+  app.get("/api/admin/consultations",      getAdminConsultations);
+
+  // Vet routes
+  app.get("/api/vet/farmers",              getVetFarmers);
+  app.get("/api/vet/consultations",        getVetConsultations);
+  app.patch("/api/vet/consultations/:id",  updateConsultation);
+  app.post("/api/vet/advisory",            createVetAdvisory);
+  app.get("/api/vet/advisories",           getVetAdvisories);
 
   return app;
 }
