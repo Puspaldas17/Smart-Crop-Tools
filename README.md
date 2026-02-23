@@ -6,8 +6,9 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![Stack](https://img.shields.io/badge/stack-MERN%20%2B%20Python-informational?style=flat-square)](PROJECT_DETAILS.md)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple?style=flat-square)](https://web.dev/pwa/)
+[![Languages](https://img.shields.io/badge/languages-EN%20%7C%20HI%20%7C%20OR-orange?style=flat-square)](client/i18n.ts)
 
-> 📖 For all features, architecture, and roadmap → **[PROJECT_DETAILS.md](PROJECT_DETAILS.md)**
+> 📖 Full feature documentation, architecture, and roadmap → **[PROJECT_DETAILS.md](PROJECT_DETAILS.md)**
 
 ---
 
@@ -48,13 +49,17 @@ cd ..
 cp .env.example .env
 ```
 
-| Variable         | Description               | Default                 |
-| ---------------- | ------------------------- | ----------------------- |
-| `MONGODB_URI`    | MongoDB connection string | In-memory fallback      |
-| `PORT`           | Server port               | `8080`                  |
-| `AI_SERVICE_URL` | Python AI service URL     | `http://localhost:8000` |
+Edit `.env` and fill in your values:
 
-> Without `MONGODB_URI`, the app runs in **Demo Mode** with in-memory data — great for local testing.
+| Variable          | Description                     | Default                    |
+| ----------------- | ------------------------------- | -------------------------- |
+| `MONGODB_URI`     | MongoDB connection string       | In-memory fallback (empty) |
+| `PORT`            | Express server port             | `8080`                     |
+| `AI_SERVICE_URL`  | Python AI (FastAPI) service URL | `http://localhost:8000`    |
+| `OPENWEATHER_KEY` | OpenWeatherMap API key          | Optional                   |
+| `PING_MESSAGE`    | Custom ping response message    | `ping`                     |
+
+> Without `MONGODB_URI`, the app runs in **Demo Mode** with a fast in-memory adapter — great for local testing.
 
 ---
 
@@ -81,13 +86,16 @@ python main.py
 
 ---
 
-## Verification
+## Quick Verification
 
 1. Open **http://localhost:8080**
-2. Register/Login as a Farmer (Guest Mode also available)
-3. Use the 🌐 button to switch language (EN / Hindi / Odia)
-4. Go to **Dashboard → Pest Detector** to verify AI service is connected
-5. Go to **Dashboard → Analytics** to see charts
+2. Register or Login as a **Farmer** (Guest Mode also available — no sign-up needed)
+3. Use the 🌐 button to switch language (EN / हिंदी / ଓଡ଼ିଆ)
+4. Go to **Dashboard → Vet Inbox** to test the vet consultation system
+5. Go to **Dashboard → Pest Detector** to verify AI service is connected
+6. Go to **Dashboard → Analytics** to see interactive charts
+
+Login as **Vet** or **Admin** to access their dedicated portals (`/vet`, `/admin`).
 
 ---
 
@@ -97,44 +105,84 @@ python main.py
 AgriVerse/
 │
 ├── client/                          # React 18 Frontend (Vite + TypeScript)
+│   ├── App.tsx                      # Root: routing, providers, global fetch guard
+│   ├── global.css                   # Design system (variables, animations, glassmorphism)
+│   ├── i18n.ts                      # EN / Hindi / Odia translations (~1200 keys)
+│   │
 │   ├── components/
 │   │   ├── features/                # Feature components
 │   │   │   ├── Gamification/        # MissionCard, BadgesGallery, LeaderboardWidget
-│   │   │   ├── Analytics.tsx        # Charts (Recharts) — 4 tabs
+│   │   │   ├── Analytics.tsx        # 4-tab Recharts analytics dashboard
+│   │   │   ├── Chatbot.tsx          # AI chatbot with voice input
 │   │   │   ├── NotificationCenter.tsx
-│   │   │   ├── PestAlertWidget.tsx
-│   │   │   ├── PestDetector.tsx
-│   │   │   ├── UpgradeModal.tsx
-│   │   │   ├── Chatbot.tsx
-│   │   │   ├── MarketCard.tsx
-│   │   │   └── WeatherCard.tsx
-│   │   └── home/                    # Landing page sections (Hero, Stats, CTA…)
+│   │   │   ├── PestAlertWidget.tsx  # Seasonal risk indicator
+│   │   │   ├── PestDetector.tsx     # Image upload → AI disease detection
+│   │   │   ├── MarketCard.tsx / MarketWidget.tsx
+│   │   │   ├── WeatherCard.tsx
+│   │   │   └── UpgradeModal.tsx
+│   │   ├── home/                    # Landing page sections (Hero, Stats, CTA…)
+│   │   └── ui/                      # shadcn/ui primitives (50+ components)
 │   │
 │   ├── pages/                       # Route-level pages
-│   │   ├── Dashboard.tsx            # Main dashboard (6 tabs)
-│   │   ├── Leaderboard.tsx          # Full leaderboard with podium
+│   │   ├── Index.tsx                # Public landing page
+│   │   ├── Login.tsx                # Register + login (email/password)
+│   │   ├── Dashboard.tsx            # Farmer dashboard (7 tabs)
+│   │   ├── VetDashboard.tsx         # Vet portal: consultations + advisories
+│   │   ├── AdminDashboard.tsx       # Admin portal: users + KPIs + broadcast
+│   │   ├── AMUManager.tsx           # Antimicrobial usage blockchain ledger
+│   │   ├── Leaderboard.tsx          # Community XP rankings with podium
 │   │   ├── Marketplace.tsx          # F2C produce marketplace
-│   │   ├── CropCalendar.tsx         # Sowing/harvest calendar
-│   │   ├── Profile.tsx              # Farmer profile + XP stats
-│   │   ├── VetDashboard.tsx         # Veterinary portal
-│   │   ├── AdminDashboard.tsx       # Admin portal
-│   │   └── Layout.tsx               # Shared layout + navigation
+│   │   ├── CropCalendar.tsx         # Seasonal sowing & harvest calendar
+│   │   ├── Profile.tsx              # Farmer profile + XP + badges
+│   │   ├── Layout.tsx               # Shared layout + navigation
+│   │   └── NotFound.tsx             # 404 page
 │   │
 │   ├── context/
 │   │   └── GamificationContext.tsx  # XP, Level, Streak, Missions, Badges state
-│   │
-│   └── i18n.ts                      # EN / Hindi / Odia translations
+│   └── hooks/
+│       ├── useAuth.tsx              # Auth context + farmer state
+│       ├── use-toast.ts             # Toast utility
+│       └── useInView.ts             # Intersection observer hook
 │
 ├── server/                          # Node.js + Express 5 REST API
-│   ├── routes/                      # /auth, /advisory, /analytics, /market, /amu
-│   └── db.ts                        # MongoDB / in-memory adapter
+│   ├── index.ts                     # Server factory: all routes registered here
+│   ├── db.ts                        # MongoDB/Mongoose models + in-memory adapter
+│   ├── node-build.ts                # Production server entry (serves built SPA)
+│   │
+│   ├── routes/
+│   │   ├── auth.ts                  # Register, login, guest, debug users
+│   │   ├── farmers.ts               # Farmer CRUD, consultation request, vet advisories
+│   │   ├── vet.ts                   # Vet consultations, update, advisories
+│   │   ├── admin.ts                 # User management, broadcast, seed, overview
+│   │   ├── advisory.ts              # Crop advisory creation
+│   │   ├── analytics.ts             # Per-farmer analytics (trends, soil, weather)
+│   │   ├── amu.ts                   # AMU drug log + blockchain ledger
+│   │   ├── chat.ts                  # AI chatbot proxy
+│   │   ├── predict.ts               # Image upload → AI pest/disease prediction
+│   │   ├── market.ts                # Mandi market prices
+│   │   ├── weather.ts               # Weather data
+│   │   ├── profile.ts               # Advisory history + subscription
+│   │   ├── neon.ts                  # Netlify Neon DB example route
+│   │   └── demo.ts                  # Health/demo endpoint
+│   │
+│   ├── lib/
+│   │   └── ledger.ts                # Hash-chain blockchain implementation
+│   └── utils/
+│       ├── cache.ts                 # Simple in-memory TTL cache
+│       ├── http.ts                  # HTTP fetch helper
+│       └── soilData.ts              # Soil data lookup utilities
 │
 ├── ai_service/                      # Python FastAPI ML service
 │   ├── main.py                      # Pest/disease detection endpoint
 │   └── requirements.txt
 │
+├── api/
+│   └── index.ts                     # Vercel serverless adapter
+│
 ├── shared/                          # Shared TypeScript types
 ├── public/                          # PWA icons, manifest.json
+├── docs/                            # Additional documentation
+├── scripts/                         # Build / utility scripts
 ├── .env.example                     # Environment variable template
 └── PROJECT_DETAILS.md               # Full feature documentation
 ```
@@ -143,17 +191,37 @@ AgriVerse/
 
 ## Available Routes
 
-| Route          | Page                        |
-| -------------- | --------------------------- |
-| `/`            | Landing page                |
-| `/login`       | Farmer login / registration |
-| `/dashboard`   | Main dashboard              |
-| `/leaderboard` | Full leaderboard            |
-| `/marketplace` | F2C marketplace             |
-| `/calendar`    | Crop sowing calendar        |
-| `/profile`     | Farmer profile              |
-| `/vet`         | Veterinary portal           |
-| `/admin`       | Admin portal                |
+| Route          | Page                           | Access        |
+| -------------- | ------------------------------ | ------------- |
+| `/`            | Landing page                   | Public        |
+| `/login`       | Farmer login / registration    | Public        |
+| `/dashboard`   | Main farmer dashboard (7 tabs) | Farmer        |
+| `/vet`         | Veterinary portal              | Vet           |
+| `/admin`       | Admin portal                   | Admin         |
+| `/amu`         | AMU blockchain ledger          | Vet / Admin   |
+| `/leaderboard` | Community XP leaderboard       | Authenticated |
+| `/marketplace` | F2C produce marketplace        | Authenticated |
+| `/calendar`    | Crop sowing & harvest calendar | Authenticated |
+| `/profile`     | Farmer profile + gamification  | Authenticated |
+
+---
+
+## API Endpoints Summary
+
+| Group     | Endpoint prefix    | Description                           |
+| --------- | ------------------ | ------------------------------------- |
+| Auth      | `/api/auth/*`      | Register, login, guest login          |
+| Farmers   | `/api/farmers/*`   | CRUD, consultations, vet advisories   |
+| Vet       | `/api/vet/*`       | Consultations, advisory management    |
+| Admin     | `/api/admin/*`     | User mgmt, broadcasts, overview KPIs  |
+| Advisory  | `/api/advisories`  | Crop advisory generation              |
+| Analytics | `/api/analytics/*` | Crop trends, soil health, weather     |
+| AMU       | `/api/amu/*`       | Drug log, withdrawal tracking, ledger |
+| Market    | `/api/market`      | Mandi market prices                   |
+| Weather   | `/api/weather`     | Weather data                          |
+| Chatbot   | `/api/chat`        | AI chatbot proxy                      |
+| Pest AI   | `/api/predict`     | Image-based pest/disease prediction   |
+| Profile   | `/api/profile/*`   | Advisory history, subscription        |
 
 ---
 
@@ -163,15 +231,17 @@ AgriVerse/
 | ------------------------- | ------------------------------------------------------------------- |
 | Port 8080 already in use  | PowerShell: `$env:PORT=9090; npm run dev`                           |
 | AI Service not connecting | Make sure `python main.py` is running in `ai_service/` on port 8000 |
-| Analytics shows no charts | Click the tab — it uses smart mock fallback data locally            |
+| Analytics shows no charts | Click the tab — uses smart mock fallback data locally               |
 | MongoDB connection error  | Remove `MONGODB_URI` from `.env` to use in-memory mode              |
 | PWA icons missing         | Run `npm run build` once to generate PWA assets                     |
+| Consultations not showing | Ensure farmer is logged in (non-guest) and MongoDB is connected     |
+| "Invalid Date" on cards   | Fixed — ensure you're on the latest commit (`.toObject()` patch)    |
 
 ---
 
 ## Author
 
-**Puspal Das** · SOA University (ITER), Bhubaneswar, Odisha  
+**Puspal Das** · SOA University (ITER), Bhubaneswar, Odisha
 GitHub: [@Puspaldas17](https://github.com/Puspaldas17)
 
 ---
