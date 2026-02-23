@@ -70,21 +70,19 @@ export function createServer() {
     next();
   });
 
-  // Example API routes
+  // Ping / Demo
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "ping";
     res.json({ message: ping });
   });
-
   app.get("/api/demo", handleDemo);
 
-  // Domain routes
-  // Domain routes
-  app.post("/api/farmers", createFarmer);
-  app.get("/api/farmers/:id", getFarmer);
-  app.post("/api/farmers/consult",                  requestConsultation);
-  app.get("/api/farmers/:id/consultations",          getFarmerConsultations);
-  app.get("/api/farmers/:id/vet-advisories",         getFarmerVetAdvisories);
+  // Farmer routes — specific paths MUST come before parameterised :id routes
+  app.post("/api/farmers",                           createFarmer);
+  app.post("/api/farmers/consult",                   requestConsultation);      // must be before /:id
+  app.get("/api/farmers/:id",                        getFarmer);
+  app.get("/api/farmers/:id/consultations",           getFarmerConsultations);
+  app.get("/api/farmers/:id/vet-advisories",          getFarmerVetAdvisories);
   app.get("/api/weather", getWeather);
   app.post("/api/advisories", createAdvisory);
   app.get("/api/market", getMarketPrices);

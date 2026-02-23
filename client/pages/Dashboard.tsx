@@ -1,5 +1,6 @@
 import { useEffect, useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import {
@@ -8,9 +9,12 @@ import {
   Crop,
   CheckCircle2,
   AlertCircle,
+  Flame,
+  Trophy,
+  Star,
+  Target,
 } from "lucide-react";
 
-import { Flame, Trophy, Star, Target } from "lucide-react";
 import { useGamification } from "@/context/GamificationContext";
 import { MissionCard } from "@/components/features/Gamification/MissionCard";
 import { LeaderboardWidget } from "@/components/features/Gamification/LeaderboardWidget";
@@ -40,7 +44,6 @@ const MOCK_HISTORY: AdvisoryRecord[] = [
   { _id: "m5", crop: "Onion", advisory: "Transplant 45-day old seedlings. Maintain 10×15 cm spacing. Stop irrigation 2 weeks before harvest for better shelf life. Apply zinc sulphate (0.5%) to improve bulb quality. Avoid overwatering to prevent purple blotch.", createdAt: new Date(Date.now() - 10 * 86400000).toISOString() },
 ];
 
-import { useTranslation } from "react-i18next";
 
 export default function Dashboard() {
   const { farmer, logout } = useAuth();
