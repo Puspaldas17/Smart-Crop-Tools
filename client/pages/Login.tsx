@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck, Stethoscope, UserRound } from "lucide-react";
 
 export default function Login() {
   const { login, farmer } = useAuth();
@@ -70,6 +70,36 @@ export default function Login() {
     }
   }
 
+  async function handleDemoLogin(role: "admin" | "vet") {
+    setLoading(true);
+    try {
+      // 1. Ensure the seed accounts exist in DB
+      await fetch("/api/admin/seed", { method: "POST" });
+
+      // 2. Real login with the seeded credentials
+      const credentials = {
+        admin: { email: "admin@agriverse.in",  password: "Admin@1234" },
+        vet:   { email: "vet@agriverse.in",    password: "Vet@1234"   },
+      }[role];
+
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Demo login failed");
+
+      login(data);
+      toast.success(`Logged in as ${role === "admin" ? "Authority Admin" : "Vet Officer"}`);
+      navigate(role === "admin" ? "/admin" : "/dashboard");
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleGuestLogin() {
     setLoading(true);
     try {
@@ -79,9 +109,7 @@ export default function Login() {
         body: JSON.stringify({ language: "en-IN" }),
       });
       const data = await res.json();
-      
       if (!res.ok) throw new Error(data.error || "Guest login failed");
-
       login(data);
       toast.success("Welcome, Guest!");
       navigate("/dashboard");
@@ -169,38 +197,35 @@ export default function Login() {
           </div>
 
           <Button variant="outline" className="w-full" onClick={handleGuestLogin} disabled={loading}>
-            Guest
+            <UserRound className="mr-2 h-4 w-4" /> Continue as Guest
           </Button>
 
           <div className="text-center text-sm text-slate-500 mt-6">
-            <p className="mb-2">For Demo Purposes:</p>
-            <div className="flex justify-center gap-2 text-xs">
-               <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => {
-                  // Simulate vet login
-                  login({ ...farmer, role: 'vet', name: 'Dr. John Doe' } as any);
-                  navigate("/dashboard");
-                }}
-                className="text-blue-600 hover:text-blue-800"
-               >
-                 Login as Vet
-               </Button>
-               <span className="self-center">|</span>
-               <Button 
-                variant="ghost" 
-                size="sm" 
-                 onClick={() => {
-                  // Simulate admin login
-                  login({ ...farmer, role: 'admin', name: 'Authority' } as any);
-                  navigate("/dashboard");
-                }}
-                className="text-blue-600 hover:text-blue-800"
-               >
-                 Login as Admin
-               </Button>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Quick Demo Access</p>
+            <div className="flex justify-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleDemoLogin("vet")}
+                disabled={loading}
+                className="flex items-center gap-1.5 text-blue-600 border-blue-200 hover:bg-blue-50"
+              >
+                <Stethoscope className="h-3.5 w-3.5" />
+                Login as Vet
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleDemoLogin("admin")}
+                disabled={loading}
+                className="flex items-center gap-1.5 text-purple-700 border-purple-200 hover:bg-purple-50 font-semibold"
+              >
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Login as Admin
+              </Button>
             </div>
+            <p className="mt-2 text-[10px] text-slate-400">Accounts are created &amp; stored in the database automatically.
+            </p>
           </div>
         </CardContent>
       </Card>
