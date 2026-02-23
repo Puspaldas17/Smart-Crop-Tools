@@ -54,7 +54,9 @@ export const getFarmerConsultations: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const all = (await Consultation.find({})) as any[];
-    const mine = all.filter((c) => String(c.farmerId) === id);
+    const mine = all
+      .filter((c) => String(c.farmerId) === id)
+      .map((c) => (typeof c.toObject === "function" ? c.toObject() : { ...c }));
     mine.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     res.json(mine);
   } catch (e) {
@@ -72,14 +74,17 @@ export const getFarmerVetAdvisories: RequestHandler = async (req, res) => {
     const relevant = all.filter(
       (a) => !a.farmerId || String(a.farmerId) === id,
     );
-    // Enrich with vet name
+    // Enrich with vet name — convert to plain object first to get all fields
     const farmers = (await Farmer.find({})) as any[];
     const farmerMap: Record<string, string> = {};
     farmers.forEach((f) => { farmerMap[String(f._id)] = f.name; });
-    const enriched = relevant.map((a) => ({
-      ...a,
-      vetName: farmerMap[String(a.vetId)] || "Vet Officer",
-    }));
+    const enriched = relevant.map((a) => {
+      const obj = typeof a.toObject === "function" ? a.toObject() : { ...a };
+      return {
+        ...obj,
+        vetName: farmerMap[String(obj.vetId)] || "Vet Officer",
+      };
+    });
     enriched.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     res.json(enriched);
   } catch (e) {

@@ -300,11 +300,14 @@ export const getAdminConsultations: RequestHandler = async (_req, res) => {
     const farmers = (await Farmer.find({})) as any[];
     const farmerMap: Record<string, string> = {};
     farmers.forEach((f) => { farmerMap[String(f._id)] = f.name; });
-    const enriched = all.map((c) => ({
-      ...c,
-      farmerName: farmerMap[String(c.farmerId)] || "Unknown",
-      vetName: c.vetId ? (farmerMap[String(c.vetId)] || "Unassigned") : "Unassigned",
-    }));
+    const enriched = all.map((c) => {
+      const obj = typeof c.toObject === "function" ? c.toObject() : { ...c };
+      return {
+        ...obj,
+        farmerName: farmerMap[String(obj.farmerId)] || "Unknown",
+        vetName: obj.vetId ? (farmerMap[String(obj.vetId)] || "Unassigned") : "Unassigned",
+      };
+    });
     enriched.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     res.json(enriched);
   } catch (e) {
