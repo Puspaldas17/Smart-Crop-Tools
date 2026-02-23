@@ -19,7 +19,7 @@ _A full-stack, multilingual, offline-capable smart farming platform_
 
 ## Executive Summary
 
-AgriVerse is a comprehensive, AI-powered digital farming ecosystem designed from the ground up for India's small and marginal farmers. It unifies crop advisory, real-time market intelligence, AI-driven pest detection, gamified learning, and community commerce into a single platform — accessible in three languages, installable offline, and usable without high digital literacy.
+AgriVerse is a comprehensive, AI-powered digital farming ecosystem designed from the ground up for India's small and marginal farmers. It unifies crop advisory, real-time market intelligence, AI-driven pest detection, gamified learning, veterinary consultations, antimicrobial usage tracking, and community commerce into a single platform — accessible in three languages, installable offline, and usable without high digital literacy.
 
 ---
 
@@ -35,9 +35,10 @@ India's agricultural sector accounts for 18% of GDP and employs 44% of the workf
 | Market price opacity               | Middlemen capture 30–40% of farm-gate value              |
 | Late pest & disease detection      | Annual crop losses estimated at ₹80,000+ crore           |
 | Digital accessibility barriers     | Low literacy + inconsistent internet in rural areas      |
+| No veterinary access               | Livestock healthcare gap in rural India                  |
 | Fragmented tooling                 | No single platform integrates weather, soil, market & AI |
 
-**AgriVerse solves all five — in one unified, accessible application.**
+**AgriVerse solves all six — in one unified, accessible application.**
 
 ---
 
@@ -47,66 +48,68 @@ India's agricultural sector accounts for 18% of GDP and employs 44% of the workf
 ┌──────────────────────────────────────────────────────────────┐
 │                   React 18 Frontend (Vite)                    │
 │                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────┐  │
-│  │  Dashboard   │  │  Leaderboard │  │    Marketplace     │  │
-│  │  (6 Tabs)    │  │  / Calendar  │  │    / Profile       │  │
-│  └──────┬───────┘  └──────┬───────┘  └────────┬───────────┘  │
-│         │                 │                   │              │
-│  ┌──────▼─────────────────▼───────────────────▼───────────┐  │
-│  │          GamificationContext  (XP · Level · Streak)    │  │
-│  └────────────────────────┬───────────────────────────────┘  │
+│  ┌────────────┐  ┌────────────┐  ┌────────┐  ┌───────────┐  │
+│  │  Dashboard │  │  Vet Portal│  │ Admin  │  │ Marketplace│  │
+│  │  (7 Tabs)  │  │            │  │ Portal │  │ /Calendar  │  │
+│  └─────┬──────┘  └─────┬──────┘  └───┬────┘  └─────┬─────┘  │
+│        │               │             │             │         │
+│  ┌─────▼───────────────▼─────────────▼─────────────▼──────┐  │
+│  │        GamificationContext  (XP · Level · Streak)      │  │
+│  └─────────────────────────┬──────────────────────────────┘  │
 └───────────────────────────┼──────────────────────────────────┘
                             │  REST API (Express 5)
 ┌───────────────────────────▼──────────────────────────────────┐
 │                  Node.js / Express Backend                    │
-│         /api/auth  ·  /api/advisory  ·  /api/analytics       │
-│         /api/market  ·  /api/amu                             │
-└───────────────┬──────────────────────────────────────────────┘
-                │                        │
-   ┌────────────▼──────────┐  ┌──────────▼──────────────────┐
-   │  MongoDB + Mongoose   │  │  Python AI Service           │
-   │  (In-Memory Fallback) │  │  FastAPI + TensorFlow/CNN   │
-   └───────────────────────┘  └─────────────────────────────┘
+│  /api/auth · /api/farmers · /api/vet · /api/admin            │
+│  /api/advisory · /api/analytics · /api/amu · /api/market     │
+└──────────────┬─────────────────────────────────┬─────────────┘
+               │                                 │
+  ┌────────────▼──────────┐       ┌──────────────▼──────────────┐
+  │  MongoDB + Mongoose   │       │  Python AI Service           │
+  │  (In-Memory Fallback) │       │  FastAPI + TensorFlow/CNN   │
+  └───────────────────────┘       └─────────────────────────────┘
 ```
 
 ---
 
 ## Technology Stack
 
-| Layer                    | Technology                          | Purpose                                   |
-| ------------------------ | ----------------------------------- | ----------------------------------------- |
-| **Frontend Framework**   | React 18 + Vite + TypeScript        | Core UI with fast HMR                     |
-| **Styling**              | TailwindCSS + CSS Custom Properties | Design system + dark mode                 |
-| **UI Primitives**        | Radix UI + shadcn/ui                | Accessible, headless components           |
-| **Data Visualization**   | Recharts                            | Analytics charts (Line, Bar, Area, Radar) |
-| **Client Routing**       | React Router v6                     | SPA page navigation                       |
-| **State Management**     | React Context API + `localStorage`  | Auth, gamification, streak persistence    |
-| **Internationalization** | react-i18next                       | EN / Hindi / Odia translation             |
-| **Backend Runtime**      | Node.js + Express 5                 | REST API server                           |
-| **Database**             | MongoDB + Mongoose                  | Persistent data storage                   |
-| **Demo Fallback**        | Custom in-memory adapter            | Full functionality without MongoDB        |
-| **Authentication**       | Custom JWT                          | Role-based session management             |
-| **AI Service**           | Python + FastAPI                    | ML model API server                       |
-| **Machine Learning**     | TensorFlow / PyTorch + CNN          | Crop disease image classification         |
-| **PWA**                  | vite-plugin-pwa + Workbox           | Offline caching + installability          |
-| **Icons**                | Lucide React                        | Consistent iconography                    |
-| **Alerts**               | Sonner                              | Non-blocking toast notifications          |
+| Layer                    | Technology                          | Purpose                                    |
+| ------------------------ | ----------------------------------- | ------------------------------------------ |
+| **Frontend Framework**   | React 18 + Vite + TypeScript        | Core UI with fast HMR                      |
+| **Styling**              | TailwindCSS + CSS Custom Properties | Design system + glassmorphism + dark mode  |
+| **UI Primitives**        | Radix UI + shadcn/ui                | Accessible, headless components (50+)      |
+| **Data Visualization**   | Recharts                            | Analytics charts (Line, Bar, Area, Radar)  |
+| **Client Routing**       | React Router v6                     | SPA page navigation                        |
+| **State Management**     | React Context API + `localStorage`  | Auth, gamification, streak persistence     |
+| **Internationalization** | react-i18next                       | EN / Hindi / Odia (~1200 translation keys) |
+| **Backend Runtime**      | Node.js + Express 5                 | REST API server                            |
+| **Database**             | MongoDB + Mongoose                  | Persistent data storage with schemas       |
+| **Demo Fallback**        | Custom in-memory adapter (`db.ts`)  | Full functionality without MongoDB         |
+| **Authentication**       | bcryptjs + session storage          | Role-based (farmer / vet / admin)          |
+| **AI Service**           | Python + FastAPI                    | ML model API server                        |
+| **Machine Learning**     | TensorFlow / PyTorch + CNN          | Crop disease image classification          |
+| **PWA**                  | vite-plugin-pwa + Workbox           | Offline caching + installability           |
+| **Icons**                | Lucide React                        | Consistent iconography                     |
+| **Alerts**               | Sonner                              | Non-blocking toast notifications           |
+| **Deploy**               | Vercel (api/index.ts adapter)       | Serverless deployment support              |
 
 ---
 
 ## Pages & Routes
 
-| Route          | Component            | Description                             |
-| -------------- | -------------------- | --------------------------------------- |
-| `/`            | `Index.tsx`          | Public landing page with featured tools |
-| `/login`       | `Login.tsx`          | Registration and authentication         |
-| `/dashboard`   | `Dashboard.tsx`      | Core farmer dashboard (6 tabs)          |
-| `/leaderboard` | `Leaderboard.tsx`    | Community XP rankings with podium       |
-| `/marketplace` | `Marketplace.tsx`    | Farmer-to-Consumer produce exchange     |
-| `/calendar`    | `CropCalendar.tsx`   | Seasonal sowing & harvest planner       |
-| `/profile`     | `Profile.tsx`        | Farmer profile with gamification stats  |
-| `/vet`         | `VetDashboard.tsx`   | Veterinary livestock management         |
-| `/admin`       | `AdminDashboard.tsx` | Platform administration panel           |
+| Route          | Component            | Access        | Description                             |
+| -------------- | -------------------- | ------------- | --------------------------------------- |
+| `/`            | `Index.tsx`          | Public        | Landing page with featured tools        |
+| `/login`       | `Login.tsx`          | Public        | Registration and authentication         |
+| `/dashboard`   | `Dashboard.tsx`      | Farmer        | Core farmer dashboard (7 tabs)          |
+| `/vet`         | `VetDashboard.tsx`   | Vet           | Veterinary consultation & advisory mgmt |
+| `/admin`       | `AdminDashboard.tsx` | Admin         | Platform admin panel                    |
+| `/amu`         | `AMUManager.tsx`     | Vet / Admin   | AMU blockchain ledger                   |
+| `/leaderboard` | `Leaderboard.tsx`    | Authenticated | Community XP rankings with podium       |
+| `/marketplace` | `Marketplace.tsx`    | Authenticated | Farmer-to-Consumer produce exchange     |
+| `/calendar`    | `CropCalendar.tsx`   | Authenticated | Seasonal sowing & harvest planner       |
+| `/profile`     | `Profile.tsx`        | Authenticated | Farmer profile with gamification stats  |
 
 ---
 
@@ -221,7 +224,47 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 
 ---
 
-### Feature 4 — F2C Community Marketplace (`/marketplace`)
+### Feature 4 — Veterinary Consultation System
+
+> Bridging the gap between rural farmers and veterinary professionals.
+
+**For Farmers — Vet Inbox Tab (Dashboard)**
+
+- Farmers submit consultation requests from the **Vet Inbox** tab on their dashboard
+- Form fields: Animal ID, Disease / Symptom description, Detailed message
+- All submitted consultations listed with live status: `Pending` / `Approved` / `Rejected`
+- Vet's reply note (vetNote) displayed in-line on each consultation card
+- All vet advisories (broadcast to all farmers OR targeted) shown below consultations
+
+**For Vets — VetDashboard (`/vet`)**
+
+| Capability             | Description                                                       |
+| ---------------------- | ----------------------------------------------------------------- |
+| **Patient List**       | View all registered farmers in the system                         |
+| **Consultation Queue** | All farmer consultation requests in one sortable list             |
+| **Approve / Reject**   | One-click consultation status update                              |
+| **Re-open**            | Change status back to `Pending` to continue a case                |
+| **Send Reply**         | Send vetNote to a farmer without changing the consultation status |
+| **Broadcast Advisory** | Send an advisory to all farmers or a specific farmer              |
+| **Advisory History**   | View all advisories the vet has sent, with date and target        |
+
+**Backend API (Mongoose + `.toObject()` pattern)**
+
+| Method  | Endpoint                          | Description                                               |
+| ------- | --------------------------------- | --------------------------------------------------------- |
+| `POST`  | `/api/farmers/consult`            | Farmer submits a consultation request                     |
+| `GET`   | `/api/farmers/:id/consultations`  | Farmer fetches their own consultations                    |
+| `GET`   | `/api/farmers/:id/vet-advisories` | Farmer fetches advisories addressed to them               |
+| `GET`   | `/api/vet/consultations`          | Vet fetches all consultations (enriched with farmer name) |
+| `PATCH` | `/api/vet/consultations/:id`      | Vet approves/rejects/replies; `status` is optional        |
+| `POST`  | `/api/vet/advisory`               | Vet creates a new advisory                                |
+| `GET`   | `/api/vet/advisories`             | Vet fetches all advisories they've sent                   |
+
+> **Bug fixed:** All Mongoose document spreading now uses `.toObject()` before `{...doc}` to ensure `createdAt`, `title`, `body`, and other Mongoose virtual fields are preserved in the JSON response.
+
+---
+
+### Feature 5 — F2C Community Marketplace (`/marketplace`)
 
 > Eliminating agricultural middlemen through direct Farmer-to-Consumer commerce.
 
@@ -236,7 +279,7 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 
 ---
 
-### Feature 5 — Crop Sowing Calendar (`/calendar`)
+### Feature 6 — Crop Sowing Calendar (`/calendar`)
 
 > An interactive seasonal planner with agronomic data for 10 major Indian crops.
 
@@ -263,7 +306,7 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 
 ---
 
-### Feature 6 — Notification Center
+### Feature 7 — Notification Center
 
 > Proactive, categorized alerts delivered via a polished slide-in panel.
 
@@ -277,9 +320,9 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 
 ---
 
-### Feature 7 — Farmer Profile Page (Redesigned)
+### Feature 8 — Farmer Profile Page
 
-> Transformed from a plain input form into a rich, two-column gamification dashboard.
+> Rich two-column gamification dashboard instead of a plain form.
 
 **Left Column — Farm Details Form**
 
@@ -298,16 +341,11 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 
 ---
 
-### Feature 8 — Usage Stats & Subscription Tab
-
-> A transparent view of platform usage and plan capabilities.
+### Feature 9 — Subscription & Upgrade System
 
 **Usage Summary (4 stat cards)**
 
-- Total Advisories Generated — with color-coded card (blue)
-- Days Active / Current Streak — (orange)
-- Missions Completed Today (x/8) — (green)
-- Current Plan Status (Free / Premium) — (slate / purple)
+- Total Advisories Generated · Days Active / Current Streak · Missions Today · Plan Status
 
 **Plan Feature Comparison (8 rows)**
 
@@ -323,31 +361,52 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 | Offline mode                | 🔒 Locked         | ✅ Included       |
 
 - **Upgrade to Premium** CTA button (gradient, ₹199/month) opens the Upgrade Modal
+- Modal: side-by-side plan comparison, animated spinner on confirm, success toast
 
 ---
 
-### Feature 9 — Subscription Upgrade Modal
+### Feature 10 — Admin Portal (`/admin`)
 
-- Side-by-side **Free vs. Premium** plan comparison table
-- Animated "Upgrading..." spinner state on button click
-- Success toast notification confirming plan upgrade
-- Built on Radix UI `Dialog` for full keyboard navigation and screen-reader accessibility
+> Full-featured platform administration for internal operators.
 
----
-
-### Feature 10 — Multilingual Support & Accessibility
-
-| Capability                    | Detail                                                                                                           |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **3 UI Languages**            | English · Hindi (हिंदी) · Odia (ଓଡ଼ିଆ)                                                                           |
-| **Translation Coverage**      | Navigation labels, dashboard tabs, mission names, mission descriptions, toasts, error messages, advisory content |
-| **Voice Input**               | Web Speech API integration in Chatbot — speak in any supported dialect                                           |
-| **Dark Mode**                 | Full dark theme toggled via top-nav; implemented via CSS custom properties                                       |
-| **PWA (Progressive Web App)** | Installable to home screen; Service Worker provides offline caching via Vite PWA Plugin + Workbox                |
+| Capability                | Description                                                        |
+| ------------------------- | ------------------------------------------------------------------ |
+| **Overview KPIs**         | Total farmers, active today, total advisories, total consultations |
+| **User Management**       | View, edit, delete any farmer/vet/admin account                    |
+| **Create User**           | Admin can create accounts for vets, other admins                   |
+| **Seed Default Users**    | One-click to seed default admin + vet accounts in MongoDB          |
+| **Broadcast Message**     | Send platform-wide notifications to all farmers                    |
+| **AMU Ledger View**       | Admin view of the full antimicrobial usage ledger                  |
+| **Consultation Overview** | View all consultations across all vets and farmers                 |
 
 ---
 
-### Feature 11 — Weather & Market Data
+### Feature 11 — AMU Blockchain Ledger (`/amu`)
+
+> Ensuring verifiable, tamper-evident records of antimicrobial usage in livestock treatment.
+
+| Capability                     | Description                                                                                          |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **Hash-Chain Architecture**    | Each AMU log entry is SHA-hashed and chained to the prior entry, creating a tamper-evident ledger    |
+| **Treatment Logging**          | Records antibiotic name, dosage, animal ID, date administered, and attending veterinarian            |
+| **Withdrawal Period Tracking** | Calculates and displays remaining days until produce (milk, meat, eggs) is safe for sale/consumption |
+| **Blockchain Viewer UI**       | Visual ledger interface displaying all entries with their respective hash values and chain links     |
+
+---
+
+### Feature 12 — Multilingual Support & Accessibility
+
+| Capability                    | Detail                                                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **3 UI Languages**            | English · Hindi (हिंदी) · Odia (ଓଡ଼ିଆ)                                                                       |
+| **Translation Coverage**      | Navigation, dashboard tabs, mission names/descriptions, toasts, error messages, advisory content, vet portal |
+| **Voice Input**               | Web Speech API integration in Chatbot — speak in any supported dialect                                       |
+| **Dark Mode**                 | Full dark theme toggled via top-nav; implemented via CSS custom properties                                   |
+| **PWA (Progressive Web App)** | Installable to home screen; Service Worker provides offline caching via Vite PWA Plugin + Workbox            |
+
+---
+
+### Feature 13 — Weather & Market Data
 
 **Weather Card**
 
@@ -362,51 +421,7 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 
 ---
 
-### Feature 12 — AI-Powered Pest & Disease Detector
-
-- Drag-and-drop or file-browse image upload interface
-- Image sent to Python FastAPI microservice for CNN-based inference
-- Response includes: disease name, confidence score (%), clinical description, and treatment recommendation
-- Graceful degradation with informative error state when the AI service is offline
-
----
-
-### Feature 13 — Veterinary Portal (`/vet`)
-
-Dedicated portal for livestock health management targeting veterinary practitioners and farmers:
-
-- Livestock case logs and individual animal health records
-- Treatment history and medication tracking
-- Vaccination schedule planner and reminders
-- Case summary dashboard with status indicators
-
----
-
-### Feature 14 — Admin Portal (`/admin`)
-
-Platform administration interface for internal operators:
-
-- Farmer user account management
-- System health and uptime monitoring
-- Platform-wide usage analytics overview
-- Advisory and content moderation tools
-
----
-
-### Feature 15 — AMU Blockchain Ledger
-
-> Ensuring verifiable, tamper-evident records of antimicrobial usage in livestock treatment.
-
-| Capability                     | Description                                                                                          |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| **Hash-Chain Architecture**    | Each AMU log entry is SHA-hashed and chained to the prior entry, creating a tamper-evident ledger    |
-| **Treatment Logging**          | Records antibiotic name, dosage, animal ID, date administered, and attending veterinarian            |
-| **Withdrawal Period Tracking** | Calculates and displays remaining days until produce (milk, meat, eggs) is safe for sale/consumption |
-| **Blockchain Viewer UI**       | Visual ledger interface displaying all entries with their respective hash values and chain links     |
-
----
-
-### Feature 16 — Navigation System
+### Feature 14 — Navigation System
 
 | Zone                            | Links Available                                                                   |
 | ------------------------------- | --------------------------------------------------------------------------------- |
@@ -414,6 +429,23 @@ Platform administration interface for internal operators:
 | **Authenticated User Dropdown** | Dashboard · 🏆 Leaderboard · 🛒 Marketplace · 📅 Crop Calendar · Profile · Logout |
 | **Mobile Navigation Sheet**     | Full navigation in a slide-in drawer (responsive)                                 |
 | **Top Nav Icons**               | 🌐 Language Switcher · 🔔 Notification Bell (with badge) · 🌙 Dark Mode Toggle    |
+
+---
+
+## Data Models (MongoDB Schemas)
+
+| Model             | Key Fields                                                                |
+| ----------------- | ------------------------------------------------------------------------- |
+| `Farmer`          | name, email, password (bcrypt), phone, soilType, role, subscriptionStatus |
+| `Advisory`        | farmerId, crop, summary, fertilizer, irrigation, pest, weather            |
+| `AdvisoryHistory` | farmerId, crop, advisory text, weatherData, soilData                      |
+| `AnalyticsData`   | farmerId, crop, date, health score, yield, soil metrics, weather metrics  |
+| `DrugLog`         | animalId, drugName, dosage, withdrawalDays, applicator, treatmentDate     |
+| `Block`           | index, timestamp, data, previousHash, hash (blockchain ledger)            |
+| `Consultation`    | farmerId, vetId, animalId, disease, message, status, vetNote              |
+| `VetAdvisory`     | vetId, farmerId (null=all), title, body, crop, targetRole                 |
+
+All models have an **in-memory fallback** via the custom `InMemoryCollection` adapter in `db.ts`.
 
 ---
 
@@ -425,23 +457,26 @@ Platform administration interface for internal operators:
 | **Gamification for Behavior Change** | Converts one-time curiosity into daily, sustained adoption         |
 | **Seasonal Intelligence**            | Advisory and alerts aware of Indian agronomic calendar             |
 | **Offline-First PWA Architecture**   | Usable in areas with no or intermittent connectivity               |
-| **Unified Ecosystem**                | Weather + Soil + AI + Market + Community in one app                |
+| **Unified Ecosystem**                | Weather + Soil + AI + Market + Vet + Community in one app          |
 | **Verified Supply Chain Records**    | AMU blockchain provides trust for organic & compliant produce      |
 | **Middleman-Free Marketplace**       | Farmers capture full value; consumers get fresher, cheaper produce |
+| **Vet-Farmer Direct Channel**        | Rural farmers get veterinary advice without travelling             |
 
 ---
 
 ## Future Roadmap
 
-| Feature                            | Status               | Description                                            |
-| ---------------------------------- | -------------------- | ------------------------------------------------------ |
-| 🛰️ IoT Sensor Integration          | Planned              | Soil moisture sensors + automated irrigation triggers  |
-| 🔗 Full Produce Blockchain         | Partial _(AMU done)_ | Farm-to-consumer traceability on-chain                 |
-| 🛸 Drone Imagery Analysis          | Planned              | Aerial CNN analysis for uneven growth and waterlogging |
-| 🧠 Predictive Outbreak Forecasting | In Progress          | Warn farmers 2–3 weeks ahead using micro-climate ML    |
-| 📲 SMS Fallback Channel            | Planned              | Critical alerts to feature phones with no smartphone   |
-| 💳 UPI Payment Integration         | Planned              | In-app payments for Marketplace transactions           |
-| 🤝 NGO & Government Scheme Links   | Planned              | Verified scheme eligibility checks and NGO advisory    |
+| Feature                             | Status               | Description                                            |
+| ----------------------------------- | -------------------- | ------------------------------------------------------ |
+| 🛰️ IoT Sensor Integration           | Planned              | Soil moisture sensors + automated irrigation triggers  |
+| 🔗 Full Produce Blockchain          | Partial _(AMU done)_ | Farm-to-consumer traceability on-chain                 |
+| 🛸 Drone Imagery Analysis           | Planned              | Aerial CNN analysis for uneven growth and waterlogging |
+| 🧠 Predictive Outbreak Forecasting  | In Progress          | Warn farmers 2–3 weeks ahead using micro-climate ML    |
+| 📲 SMS Fallback Channel             | Planned              | Critical alerts to feature phones with no smartphone   |
+| 💳 UPI Payment Integration          | Planned              | In-app payments for Marketplace transactions           |
+| 🤝 NGO & Government Scheme Links    | Planned              | Verified scheme eligibility checks and NGO advisory    |
+| 🩺 Vet Appointment Scheduling       | Planned              | In-app timed appointment booking for vet visits        |
+| 🗂️ Multilingual Advisory PDF Export | Planned              | One-tap PDF export of advisory in farmer's language    |
 
 ---
 
