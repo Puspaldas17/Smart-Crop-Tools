@@ -4,10 +4,11 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
   Stethoscope, Search, FileText, CheckCircle2, Clock, AlertTriangle,
-  Link2, Users, Send, RefreshCw, ChevronDown, Megaphone, BookOpen,
+  Link2, Users, Send, RefreshCw, ChevronDown, Megaphone, BookOpen, Calendar,
 } from "lucide-react";
+import { AppointmentManager } from "@/components/features/Appointments";
 
-type VetTab = "patients" | "consultations" | "advisory";
+type VetTab = "patients" | "consultations" | "advisory" | "appointments";
 
 interface Consultation {
   _id: string; farmerId: string; farmerName: string;
@@ -18,7 +19,7 @@ interface Advisory { _id: string; title: string; body: string; crop?: string; fa
 interface FarmerRow { _id: string; name: string; email?: string; phone?: string; soilType?: string; subscriptionStatus: string; createdAt: string; }
 
 export default function VetDashboard() {
-  const { farmer } = useAuth();
+  const { farmer, authHeaders } = useAuth();
   const [tab, setTab] = useState<VetTab>("consultations");
 
   // ── Patients ────────────────────────────────────────────────────────────────
@@ -51,7 +52,7 @@ export default function VetDashboard() {
   const loadConsultations = useCallback(() => {
     setCLoading(true);
     const q = statusFilter !== "all" ? `?status=${statusFilter}` : "";
-    fetch(`/api/vet/consultations${q}`)
+    fetch(`/api/vet/consultations${q}`, { headers: authHeaders() })
       .then((r) => r.json()).then((d) => setConsultations(Array.isArray(d) ? d : []))
       .catch(() => setConsultations([])).finally(() => setCLoading(false));
   }, [statusFilter]);
@@ -62,7 +63,7 @@ export default function VetDashboard() {
     try {
       const res = await fetch(`/api/vet/consultations/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ status, vetNote: noteMap[id] || "", vetId: farmer?._id }),
       });
       if (!res.ok) throw new Error("Failed");
@@ -80,7 +81,7 @@ export default function VetDashboard() {
     try {
       const res = await fetch(`/api/vet/consultations/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ vetNote: note, vetId: farmer?._id }),
       });
       if (!res.ok) throw new Error("Failed");
@@ -101,7 +102,7 @@ export default function VetDashboard() {
   const loadAdvisories = useCallback(() => {
     setALoading(true);
     const q = farmer?._id ? `?vetId=${farmer._id}` : "";
-    fetch(`/api/vet/advisories${q}`)
+    fetch(`/api/vet/advisories${q}`, { headers: authHeaders() })
       .then((r) => r.json()).then((d) => setAdvisories(Array.isArray(d) ? d : []))
       .catch(() => setAdvisories([])).finally(() => setALoading(false));
   }, [farmer?._id]);
@@ -113,7 +114,7 @@ export default function VetDashboard() {
     try {
       const res = await fetch("/api/vet/advisory", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ ...advForm, vetId: farmer._id }),
       });
       if (!res.ok) throw new Error("Failed");
@@ -127,9 +128,10 @@ export default function VetDashboard() {
   useEffect(() => { if (tab === "advisory") loadAdvisories(); }, [tab, loadAdvisories]);
 
   const TABS: { id: VetTab; label: string; icon: React.ReactNode }[] = [
-    { id: "consultations", label: "Consultations", icon: <AlertTriangle className="h-4 w-4" /> },
-    { id: "patients",      label: "My Patients",   icon: <Users className="h-4 w-4" /> },
-    { id: "advisory",      label: "Advisory",      icon: <Megaphone className="h-4 w-4" /> },
+    { id: "consultations", label: "Consultations",  icon: <AlertTriangle className="h-4 w-4" /> },
+    { id: "patients",      label: "My Patients",    icon: <Users className="h-4 w-4" /> },
+    { id: "advisory",      label: "Advisory",       icon: <Megaphone className="h-4 w-4" /> },
+    { id: "appointments",  label: "Appointments",   icon: <Calendar className="h-4 w-4" /> },
   ];
 
   return (
@@ -411,6 +413,13 @@ export default function VetDashboard() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Appointments tab */}
+      {tab === "appointments" && (
+        <div className="glass-card gradient-border rounded-2xl p-6">
+          <AppointmentManager />
         </div>
       )}
     </div>

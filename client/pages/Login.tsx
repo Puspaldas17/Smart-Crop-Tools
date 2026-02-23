@@ -34,9 +34,10 @@ export default function Login() {
       
       if (!res.ok) throw new Error(data.error || "Login failed");
 
-      login(data);
+      login(data.user ?? data, data.token);
       toast.success("Welcome back!");
-      navigate("/dashboard");
+      const role = (data.user ?? data).role;
+      navigate(role === "admin" ? "/admin" : role === "vet" ? "/vet" : "/dashboard");
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -60,7 +61,7 @@ export default function Login() {
 
       if (!res.ok) throw new Error(data.error || "Registration failed");
 
-      login(data);
+      login(data.user ?? data, data.token);
       toast.success("Account created successfully!");
       navigate("/dashboard");
     } catch (err: any) {
@@ -90,9 +91,9 @@ export default function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Demo login failed");
 
-      login(data);
+      login(data.user ?? data, data.token);
       toast.success(`Logged in as ${role === "admin" ? "Authority Admin" : "Vet Officer"}`);
-      navigate(role === "admin" ? "/admin" : "/dashboard");
+      navigate(role === "admin" ? "/admin" : "/vet");
     } catch (err: any) {
       toast.error(err.message);
     } finally {

@@ -21,6 +21,7 @@ import VetDashboard from "./pages/VetDashboard";
 import Leaderboard from "./pages/Leaderboard";
 import Marketplace from "./pages/Marketplace";
 import CropCalendar from "./pages/CropCalendar";
+import ToolsPage from "./pages/ToolsPage";
 import { AuthProvider } from "@/hooks/useAuth";
 import { GamificationProvider } from "@/context/GamificationContext";
 
@@ -77,6 +78,7 @@ const App = () => (
                     <Route path="/leaderboard" element={<Leaderboard />} />
                     <Route path="/marketplace" element={<Marketplace />} />
                     <Route path="/calendar" element={<CropCalendar />} />
+                    <Route path="/tools" element={<ToolsPage />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Route>

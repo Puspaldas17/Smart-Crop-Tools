@@ -310,4 +310,20 @@ const vetAdvisorySchema = new mongoose.Schema(
 export const VetAdvisory: any = USE_MEMORY
   ? new InMemoryCollection("VetAdvisory")
   : mongoose.models.VetAdvisory || mongoose.model("VetAdvisory", vetAdvisorySchema);
+// ── Appointment (Farmer ↔ Vet scheduled visit) ───────────────────────────────
+const appointmentSchema = new mongoose.Schema(
+  {
+    farmerId:    { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    vetId:       { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    animalId:    { type: String },
+    reason:      { type: String, required: true },
+    scheduledAt: { type: Date, required: true },
+    status:      { type: String, enum: ["pending", "confirmed", "completed", "cancelled"], default: "pending" },
+    vetNote:     { type: String },
+  },
+  { timestamps: true },
+);
 
+export const Appointment: any = USE_MEMORY
+  ? new InMemoryCollection("Appointment")
+  : mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema);
