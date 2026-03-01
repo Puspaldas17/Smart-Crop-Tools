@@ -401,14 +401,14 @@ All models have an **in-memory fallback** via the custom `InMemoryCollection` ad
 
 ## Future Roadmap
 
-| Feature                     | Status  | Description                                            |
-| --------------------------- | ------- | ------------------------------------------------------ |
-| 💳 UPI Payment Integration  | Planned | In-app payments for Marketplace transactions           |
-| 📲 SMS Fallback Channel     | Planned | Critical alerts to feature phones via Twilio           |
-| 🔗 QR Code per Produce Lot  | Planned | QR traceability for each blockchain-registered harvest |
-| 🧪 Real AI/ML Backend       | Planned | Full Python CNN model integration (currently mock)     |
-| 🌐 Live Deployment          | Planned | Render.com + MongoDB Atlas cloud deployment            |
-| ✅ Unit & Integration Tests | Planned | Vitest + React Testing Library test suite              |
+| Feature                     | Status      | Description                                             |
+| --------------------------- | ----------- | ------------------------------------------------------- |
+| 💳 UPI Payment Integration  | Planned     | In-app payments for Marketplace transactions            |
+| 📲 SMS Fallback Channel     | Planned     | Critical alerts to feature phones via Twilio            |
+| 🔗 QR Code per Produce Lot  | Planned     | QR traceability for each blockchain-registered harvest  |
+| 🧪 Real AI/ML Backend       | Implemented | Full Python CNN model integration for disease detection |
+| 🌐 Live Deployment          | Planned     | Render.com + MongoDB Atlas cloud deployment             |
+| ✅ Unit & Integration Tests | Implemented | Vitest test suite                                       |
 
 ---
 

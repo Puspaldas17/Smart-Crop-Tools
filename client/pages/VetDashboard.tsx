@@ -29,7 +29,7 @@ export default function VetDashboard() {
 
   const loadPatients = useCallback(() => {
     setPLoading(true);
-    fetch("/api/vet/farmers")
+    fetch("/api/vet/farmers", { headers: authHeaders() })
       .then((r) => r.json()).then((d) => setPatients(Array.isArray(d) ? d : []))
       .catch(() => setPatients([])).finally(() => setPLoading(false));
   }, []);

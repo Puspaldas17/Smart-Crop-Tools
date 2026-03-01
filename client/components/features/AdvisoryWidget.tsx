@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
 export default function AdvisoryWidget() {
-  const { farmer } = useAuth();
+  const { farmer, authHeaders } = useAuth();
   const { t } = useTranslation();
   const [status, setStatus] = useState("");
   const [advisory, setAdvisory] = useState<any>(null);
@@ -32,7 +32,7 @@ export default function AdvisoryWidget() {
     try {
       const r = await fetch("/api/advisories", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ crop, lat: coords.lat, lon: coords.lon }),
       });
       const data = await r.json();
@@ -67,12 +67,12 @@ export default function AdvisoryWidget() {
             await Promise.all([
               fetch("/api/advisory/history", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeaders() },
                 body: JSON.stringify(historyPayload),
               }),
               fetch("/api/analytics/record", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeaders() },
                 body: JSON.stringify(analyticsPayload),
               }),
             ]);

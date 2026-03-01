@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 const PIE_COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444", "#a855f7"];
 type AdminTab = "overview" | "users" | "amu" | "broadcast" | "system";
@@ -45,16 +46,18 @@ function MetricCard({ icon, label, value, sub, accent }: {
 
 // ─── Overview Tab ─────────────────────────────────────────────────────────────
 function OverviewTab({ data }: { data: any }) {
+  const { authHeaders } = useAuth();
   const [consultations, setConsultations] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/admin/consultations")
+    fetch("/api/admin/consultations", { headers: authHeaders() })
       .then((r) => r.json())
       .then((d) => setConsultations(Array.isArray(d) ? d : []))
       .catch(() => setConsultations([]));
   }, []);
 
   if (!data) return <div className="text-center text-muted-foreground py-12">Loading…</div>;
+  if (data.error || !data.metrics) return <div className="text-center text-red-500 py-12">Failed to load overview data.</div>;
   const { metrics, adoptionTrend, diseaseDistribution } = data;
   const pendingConsultations = consultations.filter((c) => c.status === "pending").length;
   return (
@@ -192,6 +195,7 @@ function OverviewTab({ data }: { data: any }) {
 
 // ─── Users Tab ────────────────────────────────────────────────────────────────
 function UsersTab() {
+  const { authHeaders } = useAuth();
   const [farmers, setFarmers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
@@ -202,7 +206,7 @@ function UsersTab() {
   const load = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams({ q, role: roleFilter, status: statusFilter });
-    fetch(`/api/admin/farmers?${params}`)
+    fetch(`/api/admin/farmers?${params}`, { headers: authHeaders() })
       .then((r) => r.json())
       .then((d) => setFarmers(Array.isArray(d) ? d : []))
       .catch(() => setFarmers([]))
@@ -213,7 +217,7 @@ function UsersTab() {
 
   const handleDelete = async (id: string, name: string) => {
     if (!window.confirm(`Delete ${name}?`)) return;
-    await fetch(`/api/admin/farmers/${id}`, { method: "DELETE" });
+    await fetch(`/api/admin/farmers/${id}`, { method: "DELETE", headers: authHeaders() });
     toast.success(`Deleted ${name}`);
     load();
   };
@@ -221,13 +225,17 @@ function UsersTab() {
   const handlePatch = async (id: string, field: string, value: string) => {
     await fetch(`/api/admin/farmers/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify({ [field]: value }),
     });
     toast.success("Updated");
     setEditing(null);
     load();
   };
+
+  const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", role: "farmer", subscriptionStatus: "free" });
 
   // ── CSV Export ─────────────────────────────────────────────────────────────
   const exportCSV = () => {
@@ -251,10 +259,6 @@ function UsersTab() {
     toast.success(`Exported ${farmers.length} users to CSV`);
   };
 
-  const [showCreate, setShowCreate] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", role: "farmer", subscriptionStatus: "free" });
-
   const handleCreate = async () => {
     if (!form.name || !form.email || !form.password) {
       toast.error("Name, email and password are required"); return;
@@ -263,7 +267,7 @@ function UsersTab() {
     try {
       const res = await fetch("/api/admin/create-user", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify(form),
       });
       const data = await res.json();
@@ -462,10 +466,11 @@ function UsersTab() {
 
 // ─── AMU Ledger Tab ──────────────────────────────────────────────────────────
 function AmuTab() {
+  const { authHeaders } = useAuth();
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/admin/amu")
+    fetch("/api/admin/amu", { headers: authHeaders() })
       .then((r) => r.json())
       .then(setData)
       .catch(() => setData({ logs: [], chainLength: 0 }));
@@ -532,6 +537,7 @@ function AmuTab() {
 
 // ─── Broadcast Tab ─────────────────────────────────────────────────────────────
 function BroadcastTab() {
+  const { authHeaders } = useAuth();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [target, setTarget] = useState("all");
@@ -539,7 +545,7 @@ function BroadcastTab() {
   const [history, setHistory] = useState<any[]>([]);
 
   const loadHistory = () => {
-    fetch("/api/admin/broadcasts").then((r) => r.json()).then(setHistory).catch(() => {});
+    fetch("/api/admin/broadcasts", { headers: authHeaders() }).then((r) => r.json()).then(setHistory).catch(() => {});
   };
 
   useEffect(loadHistory, []);
@@ -549,7 +555,7 @@ function BroadcastTab() {
     setSending(true);
     await fetch("/api/admin/broadcast", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify({ title, body, target }),
     });
     toast.success("Broadcast sent!");
@@ -687,13 +693,14 @@ const TABS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
 ];
 
 export default function AdminDashboard() {
+  const { authHeaders } = useAuth();
   const [tab, setTab] = useState<AdminTab>("overview");
   const [overview, setOverview] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const loadOverview = () => {
     setLoading(true);
-    fetch("/api/admin/overview")
+    fetch("/api/admin/overview", { headers: authHeaders() })
       .then((r) => r.json())
       .then(setOverview)
       .catch(() => setOverview(null))

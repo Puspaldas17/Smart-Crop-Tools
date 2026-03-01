@@ -249,6 +249,8 @@ AgriVerse/
 | PWA icons missing         | Run `npm run build` once to generate PWA assets                     |
 | Consultations not showing | Ensure farmer is logged in (non-guest) and MongoDB is connected     |
 | Red underline in index.ts | Run `Ctrl+Shift+P → TypeScript: Restart TS Server` in VS Code       |
+| 401 Unauthorized errors   | Ensure `useAuth().authHeaders()` is appended to any new `fetch()`   |
+| "Failed to load" UI error | Verify the `/api` route is not crashing and returns valid JSON      |
 
 ---
 

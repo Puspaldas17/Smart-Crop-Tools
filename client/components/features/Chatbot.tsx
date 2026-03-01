@@ -11,7 +11,7 @@ export default function Chatbot() {
   >([]);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { farmer } = useAuth();
+  const { farmer, authHeaders } = useAuth();
   const [lang, setLang] = useState("en-IN");
   const {
     listening,
@@ -97,7 +97,7 @@ export default function Chatbot() {
       const id = setTimeout(() => controller.abort(), 8000);
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         // Pass 'lang' to server so it knows which language to reply in
         body: JSON.stringify({ message: msg, lang, ...(coords || {}) }),
         signal: controller.signal,
