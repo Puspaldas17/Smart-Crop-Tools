@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { TrendingUp, Droplets, Cloud, Bug, Sprout, ThermometerSun, Wind } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 // ─── Rich mock data shown when backend returns nothing ──────────────────────
 function generateDays(n: number) {
@@ -62,6 +63,7 @@ const MOCK_CROP_TRENDS = DAYS.filter((_, i) => i % 3 === 0).map((date, i) => ({
 // ────────────────────────────────────────────────────────────────────────────
 
 export default function Analytics({ farmerId }: { farmerId: string }) {
+  const { authHeaders } = useAuth();
   const [summary, setSummary] = useState(MOCK_SUMMARY);
   const [weatherData, setWeatherData] = useState(MOCK_WEATHER);
   const [cropTrends, setCropTrends] = useState(MOCK_CROP_TRENDS);
@@ -76,9 +78,9 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
     try {
       setLoading(true);
       const [summaryRes, weatherRes, cropRes] = await Promise.all([
-        fetch(`/api/analytics/summary/${farmerId}?days=30`),
-        fetch(`/api/analytics/weather-impact/${farmerId}?days=30`),
-        fetch(`/api/analytics/crop-trends/${farmerId}?crop=Wheat`),
+        fetch(`/api/analytics/summary/${farmerId}?days=30`, { headers: authHeaders() }),
+        fetch(`/api/analytics/weather-impact/${farmerId}?days=30`, { headers: authHeaders() }),
+        fetch(`/api/analytics/crop-trends/${farmerId}?crop=Wheat`, { headers: authHeaders() }),
       ]);
 
       if (summaryRes.ok) {

@@ -1,0 +1,15 @@
+{
+  "name": "AgriVerse - Smart Farming",
+  "short_name": "AgriVerse",
+  "description": "AI-powered sustainable farming assistant",
+  "theme_color": "#16a34a",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
