@@ -41,7 +41,7 @@ export default function ToolsSection({
       {shouldMount ? (
         children
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+        <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
           Scroll here or click Open Tools to load…
         </div>
       )}

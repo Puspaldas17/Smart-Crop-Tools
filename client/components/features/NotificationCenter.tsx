@@ -249,7 +249,7 @@ export function NotificationCenter({
                     <span className={cn(
                       "inline-flex items-center justify-center h-4 min-w-[16px] rounded-full text-[10px] font-bold px-1",
                       active
-                        ? "bg-white/25 text-primary-foreground"
+                        ? "bg-card text-foreground"
                         : "bg-muted-foreground/15 text-muted-foreground",
                     )}>
                       {count}

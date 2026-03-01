@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { ModeToggle } from "@/components/mode-toggle";
 import { useTranslation } from "react-i18next";
 import { NotificationBell } from "@/components/features/NotificationCenter";
 
@@ -140,7 +139,6 @@ export default function RootLayout() {
           <div className="flex items-center gap-3">
              <LanguageSwitcher />
             <NotificationBell />
-            <ModeToggle />
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>

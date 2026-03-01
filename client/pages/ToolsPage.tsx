@@ -34,7 +34,7 @@ export default function ToolsPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/dashboard")}
-            className="h-9 w-9 rounded-lg border border-white/10 flex items-center justify-center hover:bg-white/5 transition"
+            className="h-9 w-9 rounded-lg border border-border flex items-center justify-center hover:bg-accent transition"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
@@ -57,7 +57,7 @@ export default function ToolsPage() {
                 "flex flex-col items-center gap-1 text-center p-3 rounded-xl border transition-all",
                 activeTab === id
                   ? "border-primary/40 bg-primary/10 text-primary"
-                  : "border-white/10 hover:border-white/20 hover:bg-white/5 text-muted-foreground"
+                  : "border-border hover:border-border/80 hover:bg-accent text-muted-foreground"
               )}
             >
               <Icon className="h-5 w-5" />

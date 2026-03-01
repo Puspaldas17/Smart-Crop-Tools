@@ -118,7 +118,7 @@ export default function Chatbot() {
   }
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white">
+    <div className="flex h-full flex-col rounded-xl border border-border bg-card text-card-foreground">
       <div className="flex items-center justify-between border-b border-slate-200 p-4">
         <div className="text-sm font-semibold">{t('chat.title')}</div>
         <div className="flex items-center gap-2">
@@ -179,7 +179,7 @@ export default function Chatbot() {
             className={`${m.role === "user" ? "justify-end" : "justify-start"} flex`}
           >
             <div
-              className={`${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-slate-100 text-slate-800"} max-w-[80%] rounded-lg px-4 py-2.5 text-sm`}
+              className={`${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"} max-w-[80%] rounded-lg px-4 py-2.5 text-sm`}
             >
               {m.content}
             </div>
