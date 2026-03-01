@@ -759,3 +759,21 @@ body::after {
     z-index: -1;
   }
 }
+
+/* ── Live indicator dot ──────────────────────────────────────────────────── */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.5); }
+}
+.animate-pulse-dot {
+  animation: pulseDot 1.8s ease-in-out infinite;
+}
+
+/* ── Fade in up (AdminDashboard create panel) ────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.25s ease-out both;
+}

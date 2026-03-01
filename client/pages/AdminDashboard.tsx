@@ -8,7 +8,7 @@ import {
   Users, Activity, AlertTriangle, ShieldCheck, TrendingUp,
   RefreshCw, Trash2, Crown, ChevronDown, Search, Send,
   Bell, Settings, LayoutDashboard, Syringe, UserCog,
-  CheckCircle2, XCircle, Wifi, Database, Stethoscope,
+  CheckCircle2, XCircle, Wifi, Database, Stethoscope, Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -229,6 +229,28 @@ function UsersTab() {
     load();
   };
 
+  // ── CSV Export ─────────────────────────────────────────────────────────────
+  const exportCSV = () => {
+    const headers = ["Name", "Email", "Phone", "Role", "Subscription", "Soil Type", "Land Size", "Created At"];
+    const rows = farmers.map((f) => [
+      f.name ?? "",
+      f.email ?? "",
+      f.phone ?? "",
+      f.role ?? "farmer",
+      f.subscriptionStatus ?? "free",
+      f.soilType ?? "",
+      f.landSize ?? "",
+      f.createdAt ? new Date(f.createdAt).toLocaleDateString("en-IN") : "",
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `agriverse_users_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    toast.success(`Exported ${farmers.length} users to CSV`);
+  };
+
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", role: "farmer", subscriptionStatus: "free" });
@@ -259,8 +281,21 @@ function UsersTab() {
 
   return (
     <div className="space-y-4">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <p className="text-sm text-muted-foreground font-medium">{farmers.length} users in database</p>
+        <button
+          onClick={exportCSV}
+          disabled={farmers.length === 0}
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted transition disabled:opacity-40"
+        >
+          <Download className="h-4 w-4" /> Export CSV
+        </button>
+      </div>
+
       {/* Create User Panel */}
       <div className="glass-card gradient-border rounded-xl overflow-hidden">
+
         <button
           onClick={() => setShowCreate(!showCreate)}
           className="w-full flex items-center justify-between px-5 py-3 text-sm font-semibold hover:bg-muted/30 transition-colors"

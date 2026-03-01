@@ -265,9 +265,19 @@ export default function Marketplace() {
             >
               {t("market.whatsapp")}
             </a>
+            {/* UPI Payment deeplink */}
+            <a
+              href={`upi://pay?pa=${contactListing.phone.replace(/\s/g, "")}@ybl&pn=${encodeURIComponent(contactListing.seller)}&am=${contactListing.price}&cu=INR&tn=${encodeURIComponent(contactListing.crop + " - AgriVerse")}`}
+              onClick={() => setContactListing(null)}
+              className="mt-2 flex items-center justify-center gap-2 w-full py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-medium text-sm transition-colors text-center"
+            >
+              <span className="font-bold">₹</span> Pay via UPI · ₹{contactListing.price}/{contactListing.unit}
+            </a>
+            <p className="text-[10px] text-center text-muted-foreground mt-1">Opens PhonePe / GPay / BHIM automatically</p>
           </div>
         </div>
       )}
+
 
       {/* Post Listing Modal */}
       {showPostForm && (
