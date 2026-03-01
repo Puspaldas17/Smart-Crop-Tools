@@ -250,7 +250,7 @@ export function ProduceBlockchain({ farmerId, farmerName }: { farmerId?: string;
                       </div>
                       {qrVisible && (
                         <div className="flex flex-col items-center gap-2">
-                          <div id={`qr-svg-${rec.id}`} className="rounded-xl p-3 bg-white shadow-lg inline-block">
+                          <div id={`qr-svg-${rec.id}`} className="rounded-xl p-3 bg-card text-card-foreground shadow-lg inline-block">
                             <QRCodeSVG data={qrData(rec)} size={140} />
                           </div>
                           <p className="text-[10px] text-muted-foreground text-center">

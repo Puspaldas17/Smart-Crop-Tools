@@ -89,7 +89,7 @@ export default function AdvisoryWidget() {
   return (
     <div
       id="advisory"
-      className="my-5 rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+      className="my-5 rounded-xl border border-border bg-card text-card-foreground p-8 shadow-sm"
     >
       <h3 className="text-xl font-semibold">{t('advisory.title')}</h3>
       <form onSubmit={onSubmit} className="mt-3 flex items-stretch gap-3">
