@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Calendar,
   Clock,
@@ -37,18 +41,16 @@ const statusConfig = {
   cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-400 border-red-500/30",          icon: XCircle },
 };
 
-/** Farmer-facing appointment booking panel */
+/* ─── Farmer-facing booking panel ────────────────────────────────────────── */
 export function AppointmentBooking() {
   const { farmer, authHeaders } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+
+  // Dialog open state lives at the TOP of the component — not inside the flex header.
+  // This is what prevents the layout-reflow "glitch" when the dialog mounts.
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const [form, setForm] = useState({
-    animalId: "",
-    reason: "",
-    scheduledAt: "",
-  });
+  const [form, setForm] = useState({ animalId: "", reason: "", scheduledAt: "" });
 
   async function fetchAppointments() {
     if (!farmer?._id) return;
@@ -86,70 +88,95 @@ export function AppointmentBooking() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+
+      {/* ── Header row ───────────────────────────────────────────────────────
+          Using a plain onClick button instead of <DialogTrigger> nested
+          inside this flex row. That was causing the layout "glitch" jump. */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           Vet Appointments
         </h3>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="gap-1">
-              <Plus className="h-4 w-4" />
-              Book Appointment
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="glass-card border-white/10">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Stethoscope className="h-5 w-5 text-primary" />
-                Schedule a Vet Visit
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleBook} className="space-y-4 mt-2">
-              <div>
-                <Label htmlFor="animalId">Animal ID / Tag (optional)</Label>
-                <Input
-                  id="animalId"
-                  placeholder="e.g. COW-042"
-                  value={form.animalId}
-                  onChange={(e) => setForm((f) => ({ ...f, animalId: e.target.value }))}
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="reason">Reason / Symptoms *</Label>
-                <Textarea
-                  id="reason"
-                  required
-                  placeholder="Describe the issue or reason for visit..."
-                  value={form.reason}
-                  onChange={(e) => setForm((f) => ({ ...f, reason: e.target.value }))}
-                  className="mt-1"
-                  rows={3}
-                />
-              </div>
-              <div>
-                <Label htmlFor="scheduledAt">Preferred Date & Time *</Label>
-                <Input
-                  id="scheduledAt"
-                  type="datetime-local"
-                  required
-                  min={new Date().toISOString().slice(0, 16)}
-                  value={form.scheduledAt}
-                  onChange={(e) => setForm((f) => ({ ...f, scheduledAt: e.target.value }))}
-                  className="mt-1"
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Booking..." : "Request Appointment"}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <Button size="sm" className="gap-1" onClick={() => setOpen(true)}>
+          <Plus className="h-4 w-4" />
+          Book Appointment
+        </Button>
       </div>
 
-      {/* Appointment cards */}
+      {/* ── Dialog rendered at root level ───────────────────────────────────
+          No <DialogTrigger> wrapper needed — controlled via open/onOpenChange. */}
+      <Dialog open={open} onOpenChange={(v) => { if (!loading) setOpen(v); }}>
+        <DialogContent className="text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-white">
+              <Stethoscope className="h-5 w-5 text-primary" />
+              Schedule a Vet Visit
+            </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleBook} className="space-y-4 mt-2">
+            <div>
+              <Label htmlFor="appt-animalId" className="text-slate-200 font-medium">
+                Animal ID / Tag <span className="text-slate-400 font-normal">(optional)</span>
+              </Label>
+              <Input
+                id="appt-animalId"
+                placeholder="e.g. COW-042"
+                value={form.animalId}
+                onChange={(e) => setForm((f) => ({ ...f, animalId: e.target.value }))}
+                className="mt-1.5 bg-white/8 border-white/20 text-white placeholder:text-slate-500 focus-visible:ring-primary focus-visible:border-primary"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="appt-reason" className="text-slate-200 font-medium">
+                Reason / Symptoms <span className="text-red-400">*</span>
+              </Label>
+              <Textarea
+                id="appt-reason"
+                required
+                placeholder="Describe the issue or reason for visit..."
+                value={form.reason}
+                onChange={(e) => setForm((f) => ({ ...f, reason: e.target.value }))}
+                className="mt-1.5 bg-white/8 border-white/20 text-white placeholder:text-slate-500 focus-visible:ring-primary focus-visible:border-primary resize-none"
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="appt-scheduledAt" className="text-slate-200 font-medium">
+                Preferred Date &amp; Time <span className="text-red-400">*</span>
+              </Label>
+              <Input
+                id="appt-scheduledAt"
+                type="datetime-local"
+                required
+                min={new Date().toISOString().slice(0, 16)}
+                value={form.scheduledAt}
+                onChange={(e) => setForm((f) => ({ ...f, scheduledAt: e.target.value }))}
+                className="mt-1.5 bg-white/8 border-white/20 text-white [color-scheme:dark] focus-visible:ring-primary focus-visible:border-primary"
+              />
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1 border-white/20 text-slate-200 hover:bg-white/10 hover:text-white"
+                onClick={() => setOpen(false)}
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1" disabled={loading}>
+                {loading ? "Booking…" : "Request Appointment"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Appointment list ─────────────────────────────────────────────── */}
       {appointments.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
           <Calendar className="h-10 w-10 mx-auto mb-2 opacity-40" />
@@ -200,11 +227,12 @@ export function AppointmentBooking() {
   );
 }
 
-/** Vet-facing appointment manager panel */
+/* ─── Vet-facing appointment manager ─────────────────────────────────────── */
 export function AppointmentManager() {
   const { authHeaders } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [vetNote, setVetNote] = useState<Record<string, string>>({});
 
   async function fetchAll() {
     try {
@@ -236,8 +264,6 @@ export function AppointmentManager() {
       setUpdating(null);
     }
   }
-
-  const [vetNote, setVetNote] = useState<Record<string, string>>({});
 
   return (
     <div className="space-y-4">
@@ -284,17 +310,13 @@ export function AppointmentManager() {
                     </span>
                   </div>
 
-                  {/* Vet note */}
-                  <div className="space-y-2">
-                    <Input
-                      placeholder="Add a note (optional)..."
-                      value={vetNote[appt._id] ?? appt.vetNote ?? ""}
-                      onChange={(e) => setVetNote((n) => ({ ...n, [appt._id]: e.target.value }))}
-                      className="text-sm"
-                    />
-                  </div>
+                  <Input
+                    placeholder="Add a note (optional)..."
+                    value={vetNote[appt._id] ?? appt.vetNote ?? ""}
+                    onChange={(e) => setVetNote((n) => ({ ...n, [appt._id]: e.target.value }))}
+                    className="text-sm"
+                  />
 
-                  {/* Action buttons */}
                   <div className="flex flex-wrap gap-2">
                     {appt.status === "pending" && (
                       <Button

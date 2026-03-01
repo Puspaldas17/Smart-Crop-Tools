@@ -159,7 +159,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="w-full">
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate("/#tools")}
@@ -172,10 +172,10 @@ export default function Dashboard() {
 
       <div className="grid gap-8">
         <div className="rounded-xl border border-border bg-card text-card-foreground p-6 shadow-sm">
-          <div className="flex items-start justify-between mb-6">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
             <div>
               <h1 className="text-3xl font-bold">{farmer?.name}</h1>
-              <div className="flex items-center gap-3 mt-1">
+              <div className="flex flex-wrap items-center gap-2 mt-1">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold border border-yellow-200">
                   <Star className="w-3 h-3 fill-yellow-800" /> {t('dash.level')} {level}
                 </span>
@@ -313,7 +313,7 @@ export default function Dashboard() {
         </div>
 
         <div className="rounded-xl border border-border bg-card text-card-foreground overflow-hidden shadow-sm">
-          <div className="border-b border-border p-6 flex gap-4 overflow-x-auto remove-scrollbar">
+          <div className="border-b border-border px-4 py-3 flex gap-3 overflow-x-auto remove-scrollbar">
             <button
               onClick={() => setActiveTab("missions")}
               className={`font-medium pb-2 border-b-2 whitespace-nowrap inline-flex items-center gap-2 ${

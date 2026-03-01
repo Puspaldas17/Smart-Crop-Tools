@@ -3,6 +3,10 @@ import { Farmer, Consultation, VetAdvisory } from "../db";
 
 export const createFarmer: RequestHandler = async (req, res) => {
   try {
+    const { name, phone } = req.body;
+    if (!name || !phone) {
+      return res.status(400).json({ error: "name and phone are required" });
+    }
     const data = await Farmer.create(req.body);
     res.status(201).json(data);
   } catch (e) {

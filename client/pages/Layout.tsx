@@ -47,7 +47,7 @@ function HeaderAuth() {
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
               {farmer.name?.charAt(0)?.toUpperCase() || "F"}
             </span>
-            <span className="max-w-[10rem] truncate">{farmer.name}</span>
+            <span className="max-w-[7rem] sm:max-w-[10rem] truncate">{farmer.name}</span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -116,7 +116,7 @@ export default function RootLayout() {
             : "border-transparent bg-background/40 backdrop-blur-sm")
         }
       >
-        <div className="container max-w-[1400px] px-4 md:px-8 flex items-center justify-between py-6">
+        <div className="container max-w-[1400px] px-4 md:px-8 flex items-center justify-between py-3 md:py-5">
           <Link to="/" className="flex items-center gap-2 font-semibold group">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-[#ff8a00] to-[#2ea043] text-white font-bold animate-float shadow-lg group-hover:shadow-[0_0_16px_hsl(120_39%_40%/0.5)] transition-shadow duration-300">
               SC

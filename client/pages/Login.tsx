@@ -171,7 +171,7 @@ export default function Login() {
                   <Label htmlFor="reg-password">Password</Label>
                   <Input id="reg-password" name="password" type="password" required />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                      <Label htmlFor="reg-soil">Soil Type</Label>
                      <Input id="reg-soil" name="soilType" placeholder="Loam" />

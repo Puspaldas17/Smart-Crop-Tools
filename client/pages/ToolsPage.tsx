@@ -81,16 +81,7 @@ export default function ToolsPage() {
             {activeTab === "schemes" && (
               <SchemesFinder landSize={farmer?.landSize ?? undefined} />
             )}
-            {activeTab === "pdf" && (
-              <PDFExport
-                farmer={{
-                  name: farmer?.name,
-                  farmId: farmer?._id,
-                  soilType: farmer?.soilType,
-                  phone: farmer?.phone,
-                }}
-              />
-            )}
+            {activeTab === "pdf" && <PDFExport />}
           </Suspense>
         </div>
       </div>
