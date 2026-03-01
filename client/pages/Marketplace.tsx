@@ -113,14 +113,14 @@ export default function Marketplace() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
+        <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <ShoppingCart className="h-6 w-6 text-green-600" />
+            <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
               {t("market.title")}
             </h1>
             <p className="text-sm text-muted-foreground">{t("market.subtitle")}</p>
@@ -128,7 +128,7 @@ export default function Marketplace() {
         </div>
         <button
           onClick={() => setShowPostForm(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
         >
           <Plus className="h-4 w-4" /> {t("market.post")}
         </button>
@@ -136,7 +136,7 @@ export default function Marketplace() {
 
       {/* Search, State & Category Filters */}
       <div className="flex flex-col gap-3 mb-6">
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -151,22 +151,22 @@ export default function Marketplace() {
           <select
             value={stateFilter}
             onChange={(e) => setStateFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 min-w-[150px]"
+            className="w-full sm:w-auto px-3 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 sm:min-w-[150px]"
           >
             {ALL_STATES.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
         </div>
-        {/* Category pills */}
-        <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl w-fit">
-          <Filter className="h-4 w-4 text-muted-foreground ml-2" />
+        {/* Category pills — scrollable on mobile */}
+        <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl overflow-x-auto remove-scrollbar">
+          <Filter className="h-4 w-4 text-muted-foreground ml-2 flex-shrink-0" />
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
               className={cn(
-                "px-3 py-1.5 text-sm rounded-lg transition-all font-medium",
+                "px-3 py-1.5 text-sm rounded-lg transition-all font-medium whitespace-nowrap",
                 category === cat ? "bg-background shadow text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >

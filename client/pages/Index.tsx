@@ -59,7 +59,7 @@ function ToolsSuiteInner() {
       <div id="advisory">
         <Suspense fallback={<CardSkeleton label="Loading…" />}><AdvisoryWidget /></Suspense>
       </div>
-      <div className="grid gap-8 min-[577px]:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-3">
         <div id="chat">
           <Suspense fallback={<CardSkeleton />}><Chatbot /></Suspense>
         </div>

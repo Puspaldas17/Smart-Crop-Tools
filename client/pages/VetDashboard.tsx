@@ -139,7 +139,7 @@ export default function VetDashboard() {
       {/* Header */}
       <div className="glass-card gradient-border rounded-2xl px-6 py-5 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <Stethoscope className="h-7 w-7 text-blue-500" />
             <span className="gradient-text">Veterinary Portal</span>
           </h1>
@@ -152,11 +152,11 @@ export default function VetDashboard() {
         </a>
       </div>
 
-      {/* Tab bar */}
-      <div className="flex gap-1 bg-muted/40 p-1 rounded-xl w-fit">
+      {/* Tab bar — scrollable on mobile */}
+      <div className="flex gap-1 bg-muted/40 p-1 rounded-xl overflow-x-auto remove-scrollbar">
         {TABS.map(({ id, label, icon }) => (
           <button key={id} onClick={() => setTab(id)}
-            className={cn("flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-lg transition-all",
+            className={cn("flex items-center gap-1.5 px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-all whitespace-nowrap flex-shrink-0",
               tab === id ? "bg-background shadow text-foreground" : "text-muted-foreground hover:text-foreground")}>
             {icon} {label}
             {id === "consultations" && consultations.filter(c => c.status === "pending").length > 0 && (
@@ -171,7 +171,7 @@ export default function VetDashboard() {
       {/* ── CONSULTATIONS TAB ─────────────────────────────────────────── */}
       {tab === "consultations" && (
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
               className="text-sm rounded-lg border border-border bg-background px-3 py-2">
               <option value="all">All Requests</option>

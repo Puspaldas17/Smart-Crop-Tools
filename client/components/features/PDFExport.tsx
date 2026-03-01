@@ -1,142 +1,280 @@
-import { useState } from "react";
-import { FileDown, Loader2, CheckCircle2, FileText } from "lucide-react";
+import { useState, useRef } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
-interface ReportConfig {
-  label: string;
-  key: string;
-  checked: boolean;
-}
-
-const DEFAULT_SECTIONS: ReportConfig[] = [
-  { label: "Farm Profile & Land Details", key: "profile",   checked: true },
-  { label: "Crop AI Advisory History",    key: "advisory",  checked: true },
-  { label: "Vet Consultation Records",    key: "vet",       checked: true },
-  { label: "Pest Outbreak Alerts",        key: "pest",      checked: true },
-  { label: "AMU Treatment Ledger",        key: "amu",       checked: false },
-  { label: "Soil Sensor Readings",        key: "sensors",   checked: false },
+const SECTIONS = [
+  { id: "profile",    label: "🧑‍🌾 Farm Profile",           always: true },
+  { id: "advisory",  label: "📋 AI Advisory History",      always: false },
+  { id: "pest",      label: "🦟 Pest Forecast",             always: false },
+  { id: "iot",       label: "📡 IoT Sensor Readings",       always: false },
+  { id: "amu",       label: "💊 AMU Drug Log",              always: false },
+  { id: "blockchain",label: "🔗 Produce Blockchain Ledger", always: false },
 ];
 
-interface FarmerInfo {
-  name?: string;
-  farmId?: string;
-  soilType?: string;
-  phone?: string;
-}
-
-export function PDFExport({ farmer }: { farmer?: FarmerInfo }) {
-  const [sections, setSections] = useState<ReportConfig[]>(DEFAULT_SECTIONS);
+export function PDFExport() {
+  const { farmer } = useAuth();
+  const [selected, setSelected] = useState<Set<string>>(
+    new Set(["profile", "advisory", "pest"])
+  );
   const [generating, setGenerating] = useState(false);
-  const [done, setDone] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
 
-  function toggleSection(key: string) {
-    setSections((s) => s.map((r) => r.key === key ? { ...r, checked: !r.checked } : r));
-  }
+  const toggle = (id: string) => {
+    if (id === "profile") return; // always included
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
 
-  function generateReport() {
-    const selected = sections.filter((s) => s.checked);
-    if (selected.length === 0) return;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-IN", {
+    year: "numeric", month: "long", day: "numeric",
+  });
 
+  const generatePDF = async () => {
+    if (!reportRef.current) return;
     setGenerating(true);
-    setDone(false);
 
-    // Build a printable HTML report and open in a new window
-    setTimeout(() => {
-      const dateStr = new Date().toLocaleDateString("en-IN", { dateStyle: "long" });
-      const rows = selected.map((s) => `
-        <section style="margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid #e5e7eb">
-          <h2 style="font-size:1.1rem;font-weight:600;color:#1f2937;margin-bottom:0.5rem">${s.label}</h2>
-          <p style="color:#6b7280;font-size:0.9rem">
-            ${
-              s.key === "profile"
-                ? `Farmer: ${farmer?.name ?? "N/A"} | Soil: ${farmer?.soilType ?? "N/A"} | Phone: ${farmer?.phone ?? "N/A"}`
-                : s.key === "advisory"
-                ? "AI-generated crop advisories for the last 30 days. (Stored advisories will appear here when database is connected.)"
-                : s.key === "vet"
-                ? "All consultation requests submitted to the vet panel, including responses and notes."
-                : s.key === "pest"
-                ? "Predictive outbreak alerts based on regional seasonal data and weather patterns."
-                : s.key === "amu"
-                ? "Antimicrobial usage log with hash-chained entries for compliance and audit purposes."
-                : "IoT soil sensor readings — moisture, temperature, pH, and nitrogen levels."
-            }
-          </p>
-        </section>`).join("");
+    try {
+      // Render the hidden report div to canvas
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
 
-      const html = `<!DOCTYPE html>
-<html><head>
-<meta charset="UTF-8"/>
-<title>AgriVerse Farm Report — ${farmer?.name ?? "Farmer"}</title>
-<style>
-  body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; color: #111827; }
-  h1 { color: #16a34a; border-bottom: 2px solid #16a34a; padding-bottom: 0.5rem; }
-</style>
-</head><body>
-  <h1>🌾 AgriVerse Farm Report</h1>
-  <p style="color:#6b7280">Generated: ${dateStr} | Farmer: ${farmer?.name ?? "N/A"} | ID: ${farmer?.farmId ?? "N/A"}</p>
-  <hr style="margin:1.5rem 0"/>
-  ${rows}
-  <p style="color:#9ca3af;font-size:0.8rem;text-align:center;margin-top:2rem">
-    Generated by AgriVerse — Smart Farm Management System
-  </p>
-</body></html>`;
+      const imgW = 210; // A4 width in mm
+      const pageH = 297; // A4 height in mm
+      const imgH = (canvas.height * imgW) / canvas.width;
+      const pdf = new jsPDF("p", "mm", "a4");
 
-      const win = window.open("", "_blank");
-      win?.document.write(html);
-      win?.document.close();
-      win?.print();
+      let yOffset = 0;
+      let remaining = imgH;
 
+      while (remaining > 0) {
+        // Slice the canvas into A4 pages
+        const sliceH = Math.min(remaining, pageH);
+        const sliceCanvas = document.createElement("canvas");
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = (sliceH / imgH) * canvas.height;
+
+        const ctx = sliceCanvas.getContext("2d")!;
+        ctx.drawImage(
+          canvas,
+          0,
+          yOffset * (canvas.height / imgH),
+          canvas.width,
+          sliceCanvas.height,
+          0,
+          0,
+          canvas.width,
+          sliceCanvas.height
+        );
+
+        const sliceImg = sliceCanvas.toDataURL("image/jpeg", 0.95);
+        if (yOffset > 0) pdf.addPage();
+        pdf.addImage(sliceImg, "JPEG", 0, 0, imgW, sliceH);
+
+        yOffset += sliceH;
+        remaining -= sliceH;
+      }
+
+      pdf.save(
+        `SmartCropTools_FarmReport_${farmer?.name?.replace(/\s+/g, "_") ?? "Report"}_${now.getFullYear()}.pdf`
+      );
+    } catch (err) {
+      console.error("[PDFExport] Error generating PDF:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
       setGenerating(false);
-      setDone(true);
-      setTimeout(() => setDone(false), 4000);
-    }, 1200);
-  }
-
-  const selectedCount = sections.filter((s) => s.checked).length;
+    }
+  };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <FileText className="h-5 w-5 text-indigo-400" />
-          Export Farm Report
-        </h3>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Generate a printable PDF / HTML report of your farm records.
+        <h2 className="text-xl font-bold mb-1">📄 Export Farm Report (PDF)</h2>
+        <p className="text-sm text-muted-foreground">
+          Select the sections to include. A professionally formatted PDF will be downloaded directly.
         </p>
       </div>
 
-      <div className="glass-card border-white/10 rounded-xl p-4 space-y-2">
-        <p className="text-xs font-medium text-muted-foreground mb-3">Select sections to include:</p>
-        {sections.map((s) => (
-          <label key={s.key} className="flex items-center gap-2.5 cursor-pointer group">
+      {/* Section selector */}
+      <div className="grid gap-2 sm:grid-cols-2">
+        {SECTIONS.map((s) => (
+          <label
+            key={s.id}
+            className={`flex items-center gap-3 rounded-xl border px-4 py-3 cursor-pointer transition-all ${
+              selected.has(s.id)
+                ? "border-primary bg-primary/5"
+                : "border-border bg-card"
+            } ${s.always ? "opacity-70 cursor-not-allowed" : "hover:border-primary/50"}`}
+          >
             <input
               type="checkbox"
-              checked={s.checked}
-              onChange={() => toggleSection(s.key)}
-              className="h-4 w-4 rounded accent-primary"
+              checked={selected.has(s.id)}
+              disabled={s.always}
+              onChange={() => toggle(s.id)}
+              className="accent-primary"
             />
-            <span className="text-sm group-hover:text-foreground text-muted-foreground transition">{s.label}</span>
+            <span className="text-sm font-medium">{s.label}</span>
+            {s.always && (
+              <span className="ml-auto text-[10px] text-muted-foreground">Always included</span>
+            )}
           </label>
         ))}
       </div>
 
+      {/* Generate button */}
       <button
-        onClick={generateReport}
-        disabled={generating || selectedCount === 0}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm disabled:opacity-50 hover:brightness-105 transition"
+        onClick={generatePDF}
+        disabled={generating}
+        className="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-lg hover:brightness-105 disabled:opacity-60 transition-all"
       >
         {generating ? (
-          <><Loader2 className="h-4 w-4 animate-spin" /> Generating Report…</>
-        ) : done ? (
-          <><CheckCircle2 className="h-4 w-4 text-green-300" /> Report Ready — Check Print Dialog</>
+          <>
+            <span className="animate-spin">⏳</span> Generating PDF…
+          </>
         ) : (
-          <><FileDown className="h-4 w-4" /> Export {selectedCount} Section{selectedCount !== 1 ? "s" : ""} as PDF</>
+          <>⬇️ Download PDF Report</>
         )}
       </button>
 
-      <p className="text-[11px] text-muted-foreground text-center">
-        Opens your browser print dialog — choose "Save as PDF" to download.
-      </p>
+      {/* Hidden report div that gets rendered to PDF */}
+      <div
+        ref={reportRef}
+        style={{
+          position: "fixed",
+          top: "-9999px",
+          left: 0,
+          width: "794px",        // ~A4 at 96dpi
+          background: "#ffffff",
+          color: "#1a1a1a",
+          fontFamily: "Georgia, serif",
+          padding: "40px 48px",
+        }}
+      >
+        {/* Header */}
+        <div style={{ borderBottom: "3px solid #2ea043", paddingBottom: 16, marginBottom: 24 }}>
+          <h1 style={{ fontSize: 26, fontWeight: 700, color: "#1a5c2e", margin: 0 }}>
+            🌾 Smart Crop Tools — Farm Report
+          </h1>
+          <p style={{ fontSize: 13, color: "#555", margin: "6px 0 0" }}>
+            Generated on {dateStr} &nbsp;|&nbsp; Confidential
+          </p>
+        </div>
+
+        {/* Profile section (always) */}
+        <Section title="Farm Profile">
+          <Row label="Farmer Name"  value={farmer?.name ?? "—"} />
+          <Row label="Phone"        value={farmer?.phone ?? "—"} />
+          <Row label="Soil Type"    value={farmer?.soilType ?? "—"} />
+          <Row label="Land Size"    value={farmer?.landSize ? `${farmer.landSize} acres` : "—"} />
+          <Row label="Location"     value={farmer?.location?.village ?? farmer?.location?.state ?? "—"} />
+          <Row label="Language"     value={farmer?.language ?? "English"} />
+          <Row label="Plan"         value={farmer?.subscriptionStatus === "premium" ? "Premium ⭐" : "Free"} />
+          <Row label="Member Since" value={farmer?.createdAt ? new Date(farmer.createdAt).toLocaleDateString("en-IN") : "—"} />
+        </Section>
+
+        {selected.has("advisory") && (
+          <Section title="AI Advisory History">
+            <p style={noteStyle}>
+              View your full advisory history in the app under the <strong>Dashboard → AI Advisory</strong> tab.
+              Your recent recommendations cover crop health, fertilizer, irrigation and pest management.
+            </p>
+          </Section>
+        )}
+
+        {selected.has("pest") && (
+          <Section title="Pest Forecast Summary">
+            <p style={noteStyle}>
+              The integrated 14-day pest forecast engine uses seasonal patterns, local weather,
+              and crop-specific risk models to predict infestation likelihood. Check the
+              <strong> Pest Alert</strong> widget on your dashboard for live data.
+            </p>
+          </Section>
+        )}
+
+        {selected.has("iot") && (
+          <Section title="IoT Sensor Readings">
+            <p style={noteStyle}>
+              IoT sensor data is live and refreshed every 30 seconds. Navigate to
+              <strong> Tools &amp; Insights → IoT Sensors</strong> for real-time soil moisture,
+              temperature, pH and nitrogen readings.
+            </p>
+          </Section>
+        )}
+
+        {selected.has("amu") && (
+          <Section title="AMU Drug Log">
+            <p style={noteStyle}>
+              Your Antimicrobial Usage (AMU) log is secured with a hash-chain for tamper-proof
+              record keeping. See the full ledger under <strong>Dashboard → AMU Log</strong>.
+            </p>
+          </Section>
+        )}
+
+        {selected.has("blockchain") && (
+          <Section title="Produce Blockchain Ledger">
+            <p style={noteStyle}>
+              Each harvest registered on the blockchain ledger receives a unique transaction hash
+              for supply-chain traceability. View your records under
+              <strong> Tools &amp; Insights → Produce Ledger</strong>.
+            </p>
+          </Section>
+        )}
+
+        {/* Footer */}
+        <div style={{ marginTop: 40, paddingTop: 14, borderTop: "1px solid #ddd", fontSize: 11, color: "#888" }}>
+          <p style={{ margin: 0 }}>
+            This report was generated by Smart Crop Tools — an AI-powered precision agriculture
+            platform. All data is sourced directly from your farm profile and activity logs.
+          </p>
+          <p style={{ margin: "6px 0 0" }}>
+            © {now.getFullYear()} Smart Crop Tools &nbsp;|&nbsp; Report ID: SCT-{Date.now().toString(36).toUpperCase()}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
+
+/* ─── Small helpers ─────────────────────────────────────────────────────────── */
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: 28 }}>
+      <h2 style={{
+        fontSize: 16, fontWeight: 700, color: "#1a5c2e",
+        borderLeft: "4px solid #2ea043", paddingLeft: 10, marginBottom: 12,
+      }}>
+        {title}
+      </h2>
+      {children}
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{ display: "flex", gap: 12, fontSize: 13, padding: "5px 0", borderBottom: "1px solid #f0f0f0" }}>
+      <span style={{ width: 140, color: "#666", flexShrink: 0 }}>{label}</span>
+      <span style={{ fontWeight: 600, color: "#1a1a1a" }}>{value}</span>
+    </div>
+  );
+}
+
+const noteStyle: React.CSSProperties = {
+  fontSize: 13,
+  color: "#444",
+  lineHeight: 1.7,
+  background: "#f8fdf9",
+  border: "1px solid #d4edda",
+  borderRadius: 6,
+  padding: "10px 14px",
+  margin: 0,
+};
