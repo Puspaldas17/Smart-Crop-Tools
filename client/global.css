@@ -225,7 +225,9 @@ body::before {
     transparent 1px
   );
   background-size: 32px 32px;
-  animation: gridPan 60s linear infinite;
+  /* GPU-promote to its own compositor layer — no main-thread repaints */
+  will-change: background-position;
+  transform: translateZ(0);
   mask-image: radial-gradient(
     ellipse 80% 80% at 50% 50%,
     black 40%,
@@ -272,7 +274,9 @@ body::after {
       transparent 72%
     ),
     hsl(var(--background));
-  animation: orbFloat 28s ease-in-out infinite alternate;
+  /* GPU-promote to its own compositor layer — no main-thread repaints */
+  will-change: background-position;
+  transform: translateZ(0);
 }
 
 /* ── Layer 3: Noise texture for premium depth ── */
@@ -285,11 +289,25 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 300px 300px;
+  /* Static layer — skip layout/paint entirely */
+  contain: strict;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    KEYFRAMES
 ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONTINUOUS ANIMATIONS — only run if device allows motion
+═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  body::before {
+    animation: gridPan 60s linear infinite;
+  }
+  body::after {
+    animation: orbFloat 28s ease-in-out infinite alternate;
+  }
+}
 
 @keyframes orbFloat {
   0% {
@@ -762,8 +780,15 @@ body::after {
 
 /* ── Live indicator dot ──────────────────────────────────────────────────── */
 @keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(1.5); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.5);
+  }
 }
 .animate-pulse-dot {
   animation: pulseDot 1.8s ease-in-out infinite;
@@ -771,8 +796,14 @@ body::after {
 
 /* ── Fade in up (AdminDashboard create panel) ────────────────────────────── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .animate-fade-in-up {
   animation: fadeInUp 0.25s ease-out both;
