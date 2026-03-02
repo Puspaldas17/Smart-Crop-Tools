@@ -27,10 +27,11 @@ const FeatureTiles = React.lazy(() => import("@/components/features/FeatureTiles
 const AdvisoryWidget = React.lazy(() => import("@/components/features/AdvisoryWidget"));
 const UnifiedOverview = React.lazy(() => import("@/components/features/UnifiedOverview"));
 import Hero from "@/components/home/Hero";
-import Stats from "@/components/home/Stats";
-import Features from "@/components/home/Features";
-import HowItWorks from "@/components/home/HowItWorks";
-import CTA from "@/components/home/CTA";
+// Below-the-fold home sections are lazy-loaded to keep initial bundle small
+const Stats      = React.lazy(() => import("@/components/home/Stats"));
+const Features   = React.lazy(() => import("@/components/home/Features"));
+const HowItWorks = React.lazy(() => import("@/components/home/HowItWorks"));
+const CTA        = React.lazy(() => import("@/components/home/CTA"));
 import ToolsSection from "@/components/features/ToolsSection";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
@@ -371,10 +372,18 @@ export default function Index() {
       {!farmer && (
         <>
           <Hero />
-          <Stats />
-          <Features />
-          <HowItWorks />
-          <CTA />
+          <Suspense fallback={<div className="h-32 rounded-xl bg-muted animate-pulse" />}>
+            <Stats />
+          </Suspense>
+          <Suspense fallback={<div className="h-64 rounded-xl bg-muted animate-pulse" />}>
+            <Features />
+          </Suspense>
+          <Suspense fallback={<div className="h-48 rounded-xl bg-muted animate-pulse" />}>
+            <HowItWorks />
+          </Suspense>
+          <Suspense fallback={<div className="h-32 rounded-xl bg-muted animate-pulse" />}>
+            <CTA />
+          </Suspense>
           <DeepDiveTabs />
         </>
       )}
