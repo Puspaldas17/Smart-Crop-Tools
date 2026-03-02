@@ -1,97 +1,125 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Search, Filter, Phone, ShoppingCart,
-  MapPin, Plus, X, Leaf,
+  MapPin, Plus, X, Leaf, RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
 
+// ── Types ─────────────────────────────────────────────────────────────────────
 interface Listing {
-  id: number;
+  _id: string;
   crop: string;
   emoji: string;
   quantity: number;
   unit: string;
   price: number;
   seller: string;
-  location: string;   // city / district
-  state: string;      // Indian state
+  location: string;
+  state: string;
   phone: string;
   category: string;
   isOrganic: boolean;
-  postedDaysAgo: number;
+  createdAt: string;
 }
 
-const LISTINGS: Listing[] = [
-  // Odisha
-  { id: 1,  crop: "Rice (Basmati)",  emoji: "🍚", quantity: 1000, unit: "kg",     price: 60,  seller: "Suresh Kumar",    location: "Puri",           state: "Odisha",         phone: "97890 12345", category: "Grain",     isOrganic: true,  postedDaysAgo: 0 },
-  { id: 2,  crop: "Tomatoes",         emoji: "🍅", quantity: 200,  unit: "kg",     price: 22,  seller: "Anita Devi",      location: "Cuttack",        state: "Odisha",         phone: "91234 56789", category: "Vegetable", isOrganic: true,  postedDaysAgo: 1 },
-  // Punjab
-  { id: 3,  crop: "Wheat",            emoji: "🌾", quantity: 2000, unit: "kg",     price: 26,  seller: "Gurpreet Singh",  location: "Ludhiana",       state: "Punjab",         phone: "98140 33210", category: "Grain",     isOrganic: false, postedDaysAgo: 0 },
-  { id: 4,  crop: "Mustard",          emoji: "🌿", quantity: 800,  unit: "kg",     price: 55,  seller: "Harjit Kaur",    location: "Amritsar",       state: "Punjab",         phone: "98720 11234", category: "Grain",     isOrganic: false, postedDaysAgo: 2 },
-  // Uttar Pradesh
-  { id: 5,  crop: "Potato",           emoji: "🥔", quantity: 3000, unit: "kg",     price: 12,  seller: "Rambharose Yadav",location: "Agra",           state: "Uttar Pradesh",  phone: "94156 78901", category: "Vegetable", isOrganic: false, postedDaysAgo: 1 },
-  { id: 6,  crop: "Sugarcane",        emoji: "🎋", quantity: 5000, unit: "kg",     price: 4,   seller: "Shyam Lal",      location: "Muzaffarnagar",  state: "Uttar Pradesh",  phone: "99350 22345", category: "Grain",     isOrganic: false, postedDaysAgo: 3 },
-  // Maharashtra
-  { id: 7,  crop: "Onion",            emoji: "🧅", quantity: 1500, unit: "kg",     price: 20,  seller: "Pandurang Shinde",location: "Nashik",         state: "Maharashtra",    phone: "98220 44567", category: "Vegetable", isOrganic: false, postedDaysAgo: 0 },
-  { id: 8,  crop: "Grapes",           emoji: "🍇", quantity: 600,  unit: "kg",     price: 95,  seller: "Sujata Kale",    location: "Sangli",         state: "Maharashtra",    phone: "97300 55678", category: "Fruit",     isOrganic: true,  postedDaysAgo: 1 },
-  // Andhra Pradesh
-  { id: 9,  crop: "Chilli (Red)",     emoji: "🌶️",quantity: 700,  unit: "kg",     price: 140, seller: "Venkatesh Rao",  location: "Guntur",         state: "Andhra Pradesh", phone: "94401 66789", category: "Vegetable", isOrganic: false, postedDaysAgo: 2 },
-  { id: 10, crop: "Mango (Alphonso)", emoji: "🥭", quantity: 300,  unit: "kg",     price: 180, seller: "Radha Krishna",  location: "Vijayawada",     state: "Andhra Pradesh", phone: "99890 77890", category: "Fruit",     isOrganic: true,  postedDaysAgo: 0 },
-  // Karnataka
-  { id: 11, crop: "Coffee (Arabica)", emoji: "☕", quantity: 200,  unit: "kg",     price: 350, seller: "Mahesh Gowda",   location: "Coorg",          state: "Karnataka",      phone: "98440 88901", category: "Grain",     isOrganic: true,  postedDaysAgo: 3 },
-  { id: 12, crop: "Coconut",          emoji: "🥥", quantity: 500,  unit: "dozen",  price: 40,  seller: "Lakshmi Narayana",location: "Tumkur",        state: "Karnataka",      phone: "97420 99012", category: "Fruit",     isOrganic: false, postedDaysAgo: 1 },
-  // Tamil Nadu
-  { id: 13, crop: "Banana (Nendran)", emoji: "🍌", quantity: 400,  unit: "dozen",  price: 48,  seller: "Murugesan P.",   location: "Thanjavur",      state: "Tamil Nadu",     phone: "98430 10123", category: "Fruit",     isOrganic: true,  postedDaysAgo: 0 },
-  { id: 14, crop: "Turmeric",         emoji: "🟡", quantity: 500,  unit: "kg",     price: 120, seller: "Selvaraj M.",    location: "Erode",          state: "Tamil Nadu",     phone: "95000 21234", category: "Vegetable", isOrganic: false, postedDaysAgo: 2 },
-  // Madhya Pradesh
-  { id: 15, crop: "Soybean",          emoji: "🫘", quantity: 1200, unit: "kg",     price: 45,  seller: "Bhagwandas Jain",location: "Indore",         state: "Madhya Pradesh", phone: "98260 32345", category: "Grain",     isOrganic: false, postedDaysAgo: 1 },
-  { id: 16, crop: "Garlic",           emoji: "🧄", quantity: 600,  unit: "kg",     price: 90,  seller: "Sunita Patidar", location: "Mandsaur",       state: "Madhya Pradesh", phone: "94250 43456", category: "Vegetable", isOrganic: false, postedDaysAgo: 4 },
-  // Rajasthan
-  { id: 17, crop: "Bajra (Pearl Millet)",emoji:"🌾",quantity: 900, unit: "kg",     price: 22,  seller: "Manohar Meena",  location: "Jaipur",         state: "Rajasthan",      phone: "98290 54567", category: "Grain",     isOrganic: false, postedDaysAgo: 2 },
-  { id: 18, crop: "Cumin (Jeera)",    emoji: "🌿", quantity: 300,  unit: "kg",     price: 220, seller: "Hemant Sharma",  location: "Jodhpur",        state: "Rajasthan",      phone: "97290 65678", category: "Vegetable", isOrganic: true,  postedDaysAgo: 0 },
-  // Gujarat
-  { id: 19, crop: "Groundnut",        emoji: "🥜", quantity: 1000, unit: "kg",     price: 65,  seller: "Naresh Patel",   location: "Rajkot",         state: "Gujarat",        phone: "99090 76789", category: "Grain",     isOrganic: false, postedDaysAgo: 1 },
-  { id: 20, crop: "Cotton (Raw)",      emoji: "🌿", quantity: 2000, unit: "kg",     price: 62,  seller: "Ashaben Parmar", location: "Surat",          state: "Gujarat",        phone: "94270 87890", category: "Grain",     isOrganic: false, postedDaysAgo: 3 },
-  // West Bengal
-  { id: 21, crop: "Jute",             emoji: "🌿", quantity: 1500, unit: "kg",     price: 55,  seller: "Subrata Ghosh",  location: "Murshidabad",    state: "West Bengal",    phone: "98310 98901", category: "Grain",     isOrganic: false, postedDaysAgo: 2 },
-  { id: 22, crop: "Hilsa Fish",        emoji: "🐟", quantity: 50,   unit: "kg",     price: 900, seller: "Tapas Mandal",   location: "Kolkata",        state: "West Bengal",    phone: "97310 09012", category: "Vegetable", isOrganic: true,  postedDaysAgo: 0 },
-  // Himachal Pradesh
-  { id: 23, crop: "Apple",            emoji: "🍎", quantity: 400,  unit: "kg",     price: 130, seller: "Deepak Thakur",  location: "Shimla",         state: "Himachal Pradesh",phone: "98160 11345", category: "Fruit",     isOrganic: true,  postedDaysAgo: 1 },
-  // Kerala
-  { id: 24, crop: "Black Pepper",     emoji: "⚫", quantity: 150,  unit: "kg",     price: 450, seller: "Rajan Nair",     location: "Wayanad",        state: "Kerala",         phone: "94470 22456", category: "Vegetable", isOrganic: true,  postedDaysAgo: 2 },
-];
+const CATEGORIES = ["All", "Grain", "Vegetable", "Fruit", "Spice", "Pulse", "Other"];
 
-// All Indian states present in listings (for state filter)
-const ALL_STATES = ["All States", ...Array.from(new Set(LISTINGS.map((l) => l.state))).sort()];
+const CROP_EMOJIS: Record<string, string> = {
+  rice: "🍚", wheat: "🌾", potato: "🥔", tomato: "🍅", onion: "🧅",
+  mango: "🥭", banana: "🍌", apple: "🍎", grape: "🍇", coconut: "🥥",
+  chilli: "🌶️", garlic: "🧄", ginger: "🫚", turmeric: "🟡", coffee: "☕",
+  sugarcane: "🎋", soybean: "🫘", groundnut: "🥜", pepper: "⚫",
+  mustard: "🌿", cumin: "🌿", jute: "🌿", cotton: "🌿", bajra: "🌾",
+};
 
+function guessEmoji(crop: string): string {
+  const lower = crop.toLowerCase();
+  for (const [key, emoji] of Object.entries(CROP_EMOJIS)) {
+    if (lower.includes(key)) return emoji;
+  }
+  return "🌾";
+}
+
+// ── Skeleton card ─────────────────────────────────────────────────────────────
+function SkeletonCard() {
+  return (
+    <div className="glass-card rounded-2xl p-4 animate-pulse">
+      <div className="flex gap-3 mb-3">
+        <div className="h-10 w-10 rounded-full bg-muted" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 bg-muted rounded w-2/3" />
+          <div className="h-3 bg-muted rounded w-1/2" />
+        </div>
+        <div className="h-6 w-14 bg-muted rounded" />
+      </div>
+      <div className="h-8 bg-muted rounded-lg mt-4" />
+    </div>
+  );
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
 export default function Marketplace() {
   const { t } = useTranslation();
-
-  const CATEGORIES = [t("market.all"), "Grain", "Vegetable", "Fruit", "Spice", "Pulse", "Other"];
+  const { farmer, authHeaders } = useAuth();
   const navigate = useNavigate();
+
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState(t("market.all"));
+  const [category, setCategory] = useState("All");
   const [stateFilter, setStateFilter] = useState("All States");
+  const [allStates, setAllStates] = useState<string[]>(["All States"]);
   const [showPostForm, setShowPostForm] = useState(false);
   const [contactListing, setContactListing] = useState<Listing | null>(null);
-  const [form, setForm] = useState({ crop: "", quantity: "", price: "", location: "", state: "", phone: "" });
+  const [posting, setPosting] = useState(false);
+  const [form, setForm] = useState({
+    crop: "", quantity: "", price: "", unit: "kg",
+    location: "", state: "", phone: "",
+    category: "Vegetable", isOrganic: false,
+  });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const filtered = LISTINGS.filter((l) => {
-    const q = search.toLowerCase();
-    const matchSearch = l.crop.toLowerCase().includes(q)
-      || l.location.toLowerCase().includes(q)
-      || l.state.toLowerCase().includes(q)
-      || l.seller.toLowerCase().includes(q);
-    const matchCat = category === "All" || l.category === category;
-    const matchState = stateFilter === "All States" || l.state === stateFilter;
-    return matchSearch && matchCat && matchState;
-  });
+  // ── Fetch listings from API ───────────────────────────────────────────────
+  const fetchListings = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (search) params.set("search", search);
+      if (category !== "All") params.set("category", category);
+      if (stateFilter !== "All States") params.set("state", stateFilter);
+      const res = await fetch(`/api/listings?${params}`);
+      if (!res.ok) throw new Error("Failed to load listings");
+      const data: Listing[] = await res.json();
+      setListings(data);
+      // Update state list from API data when no filter active
+      if (!stateFilter || stateFilter === "All States") {
+        const states = Array.from(new Set(data.map((l) => l.state))).sort();
+        setAllStates(["All States", ...states]);
+      }
+    } catch {
+      toast.error("Could not load marketplace listings");
+    } finally {
+      setLoading(false);
+    }
+  }, [search, category, stateFilter]);
 
-  const handlePost = (e: React.FormEvent) => {
+  // Auto-seed on first load, then fetch
+  useEffect(() => {
+    fetch("/api/listings/seed").finally(() => fetchListings());
+  }, []);
+
+  // Re-fetch when filters change (debounced for search)
+  useEffect(() => {
+    const t = setTimeout(() => fetchListings(), search ? 350 : 0);
+    return () => clearTimeout(t);
+  }, [search, category, stateFilter]);
+
+  // ── Post new listing ──────────────────────────────────────────────────────
+  const handlePost = async (e: React.FormEvent) => {
     e.preventDefault();
     const errors: Record<string, string> = {};
     if (!form.crop.trim())     errors.crop     = "Crop name is required";
@@ -104,15 +132,47 @@ export default function Marketplace() {
     if (!form.phone.trim())    errors.phone    = "Phone number is required";
     else if (!/^[0-9\s]{10,}$/.test(form.phone)) errors.phone = "Enter a valid 10-digit phone";
     if (Object.keys(errors).length > 0) { setFormErrors(errors); return; }
-    setFormErrors({});
-    setShowPostForm(false);
-    setForm({ crop: "", quantity: "", price: "", location: "", state: "", phone: "" });
-    toast.success(t("market.post_success"));
+
+    setPosting(true);
+    try {
+      const res = await fetch("/api/listings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({
+          ...form,
+          quantity: Number(form.quantity),
+          price: Number(form.price),
+          emoji: guessEmoji(form.crop),
+          seller: farmer?.name || "Anonymous",
+        }),
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.error || "Failed to post listing");
+      }
+      toast.success("✅ Listing posted & saved to database!");
+      setShowPostForm(false);
+      setForm({ crop: "", quantity: "", price: "", unit: "kg", location: "", state: "", phone: "", category: "Vegetable", isOrganic: false });
+      setFormErrors({});
+      fetchListings();
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setPosting(false);
+    }
   };
+
+  // ── Relative time helper ──────────────────────────────────────────────────
+  function relativeTime(iso: string) {
+    const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (diff === 0) return "Today";
+    if (diff === 1) return "1d ago";
+    return `${diff}d ago`;
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      {/* Header */}
+      {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
@@ -126,15 +186,27 @@ export default function Marketplace() {
             <p className="text-sm text-muted-foreground">{t("market.subtitle")}</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowPostForm(true)}
-          className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
-        >
-          <Plus className="h-4 w-4" /> {t("market.post")}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchListings}
+            className="inline-flex items-center gap-1.5 px-3 py-2 border border-input rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            title="Refresh listings"
+          >
+            <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+          </button>
+          <button
+            onClick={() => {
+              if (!farmer) { toast.error("Please login to post a listing"); return; }
+              setShowPostForm(true);
+            }}
+            className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
+          >
+            <Plus className="h-4 w-4" /> {t("market.post")}
+          </button>
+        </div>
       </div>
 
-      {/* Search, State & Category Filters */}
+      {/* ── Search + State filter ───────────────────────────────────────── */}
       <div className="flex flex-col gap-3 mb-6">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -147,19 +219,17 @@ export default function Marketplace() {
               className="w-full pl-9 pr-4 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
-          {/* State filter dropdown */}
           <select
             value={stateFilter}
             onChange={(e) => setStateFilter(e.target.value)}
             className="w-full sm:w-auto px-3 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 sm:min-w-[150px]"
           >
-            {ALL_STATES.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
+            {allStates.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
-        {/* Category pills — scrollable on mobile */}
-        <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl overflow-x-auto remove-scrollbar">
+
+        {/* Category pills */}
+        <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl overflow-x-auto">
           <Filter className="h-4 w-4 text-muted-foreground ml-2 flex-shrink-0" />
           {CATEGORIES.map((cat) => (
             <button
@@ -170,75 +240,77 @@ export default function Marketplace() {
                 category === cat ? "bg-background shadow text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {cat === t("market.all") ? t("market.all") : cat}
+              {cat}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Stats bar */}
+      {/* ── Stats bar ──────────────────────────────────────────────────── */}
       <div className="flex gap-4 mb-5 text-sm text-muted-foreground">
-        <span className="font-medium text-foreground">{filtered.length}</span> listings found
+        <span className="font-medium text-foreground">{listings.length}</span> listings found
         <span>·</span>
-        <Leaf className="h-4 w-4 text-green-600 inline" /> {filtered.filter(l => l.isOrganic).length} organic
+        <Leaf className="h-4 w-4 text-green-600 inline" /> {listings.filter(l => l.isOrganic).length} organic
       </div>
 
-      {/* Listings Grid */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {filtered.map((listing) => (
-          <div key={listing.id} className="glass-card gradient-border rounded-2xl hover:shadow-lg transition-all duration-200 p-4">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl">{listing.emoji}</span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{listing.crop}</h3>
-                    {listing.isOrganic && (
-                      <span className="text-[10px] bg-green-100 text-green-700 border border-green-200 px-1.5 py-0.5 rounded-full font-medium">
-                        Organic
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                    <MapPin className="h-3 w-3" />
-                    {listing.location},
-                    <span className="font-medium text-foreground/70">{listing.state}</span>
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-xl font-bold text-green-700">₹{listing.price}</p>
-                <p className="text-xs text-muted-foreground">per {listing.unit}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-border pt-3 mt-1">
-              <div>
-                <p className="text-sm font-medium">{listing.seller}</p>
-                <p className="text-xs text-muted-foreground">
-                  {listing.quantity} {listing.unit} available ·{" "}
-                  {listing.postedDaysAgo === 0 ? "Today" : `${listing.postedDaysAgo}d ago`}
-                </p>
-              </div>
-              <button
-                onClick={() => setContactListing(listing)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors font-medium"
-              >
-                <Phone className="h-3.5 w-3.5" /> {t("market.contact")}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
+      {/* ── Listings Grid ──────────────────────────────────────────────── */}
+      {loading ? (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+        </div>
+      ) : listings.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <ShoppingCart className="h-12 w-12 mx-auto mb-3 opacity-30" />
           <p>{t("market.empty")}</p>
         </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {listings.map((listing) => (
+            <div key={listing._id} className="glass-card gradient-border rounded-2xl hover:shadow-lg transition-all duration-200 p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{listing.emoji}</span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold">{listing.crop}</h3>
+                      {listing.isOrganic && (
+                        <span className="text-[10px] bg-green-100 text-green-700 border border-green-200 px-1.5 py-0.5 rounded-full font-medium dark:bg-green-950/40 dark:border-green-800 dark:text-green-400">
+                          Organic
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                      <MapPin className="h-3 w-3" />
+                      {listing.location}, <span className="font-medium text-foreground/70">{listing.state}</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-xl font-bold text-green-700 dark:text-green-400">₹{listing.price}</p>
+                  <p className="text-xs text-muted-foreground">per {listing.unit}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between border-t border-border pt-3 mt-1">
+                <div>
+                  <p className="text-sm font-medium">{listing.seller}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {listing.quantity} {listing.unit} available · {relativeTime(listing.createdAt)}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setContactListing(listing)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors font-medium"
+                >
+                  <Phone className="h-3.5 w-3.5" /> {t("market.contact")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
-      {/* Contact Modal */}
+      {/* ── Contact Modal ───────────────────────────────────────────────── */}
       {contactListing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <div className="bg-card border border-border rounded-2xl shadow-xl p-6 w-80">
@@ -258,14 +330,12 @@ export default function Marketplace() {
             </div>
             <a
               href={`https://wa.me/91${contactListing.phone.replace(/\s/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               onClick={() => setContactListing(null)}
               className="mt-4 block w-full py-2.5 bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-xl font-medium text-sm transition-colors text-center"
             >
               {t("market.whatsapp")}
             </a>
-            {/* UPI Payment deeplink */}
             <a
               href={`upi://pay?pa=${contactListing.phone.replace(/\s/g, "")}@ybl&pn=${encodeURIComponent(contactListing.seller)}&am=${contactListing.price}&cu=INR&tn=${encodeURIComponent(contactListing.crop + " - AgriVerse")}`}
               onClick={() => setContactListing(null)}
@@ -278,11 +348,10 @@ export default function Marketplace() {
         </div>
       )}
 
-
-      {/* Post Listing Modal */}
+      {/* ── Post Listing Modal ──────────────────────────────────────────── */}
       {showPostForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="bg-card border border-border rounded-2xl shadow-xl p-6 w-96">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border rounded-2xl shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-semibold">{t("market.post_title")}</h2>
               <button onClick={() => setShowPostForm(false)} className="text-muted-foreground hover:text-foreground">
@@ -293,7 +362,8 @@ export default function Marketplace() {
               {[
                 { label: t("market.field.crop"),     key: "crop",     placeholder: "e.g., Tomatoes" },
                 { label: t("market.field.quantity"), key: "quantity", placeholder: "e.g., 200" },
-                { label: t("market.field.price"),    key: "price",    placeholder: "e.g., 25" },
+                { label: t("market.field.price"),    key: "price",    placeholder: "₹ per unit" },
+                { label: "Unit",                     key: "unit",     placeholder: "kg / dozen / litre" },
                 { label: t("market.field.city"),     key: "location", placeholder: "e.g., Nashik" },
                 { label: t("market.field.state"),    key: "state",    placeholder: "e.g., Maharashtra" },
                 { label: t("market.field.phone"),    key: "phone",    placeholder: "e.g., 98765 43210" },
@@ -303,11 +373,9 @@ export default function Marketplace() {
                   <input
                     type="text"
                     placeholder={placeholder}
-                    value={form[key as keyof typeof form]}
+                    value={form[key as keyof typeof form] as string}
                     onChange={(e) => { setForm((f) => ({ ...f, [key]: e.target.value })); setFormErrors((err) => ({ ...err, [key]: "" })); }}
-                    className={`mt-1 w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-background ${
-                      formErrors[key] ? "border-red-400 focus:ring-red-300" : "border-input"
-                    }`}
+                    className={`mt-1 w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 bg-background ${formErrors[key] ? "border-red-400 focus:ring-red-300" : "border-input"}`}
                   />
                   {formErrors[key] && (
                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
@@ -316,11 +384,40 @@ export default function Marketplace() {
                   )}
                 </div>
               ))}
+
+              {/* Category */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Category</label>
+                <select
+                  value={form.category}
+                  onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                  className="mt-1 w-full px-3 py-2 rounded-lg border border-input text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  {["Grain","Vegetable","Fruit","Spice","Pulse","Other"].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Organic toggle */}
+              <label className="flex items-center gap-3 cursor-pointer py-1">
+                <input
+                  type="checkbox"
+                  checked={form.isOrganic}
+                  onChange={(e) => setForm((f) => ({ ...f, isOrganic: e.target.checked }))}
+                  className="h-4 w-4 accent-green-600"
+                />
+                <span className="text-sm text-foreground/80 flex items-center gap-1.5">
+                  <Leaf className="h-3.5 w-3.5 text-green-600" /> Organic produce
+                </span>
+              </label>
+
               <button
                 type="submit"
-                className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors mt-2"
+                disabled={posting}
+                className="w-full py-2.5 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white rounded-xl font-medium text-sm transition-colors mt-2"
               >
-                {t("market.submit")}
+                {posting ? "Saving to Database…" : t("market.submit")}
               </button>
             </form>
           </div>
