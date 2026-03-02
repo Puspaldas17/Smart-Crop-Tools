@@ -124,7 +124,7 @@ export function AppointmentBooking() {
                 placeholder="e.g. COW-042"
                 value={form.animalId}
                 onChange={(e) => setForm((f) => ({ ...f, animalId: e.target.value }))}
-                className="mt-1.5 bg-white/8 border-white/20 text-white placeholder:text-slate-500 focus-visible:ring-primary focus-visible:border-primary"
+                className="mt-1.5 bg-slate-800 border-white/20 text-white placeholder:text-slate-400 focus-visible:ring-primary focus-visible:border-primary"
               />
             </div>
 
@@ -138,7 +138,7 @@ export function AppointmentBooking() {
                 placeholder="Describe the issue or reason for visit..."
                 value={form.reason}
                 onChange={(e) => setForm((f) => ({ ...f, reason: e.target.value }))}
-                className="mt-1.5 bg-white/8 border-white/20 text-white placeholder:text-slate-500 focus-visible:ring-primary focus-visible:border-primary resize-none"
+                className="mt-1.5 bg-slate-800 border-white/20 text-white placeholder:text-slate-400 focus-visible:ring-primary focus-visible:border-primary resize-none"
                 rows={3}
               />
             </div>
@@ -154,7 +154,7 @@ export function AppointmentBooking() {
                 min={new Date().toISOString().slice(0, 16)}
                 value={form.scheduledAt}
                 onChange={(e) => setForm((f) => ({ ...f, scheduledAt: e.target.value }))}
-                className="mt-1.5 bg-white/8 border-white/20 text-white [color-scheme:dark] focus-visible:ring-primary focus-visible:border-primary"
+                className="mt-1.5 bg-slate-800 border-white/20 text-white [color-scheme:dark] focus-visible:ring-primary focus-visible:border-primary"
               />
             </div>
 
