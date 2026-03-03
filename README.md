@@ -59,20 +59,21 @@ cp .env.example .env
 
 Edit `.env` and fill in your values:
 
-| Variable          | Description                       | Default / Required            |
-| ----------------- | --------------------------------- | ----------------------------- |
-| `MONGODB_URI`     | MongoDB connection string         | In-memory fallback if not set |
-| `JWT_SECRET`      | Secret key for signing JWT tokens | **Required** for auth         |
-| `PORT`            | Express server port               | `8080`                        |
-| `AI_SERVICE_URL`  | Python AI (FastAPI) service URL   | `http://localhost:8000`       |
-| `OPENWEATHER_KEY` | OpenWeatherMap API key            | Optional                      |
-| `PING_MESSAGE`    | Custom ping response message      | `ping`                        |
+| Variable          | Description                                | Default / Required            |
+| ----------------- | ------------------------------------------ | ----------------------------- |
+| `MONGODB_URI`     | MongoDB connection string (Atlas or local) | In-memory fallback if not set |
+| `JWT_SECRET`      | Secret key for signing JWT tokens          | **Required** for auth         |
+| `NODE_ENV`        | Set to `production` on deployment          | `development`                 |
+| `PORT`            | Express server port                        | `8080`                        |
+| `AI_SERVICE_URL`  | Python AI (FastAPI) service URL            | `http://localhost:8000`       |
+| `OPENWEATHER_KEY` | OpenWeatherMap API key                     | Optional                      |
+| `PING_MESSAGE`    | Custom ping response message               | `ping`                        |
 
 > Without `MONGODB_URI`, the app runs in **Demo Mode** with a fast in-memory adapter — great for local testing.
 
 ---
 
-## Running the Project
+## Running the Project (Local)
 
 You need **two terminals** running simultaneously:
 
@@ -95,9 +96,37 @@ python main.py
 
 ---
 
+## 🚀 Deployment (Production)
+
+### Backend + Frontend → Render
+
+The entire app (frontend + backend) is deployed as a single service on **[Render](https://render.com)**.
+
+| Setting           | Value                                      |
+| ----------------- | ------------------------------------------ |
+| **Runtime**       | Node.js                                    |
+| **Branch**        | `main`                                     |
+| **Build Command** | `npm install --include=dev; npm run build` |
+| **Start Command** | `node dist/server/node-build.mjs`          |
+| **Live URL**      | https://agriverse-bwqw.onrender.com        |
+
+**Environment Variables on Render:**
+
+| Key           | Value                           |
+| ------------- | ------------------------------- |
+| `MONGODB_URI` | MongoDB Atlas connection string |
+| `JWT_SECRET`  | Strong secret key               |
+| `NODE_ENV`    | `production`                    |
+
+### Database → MongoDB Atlas
+
+All data is stored on **MongoDB Atlas** (cloud). Collections migrated from local Compass to Atlas using a custom Node.js migration script (`scripts/migrate-to-atlas.js`).
+
+---
+
 ## Quick Verification
 
-1. Open **http://localhost:8080**
+1. Open **https://agriverse-bwqw.onrender.com** (or **http://localhost:8080** locally)
 2. Register or Login as a **Farmer** (Guest Mode also available — no sign-up needed)
 3. Use the 🌐 button to switch language (EN / हिंदी / ଓଡ଼ିଆ)
 4. Go to **Dashboard → Vet Inbox** to book an appointment or request a consultation
@@ -106,6 +135,8 @@ python main.py
 7. Go to **Tools & Insights** (`/tools`) to explore IoT, Drone, Blockchain, Schemes & PDF Export
 
 Login as **Vet** (`/vet`) or **Admin** (`/admin`) using seeded credentials to access their dedicated portals.
+
+> Seed default users: `POST https://agriverse-bwqw.onrender.com/api/admin/seed`
 
 ---
 
@@ -172,7 +203,7 @@ AgriVerse/
 │   ├── routes/
 │   │   ├── auth.ts                  # Register, login, guest — issues JWT
 │   │   ├── farmers.ts               # Farmer CRUD, consultation, vet advisories
-│   │   ├── appointments.ts          # Appointment CRUD (getBookings, createBooking, updateBooking)
+│   │   ├── appointments.ts          # Appointment CRUD
 │   │   ├── vet.ts                   # Vet consultations, advisories
 │   │   ├── admin.ts                 # User management, broadcast, seed, overview
 │   │   ├── advisory.ts              # Crop advisory creation
@@ -183,8 +214,7 @@ AgriVerse/
 │   │   ├── market.ts                # Mandi market prices
 │   │   ├── weather.ts               # Weather data
 │   │   ├── profile.ts               # Advisory history + subscription
-│   │   ├── neon.ts                  # Netlify Neon DB example route
-│   │   └── demo.ts                  # Health/demo endpoint
+│   │   └── listings.ts              # Marketplace listings CRUD
 │   │
 │   ├── lib/
 │   │   └── ledger.ts                # Hash-chain blockchain implementation
@@ -199,7 +229,9 @@ AgriVerse/
 │
 ├── shared/                          # Shared TypeScript types
 ├── public/                          # PWA icons, manifest.json
-├── scripts/                         # Build / utility scripts
+├── scripts/
+│   ├── migrate-to-atlas.js          # One-time MongoDB Compass → Atlas migration script
+│   └── seed.ts                      # Database seed script
 ├── .env.example                     # Environment variable template
 └── PROJECT_DETAILS.md               # Full feature documentation
 ```
@@ -241,6 +273,7 @@ AgriVerse/
 | Chatbot      | `/api/chat`         | JWT           | AI chatbot proxy                      |
 | Pest AI      | `/api/predict`      | No            | Image-based pest/disease prediction   |
 | Profile      | `/api/profile/*`    | JWT           | Advisory history, subscription        |
+| Listings     | `/api/listings`     | JWT (write)   | Marketplace listings CRUD             |
 
 ---
 
@@ -255,7 +288,8 @@ AgriVerse/
 | JWT auth errors           | Ensure `JWT_SECRET` is set in `.env`                                |
 | PWA icons missing         | Run `npm run build` once to generate PWA assets                     |
 | Consultations not showing | Ensure farmer is logged in (non-guest) and MongoDB is connected     |
-| Red underline in index.ts | Run `Ctrl+Shift+P → TypeScript: Restart TS Server` in VS Code       |
+| Render cold start         | Free tier sleeps after 15 min; first request takes 30–60s           |
+| "Something went wrong"    | Clear browser cache or check Render logs for server errors          |
 | 401 Unauthorized errors   | Ensure `useAuth().authHeaders()` is appended to any new `fetch()`   |
 | "Failed to load" UI error | Verify the `/api` route is not crashing and returns valid JSON      |
 
