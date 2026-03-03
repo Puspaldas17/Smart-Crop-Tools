@@ -13,6 +13,9 @@ _A full-stack, multilingual, offline-capable smart farming platform_
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple?style=flat-square)](https://web.dev/progressive-web-apps/)
 [![Languages](https://img.shields.io/badge/languages-EN%20%7C%20HI%20%7C%20OR-orange?style=flat-square)](client/i18n.ts)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=flat-square&logo=render)](https://agriverse-bwqw.onrender.com)
+
+🌐 **Live:** [https://agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)
 
 </div>
 
@@ -21,6 +24,8 @@ _A full-stack, multilingual, offline-capable smart farming platform_
 ## Executive Summary
 
 AgriVerse is a comprehensive, AI-powered digital farming ecosystem designed for India's small and marginal farmers. It unifies crop advisory, real-time market intelligence, AI-driven pest detection, gamified learning, veterinary consultations with appointment scheduling, antimicrobial usage tracking, IoT sensor telemetry, drone imagery analysis, government scheme discovery, supply-chain blockchain, and PDF farm report generation — all in one platform accessible in three languages, installable offline, and usable without high digital literacy.
+
+The platform is **fully deployed** on [Render](https://render.com) with **MongoDB Atlas** as the cloud database, making it production-ready and publicly accessible.
 
 ---
 
@@ -62,13 +67,26 @@ India's agricultural sector accounts for 18% of GDP and employs 44% of the workf
 │  /api/auth · /api/farmers · /api/appointments                    │
 │  /api/vet  · /api/admin   · /api/advisory · /api/analytics       │
 │  /api/amu  · /api/market  · /api/chat     · /api/predict         │
+│  /api/listings (Marketplace CRUD)                                │
 └──────────────┬─────────────────────────────────┬─────────────────┘
                │                                 │
   ┌────────────▼──────────┐       ┌──────────────▼──────────────┐
-  │  MongoDB + Mongoose   │       │  Python AI Service           │
-  │  (In-Memory Fallback) │       │  FastAPI + TensorFlow/CNN   │
+  │  MongoDB Atlas        │       │  Python AI Service           │
+  │  (Cloud · Mongoose)   │       │  FastAPI + TensorFlow/CNN   │
   └───────────────────────┘       └─────────────────────────────┘
 ```
+
+---
+
+## Deployment
+
+| Component    | Platform         | URL / Details                           |
+| ------------ | ---------------- | --------------------------------------- |
+| **Frontend** | Render (unified) | https://agriverse-bwqw.onrender.com     |
+| **Backend**  | Render (unified) | https://agriverse-bwqw.onrender.com/api |
+| **Database** | MongoDB Atlas    | Cloud cluster (Oregon, AWS)             |
+
+The entire app is deployed as a **single Render Web Service** — both React frontend (served as static files) and Node.js/Express backend run together, eliminating CORS issues and simplifying the architecture.
 
 ---
 
@@ -85,12 +103,13 @@ India's agricultural sector accounts for 18% of GDP and employs 44% of the workf
 | **Internationalization** | react-i18next                       | EN / Hindi / Odia (~1200 translation keys)   |
 | **PDF Generation**       | jsPDF + html2canvas                 | Formatted A4 farm report download            |
 | **Backend Runtime**      | Node.js + Express                   | REST API server                              |
-| **Database**             | MongoDB + Mongoose                  | Persistent data storage with schemas         |
+| **Database**             | MongoDB Atlas + Mongoose            | Cloud persistent storage with schemas        |
 | **Demo Fallback**        | Custom in-memory adapter (`db.ts`)  | Full functionality without MongoDB           |
 | **Authentication**       | JWT (jsonwebtoken) + bcryptjs       | Stateless role-based auth (farmer/vet/admin) |
 | **AI Service**           | Python + FastAPI                    | ML model API server                          |
 | **Machine Learning**     | TensorFlow / PyTorch + CNN          | Crop disease image classification            |
 | **PWA**                  | vite-plugin-pwa + Workbox           | Offline caching + installability             |
+| **Hosting**              | Render.com                          | Full-stack cloud deployment                  |
 | **Icons**                | Lucide React                        | Consistent iconography                       |
 | **Alerts**               | Sonner                              | Non-blocking toast notifications             |
 
@@ -278,9 +297,10 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 
 > Eliminating middlemen through direct Farmer-to-Consumer commerce.
 
-- 8 produce listings with search, category filter (Grain / Vegetable / Fruit), and organic badge
+- Produce listings with search, category filter (Grain / Vegetable / Fruit), and organic badge
 - Contact Seller reveals phone + one-click WhatsApp deeplink
-- Post new listings via inline form
+- Post new listings via inline form — persisted to MongoDB Atlas
+- UPI deeplink integration for payment initiation
 
 ---
 
@@ -300,6 +320,7 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 - 🔔 Bell icon with unread red badge counter
 - 7 pre-populated notifications across 5 categories: Pest / Market / Weather / Mission / System
 - Category filter chips, Mark All Read, and individual dismiss buttons
+- Server-Sent Events (SSE) ready architecture for real-time push
 
 ---
 
@@ -330,6 +351,7 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 | Broadcast Message     | Send platform-wide notifications                                   |
 | AMU Ledger View       | Admin view of full antimicrobial usage ledger                      |
 | Consultation Overview | View all consultations across all vets and farmers                 |
+| CSV Export            | Export farmer data and analytics summaries as CSV                  |
 
 ---
 
@@ -377,38 +399,45 @@ All charts use intelligently generated 30-day mock data as fallback when the bac
 | `Consultation`    | farmerId, vetId, animalId, disease, message, status, vetNote                        |
 | `VetAdvisory`     | vetId, farmerId (null=all), title, body, crop, targetRole                           |
 | `Appointment`     | farmerId, vetId, animalId, reason, scheduledAt, status, vetNote                     |
+| `Listing`         | farmerId, cropName, quantity, price, category, organic, phone, location             |
 
 All models have an **in-memory fallback** via the custom `InMemoryCollection` adapter in `db.ts`.
+All production data is stored in **MongoDB Atlas** (cloud).
 
 ---
 
 ## What Differentiates AgriVerse
 
-| Differentiator                        | Strategic Rationale                                                     |
-| ------------------------------------- | ----------------------------------------------------------------------- |
-| **Voice-First Interface**             | Removes literacy barrier; farmers speak, not type                       |
-| **Gamification for Behaviour Change** | Converts one-time curiosity into daily, sustained adoption              |
-| **14-Day Predictive Pest Forecast**   | Warns farmers ahead of outbreak season, not after detection             |
-| **JWT Role-Based Security**           | Stateless auth with vet/admin enforcement at the API level              |
-| **IoT + Drone + Blockchain Tools**    | 5 advanced features in one unified Tools & Insights page                |
-| **Offline-First PWA Architecture**    | Usable in areas with no or intermittent connectivity                    |
-| **Unified Ecosystem**                 | Weather + Soil + AI + Market + Vet + Community in one app               |
-| **Verified Supply Chain Records**     | AMU blockchain provides trust for organic & compliant produce           |
-| **Middleman-Free Marketplace**        | Farmers capture full value; consumers get fresher, cheaper produce      |
-| **Vet-Farmer Direct Channel**         | Rural farmers get veterinary advice and appointments without travelling |
+| Differentiator                         | Strategic Rationale                                                     |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| **Voice-First Interface**              | Removes literacy barrier; farmers speak, not type                       |
+| **Gamification for Behaviour Change**  | Converts one-time curiosity into daily, sustained adoption              |
+| **14-Day Predictive Pest Forecast**    | Warns farmers ahead of outbreak season, not after detection             |
+| **JWT Role-Based Security**            | Stateless auth with vet/admin enforcement at the API level              |
+| **IoT + Drone + Blockchain Tools**     | 5 advanced features in one unified Tools & Insights page                |
+| **Offline-First PWA Architecture**     | Usable in areas with no or intermittent connectivity                    |
+| **Unified Ecosystem**                  | Weather + Soil + AI + Market + Vet + Community in one app               |
+| **Verified Supply Chain Records**      | AMU blockchain provides trust for organic & compliant produce           |
+| **Middleman-Free Marketplace**         | Farmers capture full value; consumers get fresher, cheaper produce      |
+| **Vet-Farmer Direct Channel**          | Rural farmers get veterinary advice and appointments without travelling |
+| **Cloud-Native Production Deployment** | Live on Render + MongoDB Atlas — not just a demo                        |
 
 ---
 
 ## Future Roadmap
 
-| Feature                     | Status      | Description                                             |
-| --------------------------- | ----------- | ------------------------------------------------------- |
-| 💳 UPI Payment Integration  | Planned     | In-app payments for Marketplace transactions            |
-| 📲 SMS Fallback Channel     | Planned     | Critical alerts to feature phones via Twilio            |
-| 🔗 QR Code per Produce Lot  | Planned     | QR traceability for each blockchain-registered harvest  |
-| 🧪 Real AI/ML Backend       | Implemented | Full Python CNN model integration for disease detection |
-| 🌐 Live Deployment          | Planned     | Render.com + MongoDB Atlas cloud deployment             |
-| ✅ Unit & Integration Tests | Implemented | Vitest test suite                                       |
+| Feature                     | Status      | Description                                                      |
+| --------------------------- | ----------- | ---------------------------------------------------------------- |
+| 💳 UPI Payment Integration  | Partial     | UPI deeplinks integrated in Marketplace                          |
+| 📲 SMS Fallback Channel     | Planned     | Critical alerts to feature phones via Twilio                     |
+| 🔗 QR Code per Produce Lot  | Implemented | QR traceability for each blockchain-registered harvest           |
+| 🧪 Real AI/ML Backend       | Implemented | Full Python CNN model integration for disease detection          |
+| 🌐 Live Deployment          | ✅ Deployed | Render.com + MongoDB Atlas — live at agriverse-bwqw.onrender.com |
+| ✅ Unit & Integration Tests | Implemented | Vitest test suite                                                |
+| 📊 CSV Export               | Implemented | Admin dashboard CSV export for farmer data                       |
+| 🔔 Real-Time Notifications  | Implemented | SSE-based push notification architecture                         |
+| 🌍 Vercel Frontend CDN      | Planned     | Separate Vercel deployment for faster global CDN                 |
+| 🤖 LLM-Powered Chatbot      | Planned     | Replace rule-based chatbot with GPT/Gemini API                   |
 
 ---
 
@@ -420,6 +449,7 @@ All models have an **in-memory fallback** via the custom `InMemoryCollection` ad
 | **Institution** | SOA University (ITER), Bhubaneswar, Odisha                          |
 | **GitHub**      | [@Puspaldas17](https://github.com/Puspaldas17)                      |
 | **Repository**  | [Smart-Crop-Tools](https://github.com/Puspaldas17/Smart-Crop-Tools) |
+| **Live App**    | [agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)  |
 
 ---
 
