@@ -38,4 +38,4 @@ ListingSchema.index({ category: 1 });
 ListingSchema.index({ createdAt: -1 });
 
 export const Listing =
-  mongoose.models.Listing || mongoose.model<IListing>("Listing", ListingSchema);
+  (mongoose.models.Listing as mongoose.Model<IListing>) || mongoose.model<IListing>("Listing", ListingSchema);
