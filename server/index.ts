@@ -51,6 +51,11 @@ import {
   createBooking,
   updateBooking,
 } from "./routes/appointments";
+import {
+  getListings,
+  createListing,
+  seedListings,
+} from "./routes/listings";
 import { verifyToken, requireRole } from "./middleware/auth";
 
 export function createServer() {
@@ -124,6 +129,11 @@ export function createServer() {
   app.get("/api/appointments",             verifyToken, getBookings);
   app.post("/api/appointments",            verifyToken, createBooking);
   app.patch("/api/appointments/:id",       verifyToken, updateBooking);
+
+  // ── Marketplace Listings ──────────────────────────────────────────────────
+  app.get("/api/listings/seed",            seedListings);           // one-time seed
+  app.get("/api/listings",                 getListings);            // public read
+  app.post("/api/listings",                verifyToken, createListing); // auth write
 
   // ── Admin routes (admin role required) ───────────────────────────────────
   app.get("/api/admin/overview",           verifyToken, requireRole("admin"), getAdminOverview);

@@ -3,7 +3,8 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 
 function useScrollTop(offset = 8) {
   const [scrolled, setScrolled] = useState(false);
@@ -35,51 +36,49 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { NotificationBell } from "@/components/features/NotificationCenter";
 
+// ── Dark / Light mode toggle ─────────────────────────────────────────────────
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  // Avoid hydration mismatch — only render the icon after mount
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className="h-9 w-9" />;
+  const isDark = resolvedTheme === "dark";
+  return (
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="inline-flex items-center justify-center h-9 w-9 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+    >
+      {isDark
+        ? <Sun  className="h-4 w-4 text-amber-400 transition-transform duration-200 rotate-0" />
+        : <Moon className="h-4 w-4 transition-transform duration-200 rotate-0" />}
+    </button>
+  );
+}
+
 function HeaderAuth() {
   const { farmer, logout } = useAuth();
   const { t } = useTranslation();
-  
+
   return farmer ? (
-    <div className="flex items-center gap-2">
-      <a
-        href="/#tools"
-        className="hidden rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow hover:brightness-95 md:inline"
-      >
-        {t('nav.tools')}
-      </a>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="inline-flex items-center gap-2 rounded-md border border-input px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
-            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
-              {farmer.name?.charAt(0)?.toUpperCase() || "F"}
-            </span>
-            <span className="max-w-[7rem] sm:max-w-[10rem] truncate">{farmer.name}</span>
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <a href="/#tools">{t('nav.tools')}</a>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/dashboard">{t('nav.dashboard')}</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/profile">{t('nav.profile')}</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/leaderboard">🏆 Leaderboard</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/marketplace">🛒 Marketplace</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/calendar">📅 Crop Calendar</Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logout}>{t('nav.logout')}</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="inline-flex items-center gap-2 rounded-md border border-input px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
+            {farmer.name?.charAt(0)?.toUpperCase() || "F"}
+          </span>
+          <span className="max-w-[7rem] sm:max-w-[10rem] truncate">{farmer.name}</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Link to="/profile">{t('nav.profile')}</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={logout}>{t('nav.logout')}</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   ) : (
     <div className="flex items-center gap-2">
       <Link
@@ -103,6 +102,7 @@ export default function RootLayout() {
   const scrolled = useScrollTop(10);
   const { farmer } = useAuth();
   const { t } = useTranslation();
+  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-transparent text-foreground relative">
@@ -129,22 +129,38 @@ export default function RootLayout() {
             </span>
             <span className="text-lg font-bold tracking-tight gradient-text">{t('app.title')}</span>
           </Link>
-          <nav className="hidden gap-4 md:flex">
-            {[
-              ...(farmer ? [{ href: "/#tools", label: t('nav.tools') }] : []),
-              { href: "/#about", label: t('nav.about') },
-            ].map((i) => (
-              <a
-                key={i.href}
-                href={i.href}
-                className="text-sm text-foreground/80 hover:text-foreground nav-link transition-colors"
-              >
-                {i.label}
+          <nav className="hidden gap-1 md:flex items-center">
+            {farmer ? (
+              <>
+                <a href="/#tools" className="px-3 py-1.5 text-sm text-foreground/80 hover:text-foreground nav-link transition-colors rounded-md hover:bg-muted">
+                  {t('nav.tools')}
+                </a>
+                {!farmer.isGuest && (
+                  <>
+                    <Link to="/dashboard" className="px-3 py-1.5 text-sm text-foreground/80 hover:text-foreground nav-link transition-colors rounded-md hover:bg-muted">
+                      {t('nav.dashboard')}
+                    </Link>
+                    <Link to="/leaderboard" className="px-3 py-1.5 text-sm text-foreground/80 hover:text-foreground nav-link transition-colors rounded-md hover:bg-muted">
+                      🏆 Leaderboard
+                    </Link>
+                    <Link to="/marketplace" className="px-3 py-1.5 text-sm text-foreground/80 hover:text-foreground nav-link transition-colors rounded-md hover:bg-muted">
+                      🛒 Marketplace
+                    </Link>
+                    <Link to="/calendar" className="px-3 py-1.5 text-sm text-foreground/80 hover:text-foreground nav-link transition-colors rounded-md hover:bg-muted">
+                      📅 Calendar
+                    </Link>
+                  </>
+                )}
+              </>
+            ) : (
+              <a href="/#about" className="px-3 py-1.5 text-sm text-foreground/80 hover:text-foreground nav-link transition-colors rounded-md hover:bg-muted">
+                {t('nav.about')}
               </a>
-            ))}
+            )}
           </nav>
           <div className="flex items-center gap-3">
              <LanguageSwitcher />
+            <ThemeToggle />
             <NotificationBell />
             <div className="md:hidden">
               <Sheet>
