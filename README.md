@@ -1,6 +1,7 @@
 # 🌾 AgriVerse
 
-**AI-powered smart farming platform for India's rural farmers.**
+> **AI-powered smart farming platform for India's 140 million rural farmers.**
+> Multilingual · Offline-First · Gamified · Vet-Connected · Marketplace-Enabled
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/Puspaldas17/Smart-Crop-Tools)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
@@ -10,13 +11,53 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?style=flat-square)](tsconfig.json)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=flat-square&logo=render)](https://agriverse-bwqw.onrender.com)
 
+> 📖 Full feature documentation, architecture, and roadmap → **[PROJECT_DETAILS.md](PROJECT_DETAILS.md)**
+
+---
+
 ## 🌐 Live Demo
 
-> **[https://agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)**
->
-> ⚠️ Hosted on Render free tier — first load may take **30–60 seconds** (cold start). Subsequent loads are fast.
+**[https://agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)**
 
-> 📖 Full feature documentation, architecture, and roadmap → **[PROJECT_DETAILS.md](PROJECT_DETAILS.md)**
+> ⚠️ Hosted on Render free tier — first load may take **30–60 seconds** (cold start).
+
+---
+
+## ✨ Key Features
+
+| Feature                    | Description                                           |
+| -------------------------- | ----------------------------------------------------- |
+| 🤖 **AI Crop Advisory**    | Personalized fertilizer, irrigation & sowing plans    |
+| 🐛 **Pest Detection**      | Upload leaf photo → CNN diagnoses disease instantly   |
+| 📊 **Analytics Dashboard** | 4-tab interactive charts (yield, soil, weather, crop) |
+| 🩺 **Vet Consultations**   | Book appointments & get advisories from veterinarians |
+| 🏪 **F2C Marketplace**     | Sell produce directly to consumers, no middlemen      |
+| 🎮 **Gamification**        | XP, levels, streaks, badges & daily missions          |
+| 🌧️ **Weather & Market**    | Live IMD weather + Mandi market price feeds           |
+| 📅 **Crop Calendar**       | 10-crop sowing & harvest planner by month             |
+| 🔗 **Blockchain Ledger**   | Tamper-evident AMU drug log with hash-chain           |
+| 🛸 **Drone Analysis**      | Multi-zone aerial NDVI + field health analysis        |
+| 📄 **PDF Reports**         | One-click A4 farm report download (jsPDF)             |
+| 🌐 **Multilingual**        | English · हिंदी · ଓଡ଼ିଆ (~1200 translation keys)      |
+| 📶 **Offline PWA**         | Installable, works without internet                   |
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer             | Technology                                  |
+| ----------------- | ------------------------------------------- |
+| **Frontend**      | React 18 + Vite + TypeScript + TailwindCSS  |
+| **UI Components** | Radix UI + shadcn/ui (50+ components)       |
+| **Charts**        | Recharts (Line, Bar, Area, Radar)           |
+| **Backend**       | Node.js + Express (REST API)                |
+| **Database**      | MongoDB Atlas + Mongoose                    |
+| **Auth**          | JWT + bcryptjs (farmer / vet / admin roles) |
+| **AI / ML**       | Python + FastAPI + TensorFlow/CNN           |
+| **PDF**           | jsPDF + html2canvas                         |
+| **PWA**           | vite-plugin-pwa + Workbox                   |
+| **i18n**          | react-i18next                               |
+| **Hosting**       | Render.com (full-stack)                     |
 
 ---
 
@@ -140,6 +181,24 @@ Login as **Vet** (`/vet`) or **Admin** (`/admin`) using seeded credentials to ac
 
 ---
 
+## Available Routes
+
+| Route          | Page                           | Access        |
+| -------------- | ------------------------------ | ------------- |
+| `/`            | Landing page                   | Public        |
+| `/login`       | Farmer login / registration    | Public        |
+| `/dashboard`   | Main farmer dashboard (7 tabs) | Farmer        |
+| `/tools`       | Tools & Insights (5 tabs)      | Farmer        |
+| `/vet`         | Veterinary portal              | Vet           |
+| `/admin`       | Admin portal                   | Admin         |
+| `/amu`         | AMU blockchain ledger          | Vet / Admin   |
+| `/leaderboard` | Community XP leaderboard       | Authenticated |
+| `/marketplace` | F2C produce marketplace        | Authenticated |
+| `/calendar`    | Crop sowing & harvest calendar | Authenticated |
+| `/profile`     | Farmer profile + gamification  | Authenticated |
+
+---
+
 ## Project Structure
 
 ```
@@ -214,7 +273,9 @@ AgriVerse/
 │   │   ├── market.ts                # Mandi market prices
 │   │   ├── weather.ts               # Weather data
 │   │   ├── profile.ts               # Advisory history + subscription
-│   │   └── listings.ts              # Marketplace listings CRUD
+│   │   ├── listings.ts              # Marketplace listings CRUD
+│   │   ├── neon.ts                  # Netlify Neon DB example route
+│   │   └── demo.ts                  # Health/demo endpoint
 │   │
 │   ├── lib/
 │   │   └── ledger.ts                # Hash-chain blockchain implementation
@@ -235,24 +296,6 @@ AgriVerse/
 ├── .env.example                     # Environment variable template
 └── PROJECT_DETAILS.md               # Full feature documentation
 ```
-
----
-
-## Available Routes
-
-| Route          | Page                           | Access        |
-| -------------- | ------------------------------ | ------------- |
-| `/`            | Landing page                   | Public        |
-| `/login`       | Farmer login / registration    | Public        |
-| `/dashboard`   | Main farmer dashboard (7 tabs) | Farmer        |
-| `/tools`       | Tools & Insights (5 tabs)      | Farmer        |
-| `/vet`         | Veterinary portal              | Vet           |
-| `/admin`       | Admin portal                   | Admin         |
-| `/amu`         | AMU blockchain ledger          | Vet / Admin   |
-| `/leaderboard` | Community XP leaderboard       | Authenticated |
-| `/marketplace` | F2C produce marketplace        | Authenticated |
-| `/calendar`    | Crop sowing & harvest calendar | Authenticated |
-| `/profile`     | Farmer profile + gamification  | Authenticated |
 
 ---
 
@@ -288,7 +331,8 @@ AgriVerse/
 | JWT auth errors           | Ensure `JWT_SECRET` is set in `.env`                                |
 | PWA icons missing         | Run `npm run build` once to generate PWA assets                     |
 | Consultations not showing | Ensure farmer is logged in (non-guest) and MongoDB is connected     |
-| Render cold start         | Free tier sleeps after 15 min; first request takes 30–60s           |
+| Red underline in index.ts | Run `Ctrl+Shift+P → TypeScript: Restart TS Server` in VS Code       |
+| Render cold start delay   | Free tier sleeps after 15 min inactivity; first load = 30–60s       |
 | "Something went wrong"    | Clear browser cache or check Render logs for server errors          |
 | 401 Unauthorized errors   | Ensure `useAuth().authHeaders()` is appended to any new `fetch()`   |
 | "Failed to load" UI error | Verify the `/api` route is not crashing and returns valid JSON      |
