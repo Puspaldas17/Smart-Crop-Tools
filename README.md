@@ -8,6 +8,13 @@
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple?style=flat-square)](https://web.dev/pwa/)
 [![Languages](https://img.shields.io/badge/languages-EN%20%7C%20HI%20%7C%20OR-orange?style=flat-square)](client/i18n.ts)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?style=flat-square)](tsconfig.json)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=flat-square&logo=render)](https://agriverse-bwqw.onrender.com)
+
+## 🌐 Live Demo
+
+> **[https://agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)**
+>
+> ⚠️ Hosted on Render free tier — first load may take **30–60 seconds** (cold start). Subsequent loads are fast.
 
 > 📖 Full feature documentation, architecture, and roadmap → **[PROJECT_DETAILS.md](PROJECT_DETAILS.md)**
 
