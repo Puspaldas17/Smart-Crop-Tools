@@ -102,6 +102,7 @@ export default function RootLayout() {
   const scrolled = useScrollTop(10);
   const { farmer } = useAuth();
   const { t } = useTranslation();
+  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-transparent text-foreground relative">
