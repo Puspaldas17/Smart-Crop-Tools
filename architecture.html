@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AgriVerse — System Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#0a0f1e;color:#e2e8f0;min-height:100vh;padding:32px 16px}
+  h1{text-align:center;font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#4ade80,#22d3ee,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+  .subtitle{text-align:center;color:#94a3b8;font-size:.95rem;margin-bottom:40px}
+
+  /* ── grid wrapper ── */
+  .arch{display:flex;flex-direction:column;gap:24px;max-width:1200px;margin:0 auto}
+
+  /* ── layer card ── */
+  .layer{border-radius:16px;padding:20px 24px;border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+  .layer::before{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none}
+  .layer-title{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .layer-title span{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  /* colour themes per layer */
+  .l-user   {background:linear-gradient(135deg,rgba(16,185,129,.10),rgba(16,185,129,.03));border-color:rgba(16,185,129,.25)}
+  .l-user   .layer-title span{background:#10b981}
+  .l-user   .layer-title{color:#4ade80}
+
+  .l-fe     {background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(99,102,241,.03));border-color:rgba(99,102,241,.30)}
+  .l-fe     .layer-title span{background:#6366f1}
+  .l-fe     .layer-title{color:#a5b4fc}
+
+  .l-gam    {background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(245,158,11,.03));border-color:rgba(245,158,11,.25)}
+  .l-gam    .layer-title span{background:#f59e0b}
+  .l-gam    .layer-title{color:#fcd34d}
+
+  .l-api    {background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(59,130,246,.03));border-color:rgba(59,130,246,.30)}
+  .l-api    .layer-title span{background:#3b82f6}
+  .l-api    .layer-title{color:#93c5fd}
+
+  .l-ai     {background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(168,85,247,.03));border-color:rgba(168,85,247,.30)}
+  .l-ai     .layer-title span{background:#a855f7}
+  .l-ai     .layer-title{color:#d8b4fe}
+
+  .l-db     {background:linear-gradient(135deg,rgba(20,184,166,.12),rgba(20,184,166,.03));border-color:rgba(20,184,166,.30)}
+  .l-db     .layer-title span{background:#14b8a6}
+  .l-db     .layer-title{color:#5eead4}
+
+  .l-infra  {background:linear-gradient(135deg,rgba(239,68,68,.10),rgba(239,68,68,.03));border-color:rgba(239,68,68,.25)}
+  .l-infra  .layer-title span{background:#ef4444}
+  .l-infra  .layer-title{color:#fca5a5}
+
+  /* ── pill grid ── */
+  .pills{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 14px;font-size:.8rem;font-weight:500;color:#cbd5e1;transition:all .2s;cursor:default}
+  .pill:hover{transform:translateY(-2px);background:rgba(255,255,255,.14);color:#fff}
+
+  /* ── arrow connector ── */
+  .arrow{text-align:center;font-size:1.5rem;color:#334155;margin:-8px 0;user-select:none}
+  .arrow-label{font-size:.72rem;color:#64748b;display:block;margin-top:-4px;letter-spacing:.05em}
+
+  /* ── two column layouts ── */
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+
+  /* ── route table ── */
+  .rtable{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:4px}
+  .rtable th{color:#64748b;font-weight:600;text-align:left;padding:4px 8px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .rtable td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04);color:#94a3b8}
+  .rtable td:first-child{color:#e2e8f0;font-family:monospace;font-size:.75rem}
+  .badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:600}
+  .b-farmer{background:rgba(16,185,129,.2);color:#4ade80}
+  .b-vet{background:rgba(168,85,247,.2);color:#d8b4fe}
+  .b-admin{background:rgba(239,68,68,.2);color:#fca5a5}
+  .b-pub{background:rgba(148,163,184,.15);color:#94a3b8}
+  .b-auth{background:rgba(59,130,246,.2);color:#93c5fd}
+
+  /* ── data flow section ── */
+  .flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-top:8px}
+  .fnode{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 13px;font-size:.78rem;color:#cbd5e1;white-space:nowrap}
+  .farrow{color:#475569;padding:0 6px;font-size:1.1rem}
+
+  /* ── legend ── */
+  .legend{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:10px}
+  .leg-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:#64748b}
+  .leg-dot{width:10px;height:10px;border-radius:50%}
+
+  @media(max-width:700px){.row2,.row3{grid-template-columns:1fr}.flow{gap:4px}}
+</style>
+</head>
+<body>
+
+<h1>🌾 AgriVerse — System Architecture</h1>
+<p class="subtitle">Smart Crop Tools · Full-Stack AI Farming Ecosystem · Puspal Das</p>
+
+<div class="arch">
+
+  <!-- USERS -->
+  <div class="layer l-user">
+    <div class="layer-title"><span></span>👤 Users &amp; Access Roles</div>
+    <div class="pills">
+      <div class="pill">🧑‍🌾 Farmer (default role)</div>
+      <div class="pill">🩺 Veterinarian</div>
+      <div class="pill">🛡️ Admin</div>
+      <div class="pill">👁️ Guest (read-only)</div>
+    </div>
+  </div>
+
+  <div class="arrow">↕<span class="arrow-label">Browser / PWA (installable · offline-capable via Workbox)</span></div>
+
+  <!-- FRONTEND -->
+  <div class="layer l-fe">
+    <div class="layer-title"><span></span>🖥️ Frontend — React 18 + Vite + TypeScript</div>
+    <div class="row3" style="margin-bottom:14px">
+      <div>
+        <div style="font-size:.72rem;color:#6366f1;font-weight:700;margin-bottom:6px">PAGES / ROUTES</div>
+        <table class="rtable">
+          <tr><th>Route</th><th>Access</th></tr>
+          <tr><td>/</td><td><span class="badge b-pub">Public</span></td></tr>
+          <tr><td>/login</td><td><span class="badge b-pub">Public</span></td></tr>
+          <tr><td>/dashboard</td><td><span class="badge b-farmer">Farmer</span></td></tr>
+          <tr><td>/tools</td><td><span class="badge b-farmer">Farmer</span></td></tr>
+          <tr><td>/vet</td><td><span class="badge b-vet">Vet</span></td></tr>
+          <tr><td>/admin</td><td><span class="badge b-admin">Admin</span></td></tr>
+          <tr><td>/amu</td><td><span class="badge b-vet">Vet/Admin</span></td></tr>
+          <tr><td>/marketplace</td><td><span class="badge b-auth">Auth</span></td></tr>
+          <tr><td>/calendar</td><td><span class="badge b-auth">Auth</span></td></tr>
+          <tr><td>/leaderboard</td><td><span class="badge b-auth">Auth</span></td></tr>
+          <tr><td>/profile</td><td><span class="badge b-auth">Auth</span></td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="font-size:.72rem;color:#6366f1;font-weight:700;margin-bottom:6px">DASHBOARD TABS (7)</div>
+        <div class="pills" style="flex-direction:column;gap:5px">
+          <div class="pill">📊 Overview + KPIs</div>
+          <div class="pill">🌿 Crop Advisory</div>
+          <div class="pill">🐛 Pest Detection (AI)</div>
+          <div class="pill">📈 Analytics (4 sub-tabs)</div>
+          <div class="pill">🩺 Vet Inbox</div>
+          <div class="pill">🛒 Market Prices</div>
+          <div class="pill">🏆 Missions / XP</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.72rem;color:#6366f1;font-weight:700;margin-bottom:6px">TOOLS PAGE TABS (5)</div>
+        <div class="pills" style="flex-direction:column;gap:5px">
+          <div class="pill">📡 IoT Sensor Dashboard</div>
+          <div class="pill">🛸 Drone Aerial Analysis</div>
+          <div class="pill">🔗 Produce Blockchain</div>
+          <div class="pill">📜 Gov. Scheme Finder</div>
+          <div class="pill">📄 PDF Farm Report</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:.72rem;color:#6366f1;font-weight:700;margin-bottom:6px">UI STACK</div>
+    <div class="pills">
+      <div class="pill">TailwindCSS + CSS Props</div>
+      <div class="pill">Radix UI + shadcn/ui</div>
+      <div class="pill">Recharts (Line/Bar/Radar/Area)</div>
+      <div class="pill">React Router v6</div>
+      <div class="pill">react-i18next (EN/HI/OR)</div>
+      <div class="pill">jsPDF + html2canvas</div>
+      <div class="pill">Lucide React Icons</div>
+      <div class="pill">Sonner (Toasts)</div>
+      <div class="pill">Web Speech API (Voice)</div>
+      <div class="pill">vite-plugin-pwa + Workbox</div>
+    </div>
+  </div>
+
+  <!-- GAMIFICATION -->
+  <div class="layer l-gam">
+    <div class="layer-title"><span></span>🎮 GamificationContext (React Context + localStorage)</div>
+    <div class="pills">
+      <div class="pill">⭐ XP Points System</div>
+      <div class="pill">📅 Daily Login Streak</div>
+      <div class="pill">🎯 8 Daily Missions (auto-reset midnight)</div>
+      <div class="pill">🏅 10+ Unlockable Badges</div>
+      <div class="pill">🏆 Leaderboard — Weekly / Monthly / All-Time</div>
+      <div class="pill">🔔 Notification Center (SSE-ready)</div>
+    </div>
+  </div>
+
+  <div class="arrow">↕<span class="arrow-label">REST API + JWT Bearer Token (Authorization header)</span></div>
+
+  <!-- BACKEND -->
+  <div class="layer l-api">
+    <div class="layer-title"><span></span>⚙️ Backend — Node.js + Express (TypeScript)</div>
+    <div class="row2" style="margin-bottom:14px">
+      <div>
+        <div style="font-size:.72rem;color:#3b82f6;font-weight:700;margin-bottom:6px">MIDDLEWARE</div>
+        <div class="pills" style="flex-direction:column;gap:5px">
+          <div class="pill">🔐 verifyToken — JWT decode &amp; validate</div>
+          <div class="pill">🚦 requireRole(farmer|vet|admin)</div>
+          <div class="pill">🌐 CORS + Helmet + Morgan logger</div>
+          <div class="pill">📦 express.json body parser</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.72rem;color:#3b82f6;font-weight:700;margin-bottom:6px">AUTH FLOW</div>
+        <div class="flow">
+          <div class="fnode">POST /api/auth/register</div>
+          <div class="farrow">→</div>
+          <div class="fnode">bcryptjs hash pw</div>
+          <div class="farrow">→</div>
+          <div class="fnode">Save Farmer</div>
+          <div class="farrow">→</div>
+          <div class="fnode">Sign JWT</div>
+        </div>
+        <div class="flow" style="margin-top:6px">
+          <div class="fnode">POST /api/auth/login</div>
+          <div class="farrow">→</div>
+          <div class="fnode">Compare hash</div>
+          <div class="farrow">→</div>
+          <div class="fnode">Return {token, role}</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:.72rem;color:#3b82f6;font-weight:700;margin-bottom:6px">API ROUTES (16 route files)</div>
+    <div class="pills">
+      <div class="pill">/api/auth</div>
+      <div class="pill">/api/farmers</div>
+      <div class="pill">/api/advisory</div>
+      <div class="pill">/api/analytics</div>
+      <div class="pill">/api/appointments</div>
+      <div class="pill">/api/vet</div>
+      <div class="pill">/api/admin</div>
+      <div class="pill">/api/amu</div>
+      <div class="pill">/api/market</div>
+      <div class="pill">/api/chat</div>
+      <div class="pill">/api/predict → Python AI</div>
+      <div class="pill">/api/listings</div>
+      <div class="pill">/api/weather</div>
+      <div class="pill">/api/profile</div>
+      <div class="pill">/api/demo</div>
+      <div class="pill">/api/neon</div>
+    </div>
+  </div>
+
+  <!-- AI + DB side by side -->
+  <div class="row2">
+    <!-- AI SERVICE -->
+    <div class="layer l-ai">
+      <div class="layer-title"><span></span>🤖 AI Service — Python + FastAPI</div>
+      <div class="flow" style="margin-bottom:10px">
+        <div class="fnode">Farmer uploads leaf image</div>
+        <div class="farrow">→</div>
+        <div class="fnode">Express /api/predict</div>
+        <div class="farrow">→</div>
+        <div class="fnode">FastAPI :8000</div>
+      </div>
+      <div class="flow" style="margin-bottom:14px">
+        <div class="fnode">model_engine.py (CNN)</div>
+        <div class="farrow">→</div>
+        <div class="fnode">Disease Name + Confidence %</div>
+        <div class="farrow">→</div>
+        <div class="fnode">Treatment Plan</div>
+      </div>
+      <div class="pills">
+        <div class="pill">TensorFlow / PyTorch CNN model</div>
+        <div class="pill">POST /predict/disease</div>
+        <div class="pill">Image multipart upload</div>
+        <div class="pill">uvicorn ASGI server</div>
+        <div class="pill">14-Day Pest Forecast (rule-based)</div>
+      </div>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="layer l-db">
+      <div class="layer-title"><span></span>🗄️ Database — MongoDB Atlas + Mongoose</div>
+      <div style="font-size:.72rem;color:#14b8a6;font-weight:700;margin-bottom:6px">SCHEMAS (10 models)</div>
+      <div class="pills" style="margin-bottom:10px">
+        <div class="pill">Farmer (role, soil, land, subscription)</div>
+        <div class="pill">Advisory + AdvisoryHistory</div>
+        <div class="pill">AnalyticsData (yield, soil, weather)</div>
+        <div class="pill">Consultation (farmer↔vet)</div>
+        <div class="pill">VetAdvisory (broadcast)</div>
+        <div class="pill">Appointment (status lifecycle)</div>
+        <div class="pill">DrugLog (AMU, withdrawal days)</div>
+        <div class="pill">Block (hash-chain)</div>
+        <div class="pill">Listing (marketplace)</div>
+      </div>
+      <div style="font-size:.72rem;color:#14b8a6;font-weight:700;margin-bottom:6px">FALLBACK</div>
+      <div class="pills">
+        <div class="pill">InMemoryCollection adapter (db.ts)</div>
+        <div class="pill">Full functionality without MongoDB</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFRA -->
+  <div class="layer l-infra">
+    <div class="layer-title"><span></span>☁️ Infrastructure &amp; Deployment</div>
+    <div class="row3">
+      <div>
+        <div style="font-size:.72rem;color:#ef4444;font-weight:700;margin-bottom:6px">HOSTING</div>
+        <div class="pills" style="flex-direction:column;gap:5px">
+          <div class="pill">Render.com (unified service)</div>
+          <div class="pill">React static files served by Express</div>
+          <div class="pill">MongoDB Atlas (AWS Oregon)</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.72rem;color:#ef4444;font-weight:700;margin-bottom:6px">BUILD PIPELINE</div>
+        <div class="pills" style="flex-direction:column;gap:5px">
+          <div class="pill">Vite (frontend bundler)</div>
+          <div class="pill">TypeScript → ES2020</div>
+          <div class="pill">npm run build (unified)</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.72rem;color:#ef4444;font-weight:700;margin-bottom:6px">TOOLING</div>
+        <div class="pills" style="flex-direction:column;gap:5px">
+          <div class="pill">ESLint + Prettier</div>
+          <div class="pill">Vitest (unit tests)</div>
+          <div class="pill">.github CI workflows</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- END-TO-END FLOW -->
+  <div class="layer" style="background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)">
+    <div class="layer-title" style="color:#e2e8f0"><span style="background:#e2e8f0"></span>🔄 End-to-End Pest Detection Workflow</div>
+    <div class="flow">
+      <div class="fnode">👩‍🌾 Farmer</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Upload Leaf Photo</div>
+      <div class="farrow">→</div>
+      <div class="fnode">React /dashboard #pest tab</div>
+      <div class="farrow">→</div>
+      <div class="fnode">POST /api/predict (Express)</div>
+      <div class="farrow">→</div>
+      <div class="fnode">FastAPI :8000 /predict/disease</div>
+      <div class="farrow">→</div>
+      <div class="fnode">CNN model_engine.py</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Disease + Confidence + Treatment</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Advisory saved to MongoDB</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Displayed in UI + History Tab</div>
+    </div>
+
+    <div class="layer-title" style="color:#e2e8f0;margin-top:18px"><span style="background:#e2e8f0"></span>🔄 Vet Consultation Workflow</div>
+    <div class="flow">
+      <div class="fnode">🧑‍🌾 Farmer submits consult</div>
+      <div class="farrow">→</div>
+      <div class="fnode">POST /api/vet/consultations</div>
+      <div class="farrow">→</div>
+      <div class="fnode">MongoDB Consultation doc</div>
+      <div class="farrow">→</div>
+      <div class="fnode">🩺 Vet Dashboard polls /vet</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Vet approves / replies</div>
+      <div class="farrow">→</div>
+      <div class="fnode">PATCH /api/vet/:id</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Farmer sees updated status</div>
+    </div>
+
+    <div class="layer-title" style="color:#e2e8f0;margin-top:18px"><span style="background:#e2e8f0"></span>🔄 AMU Blockchain Workflow</div>
+    <div class="flow">
+      <div class="fnode">🩺 Vet logs drug treatment</div>
+      <div class="farrow">→</div>
+      <div class="fnode">POST /api/amu</div>
+      <div class="farrow">→</div>
+      <div class="fnode">SHA-256 hash computed</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Block chained to prev hash</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Withdrawal countdown shown</div>
+      <div class="farrow">→</div>
+      <div class="fnode">Tamper-evident ledger view</div>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#10b981"></div>User Layer</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#6366f1"></div>React Frontend</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Gamification</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>Express API</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#a855f7"></div>Python AI (FastAPI)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#14b8a6"></div>MongoDB Atlas</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#ef4444"></div>Infrastructure</div>
+  </div>
+  <p style="text-align:center;font-size:.72rem;color:#334155;margin-top:8px">AgriVerse · Smart-Crop-Tools · github.com/Puspaldas17 · Live: agriverse-bwqw.onrender.com</p>
+
+</div>
+</body>
+</html>
