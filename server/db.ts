@@ -288,6 +288,9 @@ const _inMemAnalyticsData = new InMemoryCollection<any>("AnalyticsData");
 const _inMemDrugLog = new InMemoryCollection<any>("DrugLog");
 const _inMemSystemAlert = new InMemoryCollection<any>("SystemAlert");
 const _inMemBlock = new InMemoryCollection<any>("Block");
+const _inMemConsultation = new InMemoryCollection<any>("Consultation");
+const _inMemVetAdvisory = new InMemoryCollection<any>("VetAdvisory");
+const _inMemAppointment = new InMemoryCollection<any>("Appointment");
 
 // --- Mongoose models (only created when URI is set) ---
 const _mongoFarmer = USE_MEMORY ? null : (mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema));
@@ -331,6 +334,47 @@ const blockSchema = new mongoose.Schema(
 );
 const _mongoBlock = USE_MEMORY ? null : (mongoose.models.Block || mongoose.model("Block", blockSchema));
 
+const consultationSchema = new mongoose.Schema(
+  {
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    vetId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    animalId: { type: String },
+    disease: { type: String, required: true },
+    message: { type: String, required: true },
+    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    vetNote: { type: String },
+  },
+  { timestamps: true },
+);
+const _mongoConsultation = USE_MEMORY ? null : (mongoose.models.Consultation || mongoose.model("Consultation", consultationSchema));
+
+const vetAdvisorySchema = new mongoose.Schema(
+  {
+    vetId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    title: { type: String, required: true },
+    body: { type: String, required: true },
+    crop: { type: String },
+    targetRole: { type: String, enum: ["all", "farmer"], default: "all" },
+  },
+  { timestamps: true },
+);
+const _mongoVetAdvisory = USE_MEMORY ? null : (mongoose.models.VetAdvisory || mongoose.model("VetAdvisory", vetAdvisorySchema));
+
+const appointmentSchema = new mongoose.Schema(
+  {
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    vetId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    animalId: { type: String },
+    reason: { type: String, required: true },
+    scheduledAt: { type: Date, required: true },
+    status: { type: String, enum: ["pending", "confirmed", "completed", "cancelled"], default: "pending" },
+    vetNote: { type: String },
+  },
+  { timestamps: true },
+);
+const _mongoAppointment = USE_MEMORY ? null : (mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema));
+
 // Helper: returns true if MongoDB is actually connected
 function isMongoConnected() {
   return mongoose.connection.readyState === 1;
@@ -354,3 +398,6 @@ export const AnalyticsData: any = makeProxy(_mongoAnalyticsData, _inMemAnalytics
 export const DrugLog: any = makeProxy(_mongoDrugLog, _inMemDrugLog);
 export const SystemAlert: any = makeProxy(_mongoSystemAlert, _inMemSystemAlert);
 export const Block: any = makeProxy(_mongoBlock, _inMemBlock);
+export const Consultation: any = makeProxy(_mongoConsultation, _inMemConsultation);
+export const VetAdvisory: any = makeProxy(_mongoVetAdvisory, _inMemVetAdvisory);
+export const Appointment: any = makeProxy(_mongoAppointment, _inMemAppointment);

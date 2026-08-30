@@ -34,15 +34,18 @@ const SEED_LISTINGS = [
 // ── GET /api/listings — fetch all with optional filters ───────────────────────
 export async function getListings(req: Request, res: Response) {
   try {
-    const { search = "", category, state } = req.query as Record<string, string>;
+    const search = typeof req.query.search === "string" ? req.query.search.trim() : "";
+    const category = typeof req.query.category === "string" ? req.query.category.trim() : "";
+    const state = typeof req.query.state === "string" ? req.query.state.trim() : "";
 
     const query: Record<string, unknown> = {};
     if (category && category !== "all" && category !== "All")
       query.category = category;
     if (state && state !== "All States")
       query.state = state;
-    if (search.trim()) {
-      const re = new RegExp(search.trim(), "i");
+    if (search) {
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp(safeSearch, "i");
       query.$or = [{ crop: re }, { location: re }, { state: re }, { seller: re }];
     }
 
