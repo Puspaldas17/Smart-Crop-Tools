@@ -291,6 +291,7 @@ const _inMemBlock = new InMemoryCollection<any>("Block");
 const _inMemConsultation = new InMemoryCollection<any>("Consultation");
 const _inMemVetAdvisory = new InMemoryCollection<any>("VetAdvisory");
 const _inMemAppointment = new InMemoryCollection<any>("Appointment");
+const _inMemListing = new InMemoryCollection<any>("Listing");
 
 // --- Mongoose models (only created when URI is set) ---
 const _mongoFarmer = USE_MEMORY ? null : (mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema));
@@ -375,6 +376,24 @@ const appointmentSchema = new mongoose.Schema(
 );
 const _mongoAppointment = USE_MEMORY ? null : (mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema));
 
+const listingSchema = new mongoose.Schema(
+  {
+    crop: { type: String, required: true },
+    emoji: { type: String, default: "🌾" },
+    quantity: { type: Number, required: true },
+    unit: { type: String, default: "kg" },
+    price: { type: Number, required: true },
+    seller: { type: String, required: true },
+    location: { type: String, required: true },
+    state: { type: String, required: true },
+    phone: { type: String, required: true },
+    category: { type: String, default: "Vegetable" },
+    isOrganic: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+const _mongoListing = USE_MEMORY ? null : (mongoose.models.Listing || mongoose.model("Listing", listingSchema));
+
 // Helper: returns true if MongoDB is actually connected
 function isMongoConnected() {
   return mongoose.connection.readyState === 1;
@@ -401,3 +420,4 @@ export const Block: any = makeProxy(_mongoBlock, _inMemBlock);
 export const Consultation: any = makeProxy(_mongoConsultation, _inMemConsultation);
 export const VetAdvisory: any = makeProxy(_mongoVetAdvisory, _inMemVetAdvisory);
 export const Appointment: any = makeProxy(_mongoAppointment, _inMemAppointment);
+export const Listing: any = makeProxy(_mongoListing, _inMemListing);

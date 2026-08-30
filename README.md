@@ -16,20 +16,23 @@
 
 ---
 
-## 🎯 Executive Summary & Problem Statement
+## 🎯 Executive Summary & Problem Statement (SIH26131)
 
-India's agricultural sector accounts for 18% of GDP and employs 44% of the workforce, yet small and marginal farmers remain chronically underserved by technology. 
+**Organizer:** Government Of Maharashtra  
+**Problem Statement:** Early detection and management of crop diseases and pest infestations  
+**Category:** Software (Agriculture, FoodTech & Rural Development)
+
+India's agricultural sector accounts for 18% of GDP, yet small and marginal farmers remain chronically underserved when dealing with crop health. 
 
 | Challenge | Scale |
 | :--- | :--- |
-| **Lack of personalized advisory** | 140M+ small & marginal farmers have no agronomist access |
-| **Market price opacity** | Middlemen capture 30–40% of farm-gate value |
 | **Late pest & disease detection** | Annual crop losses estimated at ₹80,000+ crore |
+| **Lack of personalized advisory** | 140M+ small & marginal farmers have no agronomist access |
 | **Digital accessibility barriers** | Low literacy + inconsistent internet in rural areas |
 | **No veterinary access** | Massive livestock healthcare gap in rural India |
 
 **The Solution:**
-AgriVerse is a unified, one-stop platform that solves all these challenges. It combines AI crop advisory, real-time market/weather data, machine-learning pest detection, IoT telemetry, gamified learning, and a dedicated veterinary consultation portal into a single Progressive Web App (PWA) that works offline and supports multiple regional languages.
+AgriVerse directly solves SIH26131 by providing a unified, one-stop platform for **early detection and management of crop diseases**. It features an AI leaf disease scanner, 14-day predictive pest alerts, and a voice-enabled chatbot. Beyond disease management, it is a complete Progressive Web App (PWA) offering real-time market data, IoT telemetry, gamified learning, and a veterinary portal—working offline in multiple regional languages.
 
 ---
 
@@ -240,7 +243,7 @@ flowchart TD
 
 ## 📝 License & Developer
 
-Developed by **Puspal Das** (SOA University, ITER) for SIH 2024.  
+Developed by **Puspal Das** (SOA University, ITER) for SIH 2026.  
 [GitHub Profile](https://github.com/Puspaldas17) | [Live Application](https://agriverse-bwqw.onrender.com)
 
 *Licensed under the MIT License — open source for the benefit of India's farming community.*

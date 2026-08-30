@@ -26,7 +26,7 @@ const resources = {
       "dash.scan": "Scan Crop",
       "dash.tab.missions": "Missions",
       "dash.tab.assistant": "AI Assistant",
-      "dash.tab.pest": "Pest Detector",
+      "dash.tab.pest": "Disease & Pest AI",
       "dash.tab.history": "Advisory History",
       "dash.tab.stats": "Usage Stats",
       "dash.tab.analytics": "Analytics",
