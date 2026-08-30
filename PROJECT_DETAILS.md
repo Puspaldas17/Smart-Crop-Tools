@@ -1,71 +1,458 @@
-# 🌾 AgriVerse: Project Details
+# AgriVerse — Project Overview & Feature Documentation
 
-**AgriVerse** is a comprehensive, AI-powered digital platform designed to revolutionize sustainable farming practices. It integrates gamified learning, real-time advisory, and livestock health management into a single, accessible solution for farmers.
+<div align="center">
 
-## ✨ Key Features
+**Empowering India's 140 Million Farmers with AI, Gamification & Real-Time Intelligence**
 
-### 🌍 **Multilingual & Accessible**
-
-- **3 Language Support**: Fully localized in **English**, **Hindi (हिंदी)**, and **Odia (ଓଡ଼ିଆ)**.
-- **Voice-Enabled Chatbot**: Talk to the AI assistant in your native language for farming advice.
-- **Dark Mode**: Switch between Light and Dark themes for comfortable viewing in any lighting condition.
-- **Offline Capabilities**: PWA support ensures key features work even with spotty internet.
-
-### 🎮 **Gamified Farming**
-
-- **Daily Missions**: Complete tasks like "Upload Soil Photo" or "Check Market Prices" to earn XP.
-- **Leveling System**: Earn XP, level up, and maintain daily streaks to stay motivated.
-- **Badges & Rewards**: Unlock achievements like "Green Thumb" or "Market Guru" for consistent activity.
-- **Leaderboard**: Compete with other farmers (locally or regionally) to improve farming practices.
-
-### 🤖 **AI & Smart Advisory**
-
-- **Crop Advisory**: Personalized fertilizer, irrigation, and seed recommendations based on your soil type and land size.
-- **Pest & Disease Detection**: Upload a photo of your crop, and our **Python-based AI Service** (TensorFlow/CNN) detects diseases and suggests remedies instantly.
-- **Chatbot Assistant**: Ask anything about weather, crops, or government schemes.
-
-### 📊 **Real-Time Data**
-
-- **Market Intelligence**: Live Mandi rates (APMC prices) for various crops to help you sell at the best price.
-- **Weather Forecasts**: Localized 3-day weather predictions with alerts for extreme conditions (drought, heavy rain).
-
-### 🛠️ **Farm Management Tools**
-
-- **Dashboard**: A unified view of your farm's health, recent advisories, and subscription status.
-- **AMU & Livestock**: Track antimicrobial usage and manage cattle/livestock health records.
-- **Subscription Plans**: Manage Free vs. Premium tiers for advanced analytics and priority support.
+_A full-stack, multilingual, offline-capable smart farming platform_
 
 ---
 
-## 🦄 Why AgriVerse? (Unique Features)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/Puspaldas17/Smart-Crop-Tools)
+[![TypeScript](https://img.shields.io/badge/TypeScript-0%20errors-blue?style=flat-square)](tsconfig.json)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+[![PWA](https://img.shields.io/badge/PWA-enabled-purple?style=flat-square)](https://web.dev/progressive-web-apps/)
+[![Languages](https://img.shields.io/badge/languages-EN%20%7C%20HI%20%7C%20OR-orange?style=flat-square)](client/i18n.ts)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=flat-square&logo=render)](https://agriverse-bwqw.onrender.com)
 
-What sets AgriVerse apart from standard farming apps:
+🌐 **Live:** [https://agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)
 
-1.  **🗣️ Voice-First for Low Literacy**: Unlike text-heavy apps, AgriVerse is built for accessibility. Farmers can simply **speak** in their native dialect to get answers, making technology usable for everyone.
-2.  **🎮 Behavior Change via Gamification**: We don't just give advice; we motivate action. By turning farming tasks into "Missions" with streaks and badges, we encourage long-term adoption of sustainable practices.
-3.  **⚡ Offline-First Architecture**: Farming happens in the field, often far from cell towers. Our PWA design ensures that critical features like previous advisories and crop tools work **without an internet connection**.
-4.  **🔗 Holistic Ecosystem**: Most apps focus on _one_ thing (just weather, or just market prices). AgriVerse connects the dots: **Weather + Soil + Market + Pest Detection** all in one place to give truly unified advice.
-
----
-
-## 🛠️ Technology Stack
-
-| Layer          | Technology                            |
-| :------------- | :------------------------------------ |
-| **Frontend**   | React 18, Vite, TailwindCSS, Radix UI |
-| **Backend**    | Node.js, Express.js (Express 5)       |
-| **AI Service** | Python (FastAPI, TensorFlow/PyTorch)  |
-| **Database**   | MongoDB (Mongoose)                    |
-| **Auth**       | Custom JWT Auth                       |
+</div>
 
 ---
 
-## 🔮 Future Growth
+## Executive Summary
 
-AgriVerse is built to scale. The roadmap includes integration with cutting-edge technologies to further empower farmers:
+AgriVerse is a comprehensive, AI-powered digital farming ecosystem designed for India's small and marginal farmers. It unifies crop advisory, real-time market intelligence, AI-driven pest detection, gamified learning, veterinary consultations with appointment scheduling, antimicrobial usage tracking, IoT sensor telemetry, drone imagery analysis, government scheme discovery, supply-chain blockchain, and PDF farm report generation — all in one platform accessible in three languages, installable offline, and usable without high digital literacy.
 
-1.  **🛰️ IoT & Smart Sensors**: Integration with soil moisture sensors and automated irrigation systems for precision farming without manual intervention.
-2.  **🔗 Blockchain Traceability**: Implementing a transparent supply chain ledger to help farmers get fair prices and certify organic produce.
-3.  **🛸 Drone-Based Analysis**: Support for aerial imagery analysis to detect field-level issues like uneven growth or waterlogging over large areas.
-4.  **🧠 Predictive AI Models**: Moving from _detection_ to _prediction_—warning farmers of potential pest outbreaks weeks in advance based on micro-climate patterns.
-5.  **🤝 Community Marketplace**: A direct Farmer-to-Consumer (F2C) marketplace to eliminate middlemen and maximize profits.
+The platform is **fully deployed** on [Render](https://render.com) with **MongoDB Atlas** as the cloud database, making it production-ready and publicly accessible.
+
+---
+
+## Problem Statement
+
+India's agricultural sector accounts for 18% of GDP and employs 44% of the workforce, yet the farmer remains chronically underserved by technology.
+
+| Challenge                          | Scale                                                    |
+| ---------------------------------- | -------------------------------------------------------- |
+| Lack of personalized crop advisory | 140M+ small & marginal farmers have no agronomist access |
+| Market price opacity               | Middlemen capture 30–40% of farm-gate value              |
+| Late pest & disease detection      | Annual crop losses estimated at ₹80,000+ crore           |
+| Digital accessibility barriers     | Low literacy + inconsistent internet in rural areas      |
+| No veterinary access               | Livestock healthcare gap in rural India                  |
+| Fragmented tooling                 | No single platform integrates weather, soil, market & AI |
+
+**AgriVerse solves all six — in one unified, accessible application.**
+
+---
+
+## Platform Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                   React 18 Frontend (Vite)                        │
+│                                                                  │
+│  ┌────────────┐  ┌────────────┐  ┌────────┐  ┌────────────────┐  │
+│  │  Dashboard │  │  Vet Portal│  │ Admin  │  │ Tools & Insights│  │
+│  │  (7 Tabs)  │  │            │  │ Portal │  │   (5 Tabs)     │  │
+│  └─────┬──────┘  └─────┬──────┘  └───┬────┘  └───────┬────────┘  │
+│        │               │             │               │            │
+│  ┌─────▼───────────────▼─────────────▼───────────────▼──────────┐ │
+│  │          GamificationContext  (XP · Level · Streak)          │ │
+│  └─────────────────────────┬──────────────────────────────────  ┘ │
+└───────────────────────────┼────────────────────────────────────── ┘
+                            │  REST API + JWT Auth (Express)
+┌───────────────────────────▼──────────────────────────────────────┐
+│                  Node.js / Express Backend                        │
+│  /api/auth · /api/farmers · /api/appointments                    │
+│  /api/vet  · /api/admin   · /api/advisory · /api/analytics       │
+│  /api/amu  · /api/market  · /api/chat     · /api/predict         │
+│  /api/listings (Marketplace CRUD)                                │
+└──────────────┬─────────────────────────────────┬─────────────────┘
+               │                                 │
+  ┌────────────▼──────────┐       ┌──────────────▼──────────────┐
+  │  MongoDB Atlas        │       │  Python AI Service           │
+  │  (Cloud · Mongoose)   │       │  FastAPI + TensorFlow/CNN   │
+  └───────────────────────┘       └─────────────────────────────┘
+```
+
+---
+
+## Deployment
+
+| Component    | Platform         | URL / Details                           |
+| ------------ | ---------------- | --------------------------------------- |
+| **Frontend** | Render (unified) | https://agriverse-bwqw.onrender.com     |
+| **Backend**  | Render (unified) | https://agriverse-bwqw.onrender.com/api |
+| **Database** | MongoDB Atlas    | Cloud cluster (Oregon, AWS)             |
+
+The entire app is deployed as a **single Render Web Service** — both React frontend (served as static files) and Node.js/Express backend run together, eliminating CORS issues and simplifying the architecture.
+
+---
+
+## Technology Stack
+
+| Layer                    | Technology                          | Purpose                                      |
+| ------------------------ | ----------------------------------- | -------------------------------------------- |
+| **Frontend Framework**   | React 18 + Vite + TypeScript        | Core UI with fast HMR                        |
+| **Styling**              | TailwindCSS + CSS Custom Properties | Design system + glassmorphism + dark mode    |
+| **UI Primitives**        | Radix UI + shadcn/ui                | Accessible, headless components (50+)        |
+| **Data Visualization**   | Recharts                            | Analytics charts (Line, Bar, Area, Radar)    |
+| **Client Routing**       | React Router v6                     | SPA page navigation                          |
+| **State Management**     | React Context API + `localStorage`  | Auth, gamification, streak persistence       |
+| **Internationalization** | react-i18next                       | EN / Hindi / Odia (~1200 translation keys)   |
+| **PDF Generation**       | jsPDF + html2canvas                 | Formatted A4 farm report download            |
+| **Backend Runtime**      | Node.js + Express                   | REST API server                              |
+| **Database**             | MongoDB Atlas + Mongoose            | Cloud persistent storage with schemas        |
+| **Demo Fallback**        | Custom in-memory adapter (`db.ts`)  | Full functionality without MongoDB           |
+| **Authentication**       | JWT (jsonwebtoken) + bcryptjs       | Stateless role-based auth (farmer/vet/admin) |
+| **AI Service**           | Python + FastAPI                    | ML model API server                          |
+| **Machine Learning**     | TensorFlow / PyTorch + CNN          | Crop disease image classification            |
+| **PWA**                  | vite-plugin-pwa + Workbox           | Offline caching + installability             |
+| **Hosting**              | Render.com                          | Full-stack cloud deployment                  |
+| **Icons**                | Lucide React                        | Consistent iconography                       |
+| **Alerts**               | Sonner                              | Non-blocking toast notifications             |
+
+---
+
+## Pages & Routes
+
+| Route          | Component            | Access        | Description                            |
+| -------------- | -------------------- | ------------- | -------------------------------------- |
+| `/`            | `Index.tsx`          | Public        | Landing page with featured tools       |
+| `/login`       | `Login.tsx`          | Public        | Registration and JWT authentication    |
+| `/dashboard`   | `Dashboard.tsx`      | Farmer        | Core farmer dashboard (7 tabs)         |
+| `/tools`       | `ToolsPage.tsx`      | Farmer        | Tools & Insights (IoT/Drone/Chain/PDF) |
+| `/vet`         | `VetDashboard.tsx`   | Vet           | Vet consultation & advisory management |
+| `/admin`       | `AdminDashboard.tsx` | Admin         | Platform admin panel                   |
+| `/amu`         | `AMUManager.tsx`     | Vet / Admin   | AMU blockchain ledger                  |
+| `/leaderboard` | `Leaderboard.tsx`    | Authenticated | Community XP rankings with podium      |
+| `/marketplace` | `Marketplace.tsx`    | Authenticated | Farmer-to-Consumer produce exchange    |
+| `/calendar`    | `CropCalendar.tsx`   | Authenticated | Seasonal sowing & harvest planner      |
+| `/profile`     | `Profile.tsx`        | Authenticated | Farmer profile with gamification stats |
+
+---
+
+## Feature Documentation
+
+### Feature 1 — Gamification Engine
+
+> Drives measurable behaviour change by converting best practices into rewarding daily habits.
+
+**Daily Mission System**
+
+- 8 missions assigned each day covering all platform features
+- Each mission awards 40–100 XP upon completion
+- All missions auto-reset at midnight using `localStorage` date comparison
+
+**XP & Leveling**
+
+- XP persists across sessions; animated XP progress bar on Profile page
+- Higher levels unlock badge eligibility thresholds
+
+**Daily Login Streak Tracking**
+
+- Compares today's login date to last recorded login — increments or resets accordingly
+- Streak displayed prominently on Dashboard and Profile
+
+**Badge System (10+ Badges)**
+
+- Unlockable: Green Thumb, Market Guru, Streak Master, Early Bird, Crop Hero, Pest Buster, Weather Watcher, Community Star, and more
+- Locked badges shown with greyed overlay and lock icon
+
+**Full Leaderboard Page (`/leaderboard`)**
+
+- Animated Gold 🥇 / Silver 🥈 / Bronze 🥉 podium for top 3 farmers
+- Filter tabs: **Weekly · Monthly · All-Time**
+
+---
+
+### Feature 2 — JWT Authentication & Role-Based Access
+
+> Stateless, secure authentication with role enforcement at every API endpoint.
+
+- **Login / Register** returns a signed JWT containing `{ id, role, name }`
+- JWT stored in `localStorage`; `authHeaders()` helper attaches `Authorization: Bearer <token>` to every API call
+- **`verifyToken`** middleware decodes and validates JWT on all protected routes
+- **`requireRole(...roles)`** middleware enforces `farmer` / `vet` / `admin` access
+- Guest mode bypasses JWT; guest users cannot access vet inbox or advisory history
+- Clear `401 Unauthorized` and `403 Forbidden` responses for invalid/missing tokens
+
+---
+
+### Feature 3 — AI & Smart Advisory
+
+> Personalized agronomic intelligence, delivered in seconds.
+
+**Crop Advisory Engine**
+
+- Tailored recommendations for fertilizer, irrigation, and crop variety based on soil type, land area, and season
+
+**AI Chatbot Assistant**
+
+- Multilingual conversational Q&A with Web Speech API voice input
+
+**Pest & Disease Image Detection**
+
+- Upload crop leaf photo → Python AI service (FastAPI + CNN) → disease name, confidence %, and treatment
+
+**Predictive Pest Alert Widget (14-Day Forecast)**
+
+- Calculates outbreak likelihood for Rice, Wheat, Tomato, Maize using month, weather patterns, and historical data
+- Shows 14-day bar chart with risk levels, trend arrow, confidence %, and "Take Action" button
+- 🔴 High / 🟡 Medium / 🟢 Low — pulsing red indicator on High risk
+
+**Advisory History Tab**
+
+- All AI-generated advisories persisted and displayed chronologically with crop, text, and date
+
+---
+
+### Feature 4 — Analytics Dashboard (4 Tabs)
+
+> Deep farm intelligence through interactive, always-populated data visualizations.
+
+All charts use intelligently generated 30-day mock data as fallback when the backend has no records.
+
+| Tab             | Contents                                                           |
+| --------------- | ------------------------------------------------------------------ |
+| **Overview**    | 4 KPI cards, grouped bar chart, radar chart                        |
+| **Crop Perf.**  | Progress bars per crop, 30-day trend line chart                    |
+| **Soil Health** | Dual-area chart (moisture + nitrogen), pH line chart               |
+| **Weather**     | 3 stat cards, multi-axis temperature/humidity chart, rainfall bars |
+
+---
+
+### Feature 5 — Veterinary Consultation System
+
+> Bridging the gap between rural farmers and veterinary professionals.
+
+**Farmer — Vet Inbox Tab (Dashboard)**
+
+- Submit consultation requests (Animal ID, disease, message)
+- Track status: `Pending` / `Approved` / `Rejected` with vet reply note
+- View all vet advisories addressed to them (targeted or broadcast)
+- **Book appointments** directly from the Vet Inbox tab
+
+**Vet Dashboard (`/vet`)**
+
+| Capability          | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| Patient List        | All registered farmers                          |
+| Consultation Queue  | All requests — approve, reject, reply, re-open  |
+| Appointment Manager | View / confirm / reschedule appointments        |
+| Broadcast Advisory  | Send advisory to all farmers or specific farmer |
+| Advisory History    | All advisories sent, with date and target       |
+
+**Appointment API**
+
+| Method  | Endpoint                | Description                                 |
+| ------- | ----------------------- | ------------------------------------------- |
+| `GET`   | `/api/appointments`     | List appointments (filtered by role)        |
+| `POST`  | `/api/appointments`     | Farmer books a new appointment              |
+| `PATCH` | `/api/appointments/:id` | Vet updates status, note, or scheduled time |
+
+---
+
+### Feature 6 — Tools & Insights Page (`/tools`)
+
+> Five advanced farming tools unified in one tab-based page.
+
+#### Tab 1 — IoT Sensor Dashboard
+
+- Live mock telemetry: soil moisture, temperature, pH, nitrogen
+- Status indicators (🟢 Optimal / 🟡 Warning / 🔴 Alert) with target ranges
+- Auto-refreshes every 30 seconds; irrigation alert when moisture is out of range
+
+#### Tab 2 — Drone Aerial Analysis
+
+- Drag-and-drop aerial image upload
+- Simulated CNN analysis (2.2 s delay) across 4 field zones
+- Per-zone results: NDVI score, uniformity %, waterlogging risk, dry patch %, recommendation
+
+#### Tab 3 — Produce Blockchain Ledger
+
+- Register harvests: crop, quantity, harvest date, pesticides used
+- Each entry gets a unique simulated 40-char hex transaction hash
+- Randomly assigned certifier (AgriVerify DAO / FarmLedger Network / GreenTrace Protocol)
+- Expandable block cards with copy-to-clipboard hash
+
+#### Tab 4 — Government Scheme Finder
+
+- 7 major schemes: PM-KISAN, PMFBY, KCC, eNAM, ATMA, RKVY, NFSM
+- Search + category filter (subsidy / insurance / credit / market / welfare)
+- Land-size eligibility check using farmer's profile data
+- Expandable cards with official government portal links
+
+#### Tab 5 — PDF Farm Report Export
+
+- Check/uncheck sections to include: Profile, Advisory, Pest, IoT, AMU, Blockchain
+- **jsPDF + html2canvas** renders a hidden A4-formatted HTML report at 2× resolution
+- Automatically sliced into A4 pages and downloaded as a real `.pdf` file
+- Named: `SmartCropTools_FarmReport_<FarmerName>_<Year>.pdf`
+
+---
+
+### Feature 7 — F2C Community Marketplace (`/marketplace`)
+
+> Eliminating middlemen through direct Farmer-to-Consumer commerce.
+
+- Produce listings with search, category filter (Grain / Vegetable / Fruit), and organic badge
+- Contact Seller reveals phone + one-click WhatsApp deeplink
+- Post new listings via inline form — persisted to MongoDB Atlas
+- UPI deeplink integration for payment initiation
+
+---
+
+### Feature 8 — Crop Sowing Calendar (`/calendar`)
+
+> Seasonal planner with agronomic data for 10 major Indian crops.
+
+- 12-month strip selector defaulting to the current month
+- **SOW NOW 🌱 / HARVEST ✅** badges per crop per month
+- 12-segment horizontal timeline bar (green = sowing, orange = harvest)
+- Water requirement filter: Low · Medium · High
+
+---
+
+### Feature 9 — Notification Center
+
+- 🔔 Bell icon with unread red badge counter
+- 7 pre-populated notifications across 5 categories: Pest / Market / Weather / Mission / System
+- Category filter chips, Mark All Read, and individual dismiss buttons
+- Server-Sent Events (SSE) ready architecture for real-time push
+
+---
+
+### Feature 10 — Farmer Profile Page
+
+- Farm details form: name, phone, soil type (6 Indian classifications), land size, language
+- Right column gamification stats: XP progress bar, streak days, badges unlocked, missions today
+- Full badge showcase grid with locked overlay
+
+---
+
+### Feature 11 — Subscription & Upgrade System
+
+**Free vs Premium comparison (8 feature rows)**
+
+- Upgrade CTA (₹199/month) opens comparison modal with animated confirm flow
+
+---
+
+### Feature 12 — Admin Portal (`/admin`)
+
+| Capability            | Description                                                        |
+| --------------------- | ------------------------------------------------------------------ |
+| Overview KPIs         | Total farmers, active today, total advisories, total consultations |
+| User Management       | View, edit, delete any farmer/vet/admin account                    |
+| Create User           | Admin creates accounts for vets and other admins                   |
+| Seed Default Users    | One-click to seed default admin + vet accounts in MongoDB          |
+| Broadcast Message     | Send platform-wide notifications                                   |
+| AMU Ledger View       | Admin view of full antimicrobial usage ledger                      |
+| Consultation Overview | View all consultations across all vets and farmers                 |
+| CSV Export            | Export farmer data and analytics summaries as CSV                  |
+
+---
+
+### Feature 13 — AMU Blockchain Ledger (`/amu`)
+
+| Capability                 | Description                                                           |
+| -------------------------- | --------------------------------------------------------------------- |
+| Hash-Chain Architecture    | Each AMU entry SHA-hashed and chained to prior entry (tamper-evident) |
+| Treatment Logging          | Antibiotic, dosage, animal ID, date, attending vet                    |
+| Withdrawal Period Tracking | Days remaining until produce is safe for sale                         |
+| Blockchain Viewer UI       | Visual ledger with hash values and chain links                        |
+
+---
+
+### Feature 14 — Multilingual Support & Accessibility
+
+| Capability           | Detail                                                                    |
+| -------------------- | ------------------------------------------------------------------------- |
+| 3 UI Languages       | English · Hindi (हिंदी) · Odia (ଓଡ଼ିଆ)                                    |
+| Translation Coverage | Navigation, tabs, missions, toasts, errors, advisory, vet portal, chatbot |
+| Voice Input          | Web Speech API in Chatbot                                                 |
+| Dark Mode            | Full dark theme via CSS custom properties                                 |
+| PWA                  | Installable; offline caching via vite-plugin-pwa + Workbox                |
+
+---
+
+### Feature 15 — Weather & Market Data
+
+**Weather Card** — 3-day forecast with temperature, humidity, wind speed, condition icon, and extreme event alerts
+
+**Market Price Card** — Live Mandi rates (APMC) with delta indicators (🔺▼) for major crops
+
+---
+
+## Data Models (MongoDB Schemas)
+
+| Model             | Key Fields                                                                          |
+| ----------------- | ----------------------------------------------------------------------------------- |
+| `Farmer`          | name, email, password (bcrypt), phone, soilType, landSize, role, subscriptionStatus |
+| `Advisory`        | farmerId, crop, summary, fertilizer, irrigation, pest, weather                      |
+| `AdvisoryHistory` | farmerId, crop, advisory text, weatherData, soilData                                |
+| `AnalyticsData`   | farmerId, crop, date, health score, yield, soil metrics, weather metrics            |
+| `DrugLog`         | animalId, drugName, dosage, withdrawalDays, applicator, treatmentDate               |
+| `Block`           | index, timestamp, data, previousHash, hash (AMU blockchain)                         |
+| `Consultation`    | farmerId, vetId, animalId, disease, message, status, vetNote                        |
+| `VetAdvisory`     | vetId, farmerId (null=all), title, body, crop, targetRole                           |
+| `Appointment`     | farmerId, vetId, animalId, reason, scheduledAt, status, vetNote                     |
+| `Listing`         | farmerId, cropName, quantity, price, category, organic, phone, location             |
+
+All models have an **in-memory fallback** via the custom `InMemoryCollection` adapter in `db.ts`.
+All production data is stored in **MongoDB Atlas** (cloud).
+
+---
+
+## What Differentiates AgriVerse
+
+| Differentiator                         | Strategic Rationale                                                     |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| **Voice-First Interface**              | Removes literacy barrier; farmers speak, not type                       |
+| **Gamification for Behaviour Change**  | Converts one-time curiosity into daily, sustained adoption              |
+| **14-Day Predictive Pest Forecast**    | Warns farmers ahead of outbreak season, not after detection             |
+| **JWT Role-Based Security**            | Stateless auth with vet/admin enforcement at the API level              |
+| **IoT + Drone + Blockchain Tools**     | 5 advanced features in one unified Tools & Insights page                |
+| **Offline-First PWA Architecture**     | Usable in areas with no or intermittent connectivity                    |
+| **Unified Ecosystem**                  | Weather + Soil + AI + Market + Vet + Community in one app               |
+| **Verified Supply Chain Records**      | AMU blockchain provides trust for organic & compliant produce           |
+| **Middleman-Free Marketplace**         | Farmers capture full value; consumers get fresher, cheaper produce      |
+| **Vet-Farmer Direct Channel**          | Rural farmers get veterinary advice and appointments without travelling |
+| **Cloud-Native Production Deployment** | Live on Render + MongoDB Atlas — not just a demo                        |
+
+---
+
+## Future Roadmap
+
+| Feature                     | Status      | Description                                                      |
+| --------------------------- | ----------- | ---------------------------------------------------------------- |
+| 💳 UPI Payment Integration  | Partial     | UPI deeplinks integrated in Marketplace                          |
+| 📲 SMS Fallback Channel     | Planned     | Critical alerts to feature phones via Twilio                     |
+| 🔗 QR Code per Produce Lot  | Implemented | QR traceability for each blockchain-registered harvest           |
+| 🧪 Real AI/ML Backend       | Implemented | Full Python CNN model integration for disease detection          |
+| 🌐 Live Deployment          | ✅ Deployed | Render.com + MongoDB Atlas — live at agriverse-bwqw.onrender.com |
+| ✅ Unit & Integration Tests | Implemented | Vitest test suite                                                |
+| 📊 CSV Export               | Implemented | Admin dashboard CSV export for farmer data                       |
+| 🔔 Real-Time Notifications  | Implemented | SSE-based push notification architecture                         |
+| 🌍 Vercel Frontend CDN      | Planned     | Separate Vercel deployment for faster global CDN                 |
+| 🤖 LLM-Powered Chatbot      | Planned     | Replace rule-based chatbot with GPT/Gemini API                   |
+
+---
+
+## Developer
+
+|                 |                                                                     |
+| --------------- | ------------------------------------------------------------------- |
+| **Name**        | Puspal Das                                                          |
+| **Institution** | SOA University (ITER), Bhubaneswar, Odisha                          |
+| **GitHub**      | [@Puspaldas17](https://github.com/Puspaldas17)                      |
+| **Repository**  | [Smart-Crop-Tools](https://github.com/Puspaldas17/Smart-Crop-Tools) |
+| **Live App**    | [agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)  |
+
+---
+
+## License
+
+MIT License — open source for the benefit of India's farming community.

@@ -93,7 +93,7 @@ export default function AMUManager() {
       <div className="grid gap-8 md:grid-cols-2">
         {/* LOGGING FORM */}
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div className="bg-card text-card-foreground p-6 rounded-xl border border-border shadow-sm">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5" />
               Log New Treatment
@@ -192,7 +192,7 @@ export default function AMUManager() {
              )}
              
              {ledger.map((block) => (
-               <div key={block.hash} className="relative bg-white p-4 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+               <div key={block.hash} className="relative bg-card text-card-foreground p-4 rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow">
                  {/* Timeline Dot */}
                  <div className="absolute -left-[41px] top-6 w-5 h-5 rounded-full bg-slate-100 border-4 border-white shadow-sm flex items-center justify-center">
                     <div className="w-2 h-2 rounded-full bg-green-500"></div>

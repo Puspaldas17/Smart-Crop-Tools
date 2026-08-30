@@ -11,7 +11,7 @@ export default function Chatbot() {
   >([]);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { farmer } = useAuth();
+  const { farmer, authHeaders } = useAuth();
   const [lang, setLang] = useState("en-IN");
   const {
     listening,
@@ -97,7 +97,7 @@ export default function Chatbot() {
       const id = setTimeout(() => controller.abort(), 8000);
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         // Pass 'lang' to server so it knows which language to reply in
         body: JSON.stringify({ message: msg, lang, ...(coords || {}) }),
         signal: controller.signal,
@@ -118,7 +118,7 @@ export default function Chatbot() {
   }
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white">
+    <div className="flex h-full flex-col rounded-xl border border-border bg-card text-card-foreground">
       <div className="flex items-center justify-between border-b border-slate-200 p-4">
         <div className="text-sm font-semibold">{t('chat.title')}</div>
         <div className="flex items-center gap-2">
@@ -179,7 +179,7 @@ export default function Chatbot() {
             className={`${m.role === "user" ? "justify-end" : "justify-start"} flex`}
           >
             <div
-              className={`${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-slate-100 text-slate-800"} max-w-[80%] rounded-lg px-4 py-2.5 text-sm`}
+              className={`${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"} max-w-[80%] rounded-lg px-4 py-2.5 text-sm`}
             >
               {m.content}
             </div>

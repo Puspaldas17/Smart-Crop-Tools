@@ -1,24 +1,29 @@
 import React from "react";
-import { Trophy, Medal, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Trophy, Medal, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useGamification } from "@/context/GamificationContext";
 
-interface LeaderboardUser {
-  rank: number;
-  name: string;
-  xp: number;
-  isCurrentUser?: boolean;
-}
-
-// Mock Data
-const MOCK_LEADERBOARD: LeaderboardUser[] = [
-  { rank: 1, name: "Ramesh Farmer", xp: 2450 },
-  { rank: 2, name: "Suresh P.", xp: 2100 },
+const MOCK_FARMERS = [
+  { rank: 1, name: "Ramesh Patel", xp: 2450 },
+  { rank: 2, name: "Suresh Kumar", xp: 2100 },
   { rank: 3, name: "Anita Devi", xp: 1950 },
-  { rank: 4, name: "You", xp: 1500, isCurrentUser: true }, // Dynamic later
-  { rank: 5, name: "Vikram S.", xp: 1200 },
+  { rank: 5, name: "Vikram Singh", xp: 1200 },
 ];
 
 export function LeaderboardWidget() {
+  const navigate = useNavigate();
+  const { xp } = useGamification();
+
+  // All entries including current user with real XP
+  const allEntries = [
+    ...MOCK_FARMERS.map((f) => ({ ...f, isCurrentUser: false })),
+    { rank: 0, name: "You", xp, isCurrentUser: true },
+  ]
+    .sort((a, b) => b.xp - a.xp)
+    .map((entry, i) => ({ ...entry, rank: i + 1 }))
+    .slice(0, 5); // Show only top 5
+
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
       <div className="p-6 pb-4">
@@ -31,12 +36,12 @@ export function LeaderboardWidget() {
         </p>
       </div>
       <div className="p-6 pt-0">
-        <div className="space-y-4">
-          {MOCK_LEADERBOARD.map((user) => (
+        <div className="space-y-3">
+          {allEntries.map((user) => (
             <div
               key={user.rank}
               className={cn(
-                "flex items-center justify-between rounded-lg p-3 transition-colors",
+                "flex items-center justify-between rounded-lg p-2.5 transition-colors",
                 user.isCurrentUser
                   ? "bg-primary/10 border border-primary/20"
                   : "hover:bg-muted/50",
@@ -45,7 +50,7 @@ export function LeaderboardWidget() {
               <div className="flex items-center gap-3">
                 <div
                   className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold",
+                    "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold",
                     user.rank === 1
                       ? "bg-yellow-100 text-yellow-700"
                       : user.rank === 2
@@ -56,21 +61,19 @@ export function LeaderboardWidget() {
                   )}
                 >
                   {user.rank <= 3 ? (
-                    <Medal className="h-4 w-4" />
+                    <Medal className="h-3.5 w-3.5" />
                   ) : (
                     <span>#{user.rank}</span>
                   )}
                 </div>
-                <div>
-                  <p
-                    className={cn(
-                      "text-sm font-medium leading-none",
-                      user.isCurrentUser && "text-primary",
-                    )}
-                  >
-                    {user.name} {user.isCurrentUser && "(You)"}
-                  </p>
-                </div>
+                <p
+                  className={cn(
+                    "text-sm font-medium leading-none",
+                    user.isCurrentUser && "text-primary",
+                  )}
+                >
+                  {user.name} {user.isCurrentUser && "(You)"}
+                </p>
               </div>
               <div className="text-sm font-semibold text-muted-foreground">
                 {user.xp} XP
@@ -78,6 +81,12 @@ export function LeaderboardWidget() {
             </div>
           ))}
         </div>
+        <button
+          onClick={() => navigate("/leaderboard")}
+          className="mt-4 w-full flex items-center justify-center gap-1 text-sm text-primary hover:underline"
+        >
+          View Full Leaderboard <ArrowRight className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );

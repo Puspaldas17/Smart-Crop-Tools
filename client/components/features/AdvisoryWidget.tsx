@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
 export default function AdvisoryWidget() {
-  const { farmer } = useAuth();
+  const { farmer, authHeaders } = useAuth();
   const { t } = useTranslation();
   const [status, setStatus] = useState("");
   const [advisory, setAdvisory] = useState<any>(null);
@@ -32,7 +32,7 @@ export default function AdvisoryWidget() {
     try {
       const r = await fetch("/api/advisories", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ crop, lat: coords.lat, lon: coords.lon }),
       });
       const data = await r.json();
@@ -67,12 +67,12 @@ export default function AdvisoryWidget() {
             await Promise.all([
               fetch("/api/advisory/history", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeaders() },
                 body: JSON.stringify(historyPayload),
               }),
               fetch("/api/analytics/record", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeaders() },
                 body: JSON.stringify(analyticsPayload),
               }),
             ]);
@@ -89,7 +89,7 @@ export default function AdvisoryWidget() {
   return (
     <div
       id="advisory"
-      className="my-5 rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+      className="my-5 rounded-xl border border-border bg-card text-card-foreground p-8 shadow-sm"
     >
       <h3 className="text-xl font-semibold">{t('advisory.title')}</h3>
       <form onSubmit={onSubmit} className="mt-3 flex items-stretch gap-3">

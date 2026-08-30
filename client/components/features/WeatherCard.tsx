@@ -82,7 +82,7 @@ export default function WeatherCard() {
   }, [weather]);
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="flex h-full flex-col rounded-xl border border-border bg-card text-card-foreground p-8 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold">Weather</h3>
         <div className="flex items-center gap-3">

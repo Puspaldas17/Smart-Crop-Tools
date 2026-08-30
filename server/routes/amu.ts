@@ -1,15 +1,6 @@
 import { RequestHandler } from "express";
 import { ledger } from "../lib/ledger";
 
-interface DrugLog {
-  animalId: string;
-  drugName: string;
-  dosage: string;
-  withdrawalDays: number;
-  applicator: string; // 'Farmer' or 'Vet'
-  treatmentDate: string;
-}
-
 // Memory store removed in favor of DB
 import { DrugLog } from "../db";
 

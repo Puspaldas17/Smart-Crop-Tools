@@ -1,3 +1,4 @@
+
 import * as React from "react";
 
 export default function PestDetector() {
@@ -44,7 +45,7 @@ export default function PestDetector() {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="rounded-xl border border-border bg-card text-card-foreground p-8 shadow-sm">
       <h3 className="text-xl font-semibold">
         Image-based Pest/Disease Detection
       </h3>
