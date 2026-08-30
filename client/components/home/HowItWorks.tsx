@@ -1,65 +1,77 @@
 import { UserPlus, Cloud, Wand2, CheckCircle2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
-
-const STEP_COLORS = [
-  { text: "text-emerald-500", ring: "bg-emerald-500/15 text-emerald-600", bar: "from-emerald-500" },
-  { text: "text-sky-500",     ring: "bg-sky-500/15 text-sky-600",         bar: "from-sky-500"     },
-  { text: "text-violet-500",  ring: "bg-violet-500/15 text-violet-600",   bar: "from-violet-500"  },
-  { text: "text-amber-500",   ring: "bg-amber-500/15 text-amber-600",     bar: "from-amber-500"   },
-];
 
 export default function HowItWorks() {
-  const { t } = useTranslation();
-
   const steps = [
-    { icon: UserPlus,     key: "s1" },
-    { icon: Cloud,        key: "s2" },
-    { icon: Wand2,        key: "s3" },
-    { icon: CheckCircle2, key: "s4" },
-  ] as const;
+    {
+      icon: UserPlus,
+      title: "Create profile",
+      desc: "Language, soil type and field details.",
+    },
+    {
+      icon: Cloud,
+      title: "Gather data",
+      desc: "Weather, soil and crop history.",
+    },
+    {
+      icon: Wand2,
+      title: "Generate advice",
+      desc: "Personalized crop, irrigation and input plan.",
+    },
+    {
+      icon: CheckCircle2,
+      title: "Act & improve",
+      desc: "Track outcomes and refine recommendations.",
+    },
+  ];
 
   return (
     <section
       aria-labelledby="how-title"
-      className="glass-card gradient-border rounded-2xl px-4 md:px-8 py-6 md:py-8 animate-fade-in-up"
+      className="relative overflow-hidden rounded-[3rem] border border-white/20 bg-gradient-to-br from-secondary/10 to-transparent px-4 md:px-8 py-16 md:py-24 max-w-7xl mx-auto shadow-sm"
     >
-      <h2 id="how-title" className="text-2xl font-bold tracking-tight animate-fade-in-left">
-        {t("how.title")}
-      </h2>
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-accent/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-primary/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
 
-      {/* Connector line on desktop */}
-      <div className="relative mt-5">
-        <div className="hidden md:block absolute top-8 left-[6%] right-[6%] h-0.5 bg-gradient-to-r from-emerald-500/40 via-violet-500/40 to-amber-500/40 rounded-full" />
-        <ol className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 relative">
-          {steps.map(({ icon: Icon, key }, i) => {
-            const c = STEP_COLORS[i];
-            return (
+      <div className="relative z-10">
+        <div className="text-center mb-16">
+          <h2 id="how-title" className="text-4xl md:text-5xl font-black tracking-tight mb-4">
+            How it <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Works</span>
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
+            A seamless journey from setup to successful harvest.
+          </p>
+        </div>
+
+        <div className="relative">
+          {/* Connecting Line (hidden on mobile) */}
+          <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent -translate-y-1/2 z-0" />
+
+          <ol className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 relative z-10">
+            {steps.map(({ icon: Icon, title, desc }, i) => (
               <li
-                key={key}
-                className="glass-card gradient-border rounded-xl p-5 animate-fade-in-up tilt-card"
-                style={{ animationDelay: `${0.1 * i}s` }}
+                key={title}
+                className="glass-panel group relative overflow-hidden rounded-[2rem] p-8 text-center transition-all duration-500 hover:-translate-y-2 hover:shadow-xl bg-white/40 dark:bg-black/40 border-white/30 backdrop-blur-xl"
               >
-                {/* Step number */}
-                <div className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${c.ring}`}>
+                {/* Step Number Badge */}
+                <div className="absolute top-4 left-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-background/50 backdrop-blur-md border border-white/20 font-bold text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors">
                   {i + 1}
                 </div>
-                {/* Icon */}
-                <div className={`mt-4 animate-float ${i % 2 === 0 ? "" : "animate-float-slow"}`} style={{ animationDelay: `${0.5 * i}s` }}>
-                  <Icon className={`h-6 w-6 ${c.text}`} />
+                
+                <div className="mx-auto mt-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-white to-white/40 dark:from-black dark:to-black/40 shadow-inner border border-white/50 mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <Icon className="h-10 w-10 text-primary drop-shadow-sm" />
                 </div>
-                {/* Content */}
-                <div className="mt-3 text-base font-semibold text-foreground">
-                  {t(`how.${key}.title`)}
-                </div>
-                <div className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                  {t(`how.${key}.desc`)}
-                </div>
-                {/* Bottom accent bar */}
-                <div className={`mt-4 h-0.5 rounded-full bg-gradient-to-r ${c.bar} to-transparent`} />
+                
+                <h3 className="text-xl font-bold text-foreground mb-3">
+                  {title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                  {desc}
+                </p>
               </li>
-            );
-          })}
-        </ol>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );

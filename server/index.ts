@@ -3,9 +3,11 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { connectDB } from "./db";
-import { createFarmer, getFarmer, requestConsultation, getFarmerConsultations, getFarmerVetAdvisories } from "./routes/farmers";
+import { createFarmer, getFarmer, getAllFarmers, deleteFarmer, updateFarmerStatus } from "./routes/farmers";
+import { Farmer } from "./db";
+import bcrypt from "bcryptjs";
 import { getWeather } from "./routes/weather";
-import { createAdvisory } from "./routes/advisory";
+import { createAdvisory, submitFeedback } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
@@ -26,37 +28,7 @@ import {
 } from "./routes/analytics";
 import { getPostById } from "./routes/neon";
 import { logTreatment, getAnimalStatus, getLedger } from "./routes/amu";
-import {
-  getAdminOverview,
-  listFarmers,
-  updateFarmer,
-  deleteFarmer,
-  getAmuLedger,
-  sendBroadcast,
-  getBroadcasts,
-  createUser,
-  seedDefaultUsers,
-  getAdminConsultations,
-} from "./routes/admin";
-import {
-  getVetFarmers,
-  getVetConsultations,
-  updateConsultation,
-  createVetAdvisory,
-  getVetAdvisories,
-} from "./routes/vet";
-
-import {
-  getBookings,
-  createBooking,
-  updateBooking,
-} from "./routes/appointments";
-import {
-  getListings,
-  createListing,
-  seedListings,
-} from "./routes/listings";
-import { verifyToken, requireRole } from "./middleware/auth";
+import { getActiveAlerts, createAlert, deleteAlert } from "./routes/alerts";
 
 export function createServer() {
   const app = express();
@@ -66,93 +38,96 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // DB: ensure connection ready
+  // DB: ensure the connection is ready before handling domain routes
   const dbReady = connectDB();
+  
+  dbReady.then(async () => {
+    try {
+      // Seed permanent admin if not exists
+      const adminEmail = "admin.agri@agriverse.in";
+      const existingAdmin = await Farmer.findOne({ email: adminEmail });
+      if (!existingAdmin) {
+        const hashedPassword = await bcrypt.hash("Admin@2027", 10);
+        await Farmer.create({
+          name: "System Admin",
+          email: adminEmail,
+          password: hashedPassword,
+          phone: "0000000000",
+          soilType: "None",
+          landSize: 0,
+          location: "Headquarters",
+          role: "admin"
+        });
+        console.log("[db] Seeded permanent admin account: " + adminEmail);
+      }
+    } catch (err) {
+      console.error("[db] Error seeding admin:", err);
+    }
+  });
+
   app.use(async (_req, _res, next) => {
-    try { await dbReady; } catch { /* fallback to in-memory */ }
+    try {
+      await dbReady;
+    } catch {
+      // If connection fails, continue; in-memory mode will still work
+    }
     next();
   });
 
-  // ── Ping / Demo ────────────────────────────────────────────────────────────
+  // Example API routes
   app.get("/api/ping", (_req, res) => {
-    res.json({ message: process.env.PING_MESSAGE ?? "ping" });
+    const ping = process.env.PING_MESSAGE ?? "ping";
+    res.json({ message: ping });
   });
+
   app.get("/api/demo", handleDemo);
 
-  // ── Auth (public) ──────────────────────────────────────────────────────────
-  app.post("/api/auth/register",    register);
-  app.post("/api/auth/login",       login);
-  app.post("/api/auth/farmer",      upsertFarmer);   // legacy
-  app.post("/api/auth/guest",       guestLogin);
+  // Domain routes
+  app.post("/api/farmers", createFarmer);
+  app.get("/api/farmers", getAllFarmers); // NEW
+  app.get("/api/farmers/:id", getFarmer);
+  app.delete("/api/farmers/:id", deleteFarmer);
+  app.patch("/api/farmers/:id/status", updateFarmerStatus);
+  app.get("/api/weather", getWeather);
+  app.post("/api/advisories", createAdvisory);
+  app.get("/api/market", getMarketPrices);
+  app.post("/api/chat", chatHandler);
+  app.post("/api/predict", uploadMiddleware, predictHandler);
+  
+  // Alerts
+  app.get("/api/alerts", getActiveAlerts);
+  app.post("/api/alerts", createAlert);
+  app.delete("/api/alerts/:id", deleteAlert);
+  
+  // Auth routes
+  app.post("/api/auth/register", register);
+  app.post("/api/auth/login", login);
+  app.post("/api/auth/farmer", upsertFarmer); // legacy
+  app.post("/api/auth/guest", guestLogin);
+  app.get("/api/debug/users", getDebugUsers);
+  app.delete("/api/debug/users/:id", deleteDebugUser);
 
-  // ── Debug (dev only — strip in prod via env flag if desired) ──────────────
-  app.get("/api/debug/users",           verifyToken, requireRole("admin"), getDebugUsers);
-  app.delete("/api/debug/users/:id",    verifyToken, requireRole("admin"), deleteDebugUser);
+  // AMU / Blockchain Routes
+  app.post("/api/amu/log", logTreatment);
+  app.get("/api/amu/status/:animalId", getAnimalStatus);
+  app.get("/api/amu/ledger", getLedger);
 
-  // ── Farmer routes — specific paths BEFORE parameterised :id ───────────────
-  app.post("/api/farmers",                           createFarmer);
-  app.post("/api/farmers/consult",                   verifyToken, requestConsultation);
-  app.get("/api/farmers/:id",                        getFarmer);
-  app.get("/api/farmers/:id/consultations",          verifyToken, getFarmerConsultations);
-  app.get("/api/farmers/:id/vet-advisories",         verifyToken, getFarmerVetAdvisories);
+  app.post("/api/advisory/history", saveAdvisoryHistory);
+  app.get("/api/advisory/history/:farmerId", getAdvisoryHistory);
+  app.patch("/api/advisory/history/:id/feedback", submitFeedback);
+  
+  app.get("/api/profile/:farmerId", getProfileData);
+  app.put("/api/profile/:farmerId/subscription", updateSubscription);
 
-  // ── General (semi-public) ─────────────────────────────────────────────────
-  app.get("/api/weather",                getWeather);
-  app.post("/api/advisories",            verifyToken, createAdvisory);
-  app.get("/api/market",                 getMarketPrices);
-  app.post("/api/chat",                  verifyToken, chatHandler);
-  app.post("/api/predict",               uploadMiddleware, predictHandler);
+  app.post("/api/analytics/record", recordAnalytics);
+  app.get("/api/analytics/summary/:farmerId", getAnalyticsSummary);
+  app.get("/api/analytics/crop-trends/:farmerId", getCropTrends);
+  app.get("/api/analytics/soil-health/:farmerId", getSoilHealthTrend);
+  app.get("/api/analytics/weather-impact/:farmerId", getWeatherImpactAnalysis);
+  app.get("/api/analytics/system", getSystemOverview);
 
-  // ── Profile ────────────────────────────────────────────────────────────────
-  app.post("/api/advisory/history",                verifyToken, saveAdvisoryHistory);
-  app.get("/api/advisory/history/:farmerId",        verifyToken, getAdvisoryHistory);
-  app.get("/api/profile/:farmerId",                 verifyToken, getProfileData);
-  app.put("/api/profile/:farmerId/subscription",   verifyToken, updateSubscription);
-
-  // ── Analytics ─────────────────────────────────────────────────────────────
-  app.post("/api/analytics/record",                    verifyToken, recordAnalytics);
-  app.get("/api/analytics/summary/:farmerId",           verifyToken, getAnalyticsSummary);
-  app.get("/api/analytics/crop-trends/:farmerId",       verifyToken, getCropTrends);
-  app.get("/api/analytics/soil-health/:farmerId",       verifyToken, getSoilHealthTrend);
-  app.get("/api/analytics/weather-impact/:farmerId",    verifyToken, getWeatherImpactAnalysis);
-  app.get("/api/analytics/system",                      verifyToken, getSystemOverview);
-
-  // ── AMU / Blockchain ──────────────────────────────────────────────────────
-  app.post("/api/amu/log",                 verifyToken, logTreatment);
-  app.get("/api/amu/status/:animalId",     verifyToken, getAnimalStatus);
-  app.get("/api/amu/ledger",               verifyToken, getLedger);
-
-  // ── Neon example ──────────────────────────────────────────────────────────
+  // Neon example (requires NETLIFY_DATABASE_URL on Netlify)
   app.get("/api/neon/posts/:id", getPostById);
-
-  // ── Appointments ──────────────────────────────────────────────────────────
-  app.get("/api/appointments",             verifyToken, getBookings);
-  app.post("/api/appointments",            verifyToken, createBooking);
-  app.patch("/api/appointments/:id",       verifyToken, updateBooking);
-
-  // ── Marketplace Listings ──────────────────────────────────────────────────
-  app.get("/api/listings/seed",            seedListings);           // one-time seed
-  app.get("/api/listings",                 getListings);            // public read
-  app.post("/api/listings",                verifyToken, createListing); // auth write
-
-  // ── Admin routes (admin role required) ───────────────────────────────────
-  app.get("/api/admin/overview",           verifyToken, requireRole("admin"), getAdminOverview);
-  app.get("/api/admin/farmers",            verifyToken, requireRole("admin"), listFarmers);
-  app.patch("/api/admin/farmers/:id",      verifyToken, requireRole("admin"), updateFarmer);
-  app.delete("/api/admin/farmers/:id",     verifyToken, requireRole("admin"), deleteFarmer);
-  app.get("/api/admin/amu",                verifyToken, requireRole("admin"), getAmuLedger);
-  app.post("/api/admin/broadcast",         verifyToken, requireRole("admin"), sendBroadcast);
-  app.get("/api/admin/broadcasts",         verifyToken, requireRole("admin"), getBroadcasts);
-  app.post("/api/admin/create-user",       verifyToken, requireRole("admin"), createUser);
-  app.post("/api/admin/seed",              seedDefaultUsers);   // open for first-time setup
-  app.get("/api/admin/consultations",      verifyToken, requireRole("admin"), getAdminConsultations);
-
-  // ── Vet routes (vet or admin role required) ───────────────────────────────
-  app.get("/api/vet/farmers",              verifyToken, requireRole("vet", "admin"), getVetFarmers);
-  app.get("/api/vet/consultations",        verifyToken, requireRole("vet", "admin"), getVetConsultations);
-  app.patch("/api/vet/consultations/:id",  verifyToken, requireRole("vet", "admin"), updateConsultation);
-  app.post("/api/vet/advisory",            verifyToken, requireRole("vet", "admin"), createVetAdvisory);
-  app.get("/api/vet/advisories",           verifyToken, requireRole("vet", "admin"), getVetAdvisories);
 
   return app;
 }

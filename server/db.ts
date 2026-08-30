@@ -1,6 +1,10 @@
+import "dotenv/config";
 import mongoose from "mongoose";
 
-console.log("[db] Loading db.ts. URI:", process.env.MONGODB_URI);
+// Disable buffering: operations fail immediately if not connected (no indefinite hang)
+mongoose.set("bufferCommands", false);
+
+console.log("[db] Loading db.ts. URI:", process.env.MONGODB_URI ? "set" : "not set");
 const USE_MEMORY = !process.env.MONGODB_URI;
 console.log("[db] USE_MEMORY:", USE_MEMORY);
 
@@ -37,6 +41,13 @@ class InMemoryCollection<T extends AnyDoc> {
     return found ? (structuredClone(found) as T) : null;
   }
 
+  async countDocuments(filter: Partial<T> = {}): Promise<number> {
+    const filtered = this.items.filter((d) =>
+      Object.entries(filter).every(([k, v]) => (d as any)[k] === v)
+    );
+    return filtered.length;
+  }
+
   find(filter: Partial<T>): any {
     const filtered = this.items
       .filter((d) =>
@@ -53,6 +64,10 @@ class InMemoryCollection<T extends AnyDoc> {
           if (a[key] > b[key]) return order === 1 ? 1 : -1;
           return 0;
         });
+        return this;
+      },
+      limit(n: number) {
+        this.items = this.items.slice(0, n);
         return this;
       },
       then(resolve: (value: T[]) => void) {
@@ -133,6 +148,8 @@ class InMemoryCollection<T extends AnyDoc> {
   }
 }
 
+let _connected = false;
+
 export async function connectDB(uri?: string) {
   const mongoUri = uri || process.env.MONGODB_URI;
   if (!mongoUri) {
@@ -140,10 +157,36 @@ export async function connectDB(uri?: string) {
     return null;
   }
   if (mongoose.connection.readyState === 1) return mongoose.connection;
-  await mongoose.connect(mongoUri);
-  console.log("[db] Connected to MongoDB");
-  return mongoose.connection;
+
+  // Try once quickly so we don't block server startup
+  try {
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+    _connected = true;
+    console.log("[db] Connected to MongoDB Atlas ✓");
+    return mongoose.connection;
+  } catch (err: any) {
+    console.warn("[db] Initial MongoDB connection failed:", err.message);
+    console.warn("[db] Server will start in in-memory mode. Retrying in background...");
+    // Retry in background without blocking the server
+    retryInBackground(mongoUri);
+    return null;
+  }
 }
+
+function retryInBackground(mongoUri: string) {
+  setTimeout(async () => {
+    if (mongoose.connection.readyState === 1) return;
+    try {
+      await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 8000 });
+      _connected = true;
+      console.log("[db] Background reconnect to MongoDB Atlas succeeded ✓");
+    } catch (err: any) {
+      console.warn("[db] Background reconnect failed, retrying in 30s...", err.message);
+      retryInBackground(mongoUri);
+    }
+  }, 30000);
+}
+
 
 const farmerSchema = new mongoose.Schema(
   {
@@ -185,6 +228,11 @@ const advisorySchema = new mongoose.Schema(
     irrigation: String,
     pest: String,
     weather: Object,
+    confidenceScore: Number,
+    costBenefit: String,
+    factors: [String],
+    riskAlerts: [String],
+    farmerFeedback: { type: String, enum: ['positive', 'negative'], default: null }
   },
   { timestamps: true },
 );
@@ -200,6 +248,11 @@ const advisoryHistorySchema = new mongoose.Schema(
     advisory: { type: String, required: true },
     weatherData: mongoose.Schema.Types.Mixed,
     soilData: mongoose.Schema.Types.Mixed,
+    confidenceScore: Number,
+    costBenefit: String,
+    factors: [String],
+    riskAlerts: [String],
+    farmerFeedback: { type: String, enum: ['positive', 'negative'], default: null }
   },
   { timestamps: true },
 );
@@ -227,23 +280,23 @@ const analyticsDataSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export const Farmer: any = USE_MEMORY
-  ? new InMemoryCollection("Farmer")
-  : mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema);
+// --- In-memory fallback instances (always created as backup) ---
+const _inMemFarmer = new InMemoryCollection<any>("Farmer");
+const _inMemAdvisory = new InMemoryCollection<any>("Advisory");
+const _inMemAdvisoryHistory = new InMemoryCollection<any>("AdvisoryHistory");
+const _inMemAnalyticsData = new InMemoryCollection<any>("AnalyticsData");
+const _inMemDrugLog = new InMemoryCollection<any>("DrugLog");
+const _inMemSystemAlert = new InMemoryCollection<any>("SystemAlert");
+const _inMemBlock = new InMemoryCollection<any>("Block");
+const _inMemConsultation = new InMemoryCollection<any>("Consultation");
+const _inMemVetAdvisory = new InMemoryCollection<any>("VetAdvisory");
+const _inMemAppointment = new InMemoryCollection<any>("Appointment");
 
-export const Advisory: any = USE_MEMORY
-  ? new InMemoryCollection("Advisory")
-  : mongoose.models.Advisory || mongoose.model("Advisory", advisorySchema);
-
-export const AdvisoryHistory: any = USE_MEMORY
-  ? new InMemoryCollection("AdvisoryHistory")
-  : mongoose.models.AdvisoryHistory ||
-  mongoose.model("AdvisoryHistory", advisoryHistorySchema);
-
-export const AnalyticsData: any = USE_MEMORY
-  ? new InMemoryCollection("AnalyticsData")
-  : mongoose.models.AnalyticsData ||
-  mongoose.model("AnalyticsData", analyticsDataSchema);
+// --- Mongoose models (only created when URI is set) ---
+const _mongoFarmer = USE_MEMORY ? null : (mongoose.models.Farmer || mongoose.model("Farmer", farmerSchema));
+const _mongoAdvisory = USE_MEMORY ? null : (mongoose.models.Advisory || mongoose.model("Advisory", advisorySchema));
+const _mongoAdvisoryHistory = USE_MEMORY ? null : (mongoose.models.AdvisoryHistory || mongoose.model("AdvisoryHistory", advisoryHistorySchema));
+const _mongoAnalyticsData = USE_MEMORY ? null : (mongoose.models.AnalyticsData || mongoose.model("AnalyticsData", analyticsDataSchema));
 
 const drugLogSchema = new mongoose.Schema(
   {
@@ -256,10 +309,18 @@ const drugLogSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+const _mongoDrugLog = USE_MEMORY ? null : (mongoose.models.DrugLog || mongoose.model("DrugLog", drugLogSchema));
 
-export const DrugLog: any = USE_MEMORY
-  ? new InMemoryCollection("DrugLog")
-  : mongoose.models.DrugLog || mongoose.model("DrugLog", drugLogSchema);
+const systemAlertSchema = new mongoose.Schema(
+  {
+    message: { type: String, required: true },
+    type: { type: String, enum: ['info', 'warning', 'critical'], default: 'info' },
+    active: { type: Boolean, default: true },
+    expiresAt: { type: Date }
+  },
+  { timestamps: true }
+);
+const _mongoSystemAlert = USE_MEMORY ? null : (mongoose.models.SystemAlert || mongoose.model("SystemAlert", systemAlertSchema));
 
 const blockSchema = new mongoose.Schema(
   {
@@ -271,59 +332,72 @@ const blockSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+const _mongoBlock = USE_MEMORY ? null : (mongoose.models.Block || mongoose.model("Block", blockSchema));
 
-export const Block: any = USE_MEMORY
-  ? new InMemoryCollection("Block")
-  : mongoose.models.Block || mongoose.model("Block", blockSchema);
-
-// ── Consultation (Farmer ↔ Vet) ──────────────────────────────────────────────
 const consultationSchema = new mongoose.Schema(
   {
-    farmerId:  { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
-    vetId:     { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" }, // assigned vet
-    animalId:  { type: String },
-    disease:   { type: String, required: true },
-    message:   { type: String, required: true },
-    status:    { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
-    vetNote:   { type: String },
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    vetId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    animalId: { type: String },
+    disease: { type: String, required: true },
+    message: { type: String, required: true },
+    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    vetNote: { type: String },
   },
   { timestamps: true },
 );
+const _mongoConsultation = USE_MEMORY ? null : (mongoose.models.Consultation || mongoose.model("Consultation", consultationSchema));
 
-export const Consultation: any = USE_MEMORY
-  ? new InMemoryCollection("Consultation")
-  : mongoose.models.Consultation || mongoose.model("Consultation", consultationSchema);
-
-// ── VetAdvisory (Vet → Farmer / All) ─────────────────────────────────────────
 const vetAdvisorySchema = new mongoose.Schema(
   {
-    vetId:      { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
-    farmerId:   { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" }, // null = all farmers
-    title:      { type: String, required: true },
-    body:       { type: String, required: true },
-    crop:       { type: String },
+    vetId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    title: { type: String, required: true },
+    body: { type: String, required: true },
+    crop: { type: String },
     targetRole: { type: String, enum: ["all", "farmer"], default: "all" },
   },
   { timestamps: true },
 );
+const _mongoVetAdvisory = USE_MEMORY ? null : (mongoose.models.VetAdvisory || mongoose.model("VetAdvisory", vetAdvisorySchema));
 
-export const VetAdvisory: any = USE_MEMORY
-  ? new InMemoryCollection("VetAdvisory")
-  : mongoose.models.VetAdvisory || mongoose.model("VetAdvisory", vetAdvisorySchema);
-// ── Appointment (Farmer ↔ Vet scheduled visit) ───────────────────────────────
 const appointmentSchema = new mongoose.Schema(
   {
-    farmerId:    { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
-    vetId:       { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
-    animalId:    { type: String },
-    reason:      { type: String, required: true },
+    farmerId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer", required: true },
+    vetId: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    animalId: { type: String },
+    reason: { type: String, required: true },
     scheduledAt: { type: Date, required: true },
-    status:      { type: String, enum: ["pending", "confirmed", "completed", "cancelled"], default: "pending" },
-    vetNote:     { type: String },
+    status: { type: String, enum: ["pending", "confirmed", "completed", "cancelled"], default: "pending" },
+    vetNote: { type: String },
   },
   { timestamps: true },
 );
+const _mongoAppointment = USE_MEMORY ? null : (mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema));
 
-export const Appointment: any = USE_MEMORY
-  ? new InMemoryCollection("Appointment")
-  : mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema);
+// Helper: returns true if MongoDB is actually connected
+function isMongoConnected() {
+  return mongoose.connection.readyState === 1;
+}
+
+// Smart proxy: uses MongoDB when connected, falls back to in-memory otherwise
+function makeProxy(mongoModel: any, inMemModel: any): any {
+  return new Proxy({}, {
+    get(_target, prop) {
+      const model = (!USE_MEMORY && isMongoConnected() && mongoModel) ? mongoModel : inMemModel;
+      const val = model[prop as string];
+      return typeof val === "function" ? val.bind(model) : val;
+    }
+  });
+}
+
+export const Farmer: any = makeProxy(_mongoFarmer, _inMemFarmer);
+export const Advisory: any = makeProxy(_mongoAdvisory, _inMemAdvisory);
+export const AdvisoryHistory: any = makeProxy(_mongoAdvisoryHistory, _inMemAdvisoryHistory);
+export const AnalyticsData: any = makeProxy(_mongoAnalyticsData, _inMemAnalyticsData);
+export const DrugLog: any = makeProxy(_mongoDrugLog, _inMemDrugLog);
+export const SystemAlert: any = makeProxy(_mongoSystemAlert, _inMemSystemAlert);
+export const Block: any = makeProxy(_mongoBlock, _inMemBlock);
+export const Consultation: any = makeProxy(_mongoConsultation, _inMemConsultation);
+export const VetAdvisory: any = makeProxy(_mongoVetAdvisory, _inMemVetAdvisory);
+export const Appointment: any = makeProxy(_mongoAppointment, _inMemAppointment);

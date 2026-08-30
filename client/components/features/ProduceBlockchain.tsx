@@ -16,10 +16,19 @@ interface ProduceRecord {
 }
 
 function genHash(): string {
-  return "0x" + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
+  const bytes = new Uint8Array(20);
+  crypto.getRandomValues(bytes);
+  return "0x" + Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 const CERTIFIERS = ["AgriVerify DAO", "FarmLedger Network", "GreenTrace Protocol"];
+
+function randomIndex(max: number): number {
+  if (max <= 1) return 0;
+  const value = new Uint32Array(1);
+  crypto.getRandomValues(value);
+  return value[0] % max;
+}
 
 // ── Minimal deterministic QR-like SVG (decorative but visually scannable) ──
 function QRCodeSVG({ data, size = 140 }: { data: string; size?: number }) {
@@ -94,7 +103,7 @@ export function ProduceBlockchain({ farmerId, farmerName }: { farmerId?: string;
       farmerId: farmerId ?? "ANON",
       farmerName: farmerName ?? "Unknown Farmer",
       pesticides: form.pesticides ? form.pesticides.split(",").map((p) => p.trim()) : ["None applied"],
-      certifier: CERTIFIERS[Math.floor(Math.random() * CERTIFIERS.length)],
+      certifier: CERTIFIERS[randomIndex(CERTIFIERS.length)],
       verified: true,
       timestamp: new Date().toISOString(),
     };
