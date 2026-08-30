@@ -69,13 +69,13 @@ export function DigitalTwin() {
         {/* Satellite NDVI */}
         <div className="p-5 glass-panel bento-card">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-purple-100 text-purple-600">
+            <div className="p-2 rounded-lg bg-emerald-100 text-emerald-600">
               <Satellite className="h-5 w-5" />
             </div>
             <p className="font-medium">Satellite NDVI</p>
           </div>
-          <p className="text-2xl font-bold">{data.ndvi}</p>
-          <p className="text-sm text-muted-foreground mt-1">Healthy canopy detected</p>
+          <p className="text-2xl font-bold">{data.ndvi.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground mt-1">Vegetation Index</p>
         </div>
 
         {/* NPK Levels */}
@@ -112,14 +112,25 @@ export function DigitalTwin() {
             <div className="p-2 rounded-lg bg-green-100 text-green-600">
               <Leaf className="h-5 w-5" />
             </div>
-            <p className="font-medium">Crop Stage</p>
+            <p className="font-medium">Crop Stage Tracking</p>
           </div>
           <p className="text-2xl font-bold text-green-700">{data.cropStage}</p>
-          <div className="flex gap-1 mt-3">
-            <div className="h-1.5 flex-1 bg-green-500 rounded-full"></div>
-            <div className="h-1.5 flex-1 bg-green-500 rounded-full"></div>
-            <div className="h-1.5 flex-1 bg-secondary rounded-full"></div>
-            <div className="h-1.5 flex-1 bg-secondary rounded-full"></div>
+          
+          <div className="mt-4">
+            <div className="flex justify-between text-[10px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">
+              <span>Seedling</span>
+              <span className="text-green-600">Vegetative</span>
+              <span>Flowering</span>
+              <span>Harvest</span>
+            </div>
+            <div className="flex gap-1 relative">
+              <div className="h-2 flex-1 bg-green-500 rounded-full"></div>
+              <div className="h-2 flex-1 bg-green-500 rounded-full relative">
+                 <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-white border-4 border-green-600 rounded-full shadow-sm z-10"></div>
+              </div>
+              <div className="h-2 flex-1 bg-secondary rounded-full"></div>
+              <div className="h-2 flex-1 bg-secondary rounded-full"></div>
+            </div>
           </div>
         </div>
       </div>
