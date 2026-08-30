@@ -41,7 +41,7 @@ export default function Dashboard() {
   const { xp, level, streak, missions } = useGamification();
   const [activeTab, setActiveTab] = useState<
     "missions" | "history" | "subscription" | "analytics" | "chat" | "pest"
-  >("missions");
+  >("pest");
 
   useEffect(() => {
     if (!farmer) {

@@ -16,17 +16,16 @@ export default function Hero() {
         <div className="mx-auto max-w-[min(70vw,600px)] text-center lg:text-left">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/40 dark:bg-black/40 px-4 py-1.5 text-xs font-bold text-primary shadow-glass backdrop-blur-md mb-6 animate-fade-in-up">
             <Sprout className="h-4 w-4" />
-            <span>Built for the future of farming</span>
+            <span>SIH26131: Early Disease & Pest Management</span>
           </div>
           
           <h1 className="text-5xl font-black leading-[1.1] tracking-tight text-foreground md:text-7xl drop-shadow-sm animate-fade-in-up delay-100">
-            Cultivating <span className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-primary">Success</span>,
-            <br className="hidden lg:block" /> Harvesting <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary">Innovation</span>
+            Early <span className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-primary">Detection</span>,
+            <br className="hidden lg:block" /> Smarter <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary">Protection</span>
           </h1>
           
           <p className="mt-6 mx-auto lg:mx-0 max-w-[55ch] text-muted-foreground md:text-xl leading-relaxed font-medium animate-fade-in-up delay-200">
-            Empowering every harvest with precision data. Get unified crop advice,
-            real-time market prices, and advanced pest detection—all in your local language.
+            Empowering every harvest with precision data. Scan leaves for instant disease diagnosis, get 14-day predictive pest alerts, and access smart crop advisory—all in your local language.
           </p>
           
           <div className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4 animate-fade-in-up delay-300">

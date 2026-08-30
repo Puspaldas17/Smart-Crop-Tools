@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs";
 import { getWeather } from "./routes/weather";
 import { createAdvisory, submitFeedback } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
+import { getListings, createListing, seedListings } from "./routes/listings";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
 import { upsertFarmer, guestLogin, register, login, getDebugUsers, deleteDebugUser } from "./routes/auth";
@@ -91,6 +92,12 @@ export function createServer() {
   app.get("/api/weather", getWeather);
   app.post("/api/advisories", createAdvisory);
   app.get("/api/market", getMarketPrices);
+
+  // Marketplace Listings
+  app.get("/api/listings/seed", seedListings);
+  app.get("/api/listings", getListings);
+  app.post("/api/listings", createListing);
+
   app.post("/api/chat", chatHandler);
   app.post("/api/predict", uploadMiddleware, predictHandler);
   
