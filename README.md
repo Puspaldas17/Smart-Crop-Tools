@@ -1,351 +1,246 @@
-# 🌾 AgriVerse
+# 🌱 AgriVerse: The Future of Smart Farming
 
-> **AI-powered smart farming platform for India's 140 million rural farmers.**
-> Multilingual · Offline-First · Gamified · Vet-Connected · Marketplace-Enabled
+<div align="center">
+  <strong>Empowering India's 140 Million Farmers with AI, Gamification & Real-Time Intelligence</strong><br>
+  <em>A full-stack, multilingual, offline-capable smart farming ecosystem designed for accessibility and impact.</em>
+</div>
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/Puspaldas17/Smart-Crop-Tools)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
-[![Stack](https://img.shields.io/badge/stack-MERN%20%2B%20Python-informational?style=flat-square)](PROJECT_DETAILS.md)
-[![PWA](https://img.shields.io/badge/PWA-enabled-purple?style=flat-square)](https://web.dev/pwa/)
-[![Languages](https://img.shields.io/badge/languages-EN%20%7C%20HI%20%7C%20OR-orange?style=flat-square)](client/i18n.ts)
-[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?style=flat-square)](tsconfig.json)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=flat-square&logo=render)](https://agriverse-bwqw.onrender.com)
+<br>
 
-> 📖 Full feature documentation, architecture, and roadmap → **[PROJECT_DETAILS.md](PROJECT_DETAILS.md)**
-
----
-
-## 🌐 Live Demo
-
-**[https://agriverse-bwqw.onrender.com](https://agriverse-bwqw.onrender.com)**
-
-> ⚠️ Hosted on Render free tier — first load may take **30–60 seconds** (cold start).
+<div align="center">
+  <a href="https://agriverse-bwqw.onrender.com"><img src="https://img.shields.io/badge/Live%20Demo-AgriVerse-46E3B7?style=for-the-badge&logo=render" alt="Live Demo"></a>
+  <img src="https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react" alt="React">
+  <img src="https://img.shields.io/badge/Node.js-Express-green?style=for-the-badge&logo=node.js" alt="Node.js">
+  <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb" alt="MongoDB">
+</div>
 
 ---
 
-## ✨ Key Features
+## 🎯 Executive Summary & Problem Statement
 
-| Feature                    | Description                                           |
-| -------------------------- | ----------------------------------------------------- |
-| 🤖 **AI Crop Advisory**    | Personalized fertilizer, irrigation & sowing plans    |
-| 🐛 **Pest Detection**      | Upload leaf photo → CNN diagnoses disease instantly   |
-| 📊 **Analytics Dashboard** | 4-tab interactive charts (yield, soil, weather, crop) |
-| 🩺 **Vet Consultations**   | Book appointments & get advisories from veterinarians |
-| 🏪 **F2C Marketplace**     | Sell produce directly to consumers, no middlemen      |
-| 🎮 **Gamification**        | XP, levels, streaks, badges & daily missions          |
-| 🌧️ **Weather & Market**    | Live IMD weather + Mandi market price feeds           |
-| 📅 **Crop Calendar**       | 10-crop sowing & harvest planner by month             |
-| 🔗 **Blockchain Ledger**   | Tamper-evident AMU drug log with hash-chain           |
-| 🛸 **Drone Analysis**      | Multi-zone aerial NDVI + field health analysis        |
-| 📄 **PDF Reports**         | One-click A4 farm report download (jsPDF)             |
-| 🌐 **Multilingual**        | English · हिंदी · ଓଡ଼ିଆ (~1200 translation keys)      |
-| 📶 **Offline PWA**         | Installable, works without internet                   |
+India's agricultural sector accounts for 18% of GDP and employs 44% of the workforce, yet small and marginal farmers remain chronically underserved by technology. 
+
+| Challenge | Scale |
+| :--- | :--- |
+| **Lack of personalized advisory** | 140M+ small & marginal farmers have no agronomist access |
+| **Market price opacity** | Middlemen capture 30–40% of farm-gate value |
+| **Late pest & disease detection** | Annual crop losses estimated at ₹80,000+ crore |
+| **Digital accessibility barriers** | Low literacy + inconsistent internet in rural areas |
+| **No veterinary access** | Massive livestock healthcare gap in rural India |
+
+**The Solution:**
+AgriVerse is a unified, one-stop platform that solves all these challenges. It combines AI crop advisory, real-time market/weather data, machine-learning pest detection, IoT telemetry, gamified learning, and a dedicated veterinary consultation portal into a single Progressive Web App (PWA) that works offline and supports multiple regional languages.
 
 ---
 
-## 🛠️ Technology Stack
+## 🏗️ System Architecture
 
-| Layer             | Technology                                  |
-| ----------------- | ------------------------------------------- |
-| **Frontend**      | React 18 + Vite + TypeScript + TailwindCSS  |
-| **UI Components** | Radix UI + shadcn/ui (50+ components)       |
-| **Charts**        | Recharts (Line, Bar, Area, Radar)           |
-| **Backend**       | Node.js + Express (REST API)                |
-| **Database**      | MongoDB Atlas + Mongoose                    |
-| **Auth**          | JWT + bcryptjs (farmer / vet / admin roles) |
-| **AI / ML**       | Python + FastAPI + TensorFlow/CNN           |
-| **PDF**           | jsPDF + html2canvas                         |
-| **PWA**           | vite-plugin-pwa + Workbox                   |
-| **i18n**          | react-i18next                               |
-| **Hosting**       | Render.com (full-stack)                     |
+AgriVerse employs a modern, decoupled client-server architecture, deployed entirely on the cloud.
 
----
+```mermaid
+graph TD
+    %% User Interfaces
+    subgraph Client-Side [Frontend - React 18 & Vite]
+        A[Farmer Dashboard]
+        B[Veterinary Portal]
+        C[Admin Control Panel]
+        D[Tools & PWA Engine]
+    end
 
-## Prerequisites
+    %% Network / API
+    subgraph Server-Side [Backend - Node.js & Express]
+        E[RESTful APIs]
+        F[JWT Role-Based Auth]
+        G[Core Business Logic]
+    end
 
-| Tool    | Version                                 |
-| ------- | --------------------------------------- |
-| Node.js | v18+ (v20+ recommended)                 |
-| Python  | v3.10+                                  |
-| npm     | Latest                                  |
-| MongoDB | Optional (in-memory fallback available) |
+    %% Data / AI
+    subgraph Cloud Services [Data & AI Layer]
+        H[(MongoDB Atlas)]
+        I[Python FastAPI Service]
+        J[TensorFlow CNN]
+    end
 
----
-
-## Installation
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/Puspaldas17/Smart-Crop-Tools.git
-cd Smart-Crop-Tools
-
-# 2. Install Node.js dependencies (frontend + backend)
-npm install
-
-# 3. Install Python AI service dependencies
-cd ai_service
-pip install -r requirements.txt
-cd ..
-```
-
-> **Windows Note:** If you get Pillow errors: `pip install --upgrade pillow`
-
----
-
-## Environment Setup
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and fill in your values:
-
-| Variable          | Description                                | Default / Required            |
-| ----------------- | ------------------------------------------ | ----------------------------- |
-| `MONGODB_URI`     | MongoDB connection string (Atlas or local) | In-memory fallback if not set |
-| `JWT_SECRET`      | Secret key for signing JWT tokens          | **Required** for auth         |
-| `NODE_ENV`        | Set to `production` on deployment          | `development`                 |
-| `PORT`            | Express server port                        | `8080`                        |
-| `AI_SERVICE_URL`  | Python AI (FastAPI) service URL            | `http://localhost:8000`       |
-| `OPENWEATHER_KEY` | OpenWeatherMap API key                     | Optional                      |
-| `PING_MESSAGE`    | Custom ping response message               | `ping`                        |
-
-> Without `MONGODB_URI`, the app runs in **Demo Mode** with a fast in-memory adapter — great for local testing.
-
----
-
-## Running the Project (Local)
-
-You need **two terminals** running simultaneously:
-
-**Terminal 1 — Web App (React + Express)**
-
-```bash
-npm run dev
-```
-
-🟢 App: **http://localhost:8080**
-
-**Terminal 2 — Python AI Service**
-
-```bash
-cd ai_service
-python main.py
-```
-
-🟢 AI Service: **http://localhost:8000**
-
----
-
-## 🚀 Deployment (Production)
-
-### Backend + Frontend → Render
-
-The entire app (frontend + backend) is deployed as a single service on **[Render](https://render.com)**.
-
-| Setting           | Value                                      |
-| ----------------- | ------------------------------------------ |
-| **Runtime**       | Node.js                                    |
-| **Branch**        | `main`                                     |
-| **Build Command** | `npm install --include=dev; npm run build` |
-| **Start Command** | `node dist/server/node-build.mjs`          |
-| **Live URL**      | https://agriverse-bwqw.onrender.com        |
-
-**Environment Variables on Render:**
-
-| Key           | Value                           |
-| ------------- | ------------------------------- |
-| `MONGODB_URI` | MongoDB Atlas connection string |
-| `JWT_SECRET`  | Strong secret key               |
-| `NODE_ENV`    | `production`                    |
-
-### Database → MongoDB Atlas
-
-All data is stored on **MongoDB Atlas** (cloud). Collections migrated from local Compass to Atlas using a custom Node.js migration script (`scripts/migrate-to-atlas.js`).
-
----
-
-## Quick Verification
-
-1. Open **https://agriverse-bwqw.onrender.com** (or **http://localhost:8080** locally)
-2. Register or Login as a **Farmer** (Guest Mode also available — no sign-up needed)
-3. Use the 🌐 button to switch language (EN / हिंदी / ଓଡ଼ିଆ)
-4. Go to **Dashboard → Vet Inbox** to book an appointment or request a consultation
-5. Go to **Dashboard → Pest Detector** to test the AI disease detection
-6. Go to **Dashboard → Analytics** to see interactive charts
-7. Go to **Tools & Insights** (`/tools`) to explore IoT, Drone, Blockchain, Schemes & PDF Export
-
-Login as **Vet** (`/vet`) or **Admin** (`/admin`) using seeded credentials to access their dedicated portals.
-
-> Seed default users: `POST https://agriverse-bwqw.onrender.com/api/admin/seed`
-
----
-
-## Available Routes
-
-| Route          | Page                           | Access        |
-| -------------- | ------------------------------ | ------------- |
-| `/`            | Landing page                   | Public        |
-| `/login`       | Farmer login / registration    | Public        |
-| `/dashboard`   | Main farmer dashboard (7 tabs) | Farmer        |
-| `/tools`       | Tools & Insights (5 tabs)      | Farmer        |
-| `/vet`         | Veterinary portal              | Vet           |
-| `/admin`       | Admin portal                   | Admin         |
-| `/amu`         | AMU blockchain ledger          | Vet / Admin   |
-| `/leaderboard` | Community XP leaderboard       | Authenticated |
-| `/marketplace` | F2C produce marketplace        | Authenticated |
-| `/calendar`    | Crop sowing & harvest calendar | Authenticated |
-| `/profile`     | Farmer profile + gamification  | Authenticated |
-
----
-
-## Project Structure
-
-```
-AgriVerse/
-│
-├── client/                          # React 18 Frontend (Vite + TypeScript)
-│   ├── App.tsx                      # Root: routing, providers, global fetch guard
-│   ├── global.css                   # Design system (variables, animations, glassmorphism)
-│   ├── i18n.ts                      # EN / Hindi / Odia translations (~1200 keys)
-│   │
-│   ├── components/
-│   │   ├── features/                # Feature components
-│   │   │   ├── Gamification/        # MissionCard, BadgesGallery, LeaderboardWidget
-│   │   │   ├── Analytics.tsx        # 4-tab Recharts analytics dashboard
-│   │   │   ├── AppointmentBooking.tsx # Farmer appointment booking UI
-│   │   │   ├── Chatbot.tsx          # AI chatbot with voice input
-│   │   │   ├── DroneAnalysis.tsx    # Aerial image upload + simulated CNN analysis
-│   │   │   ├── IoTSensors.tsx       # Live mock soil telemetry dashboard
-│   │   │   ├── NotificationCenter.tsx
-│   │   │   ├── PDFExport.tsx        # jsPDF + html2canvas farm report export
-│   │   │   ├── PestAlertWidget.tsx  # 14-day predictive outbreak forecast
-│   │   │   ├── PestDetector.tsx     # Image upload → AI disease detection
-│   │   │   ├── ProduceBlockchain.tsx # Harvest registration on blockchain ledger
-│   │   │   ├── SchemesFinder.tsx    # Govt scheme eligibility finder
-│   │   │   ├── MarketCard.tsx / MarketWidget.tsx
-│   │   │   ├── WeatherCard.tsx
-│   │   │   └── UpgradeModal.tsx
-│   │   ├── home/                    # Landing page sections (Hero, Stats, CTA…)
-│   │   └── ui/                      # shadcn/ui primitives (50+ components)
-│   │
-│   ├── pages/
-│   │   ├── Index.tsx                # Public landing page
-│   │   ├── Login.tsx                # Register + login (email/password + JWT)
-│   │   ├── Dashboard.tsx            # Farmer dashboard (7 tabs incl. Vet Inbox)
-│   │   ├── VetDashboard.tsx         # Vet portal: consultations + advisories + appointments
-│   │   ├── AdminDashboard.tsx       # Admin panel: users, KPIs, broadcast
-│   │   ├── ToolsPage.tsx            # Unified Tools & Insights page (5 tabs)
-│   │   ├── AMUManager.tsx           # AMU blockchain ledger page
-│   │   ├── Leaderboard.tsx          # Community XP rankings with podium
-│   │   ├── Marketplace.tsx          # F2C produce marketplace
-│   │   ├── CropCalendar.tsx         # Seasonal sowing & harvest calendar
-│   │   ├── Profile.tsx              # Farmer profile + XP + badges
-│   │   ├── Layout.tsx               # Shared layout + navigation
-│   │   └── NotFound.tsx             # 404 page
-│   │
-│   ├── context/
-│   │   └── GamificationContext.tsx  # XP, Level, Streak, Missions, Badges state
-│   └── hooks/
-│       ├── useAuth.tsx              # Auth context — JWT storage + authHeaders()
-│       ├── use-toast.ts             # Toast utility
-│       └── useInView.ts             # Intersection observer hook
-│
-├── server/                          # Node.js + Express REST API
-│   ├── index.ts                     # Server factory: all routes + JWT middleware
-│   ├── db.ts                        # MongoDB/Mongoose models + in-memory adapter
-│   ├── node-build.ts                # Production server entry
-│   │
-│   ├── middleware/
-│   │   └── auth.ts                  # verifyToken + requireRole JWT middleware
-│   │
-│   ├── routes/
-│   │   ├── auth.ts                  # Register, login, guest — issues JWT
-│   │   ├── farmers.ts               # Farmer CRUD, consultation, vet advisories
-│   │   ├── appointments.ts          # Appointment CRUD
-│   │   ├── vet.ts                   # Vet consultations, advisories
-│   │   ├── admin.ts                 # User management, broadcast, seed, overview
-│   │   ├── advisory.ts              # Crop advisory creation
-│   │   ├── analytics.ts             # Crop trends, soil health, weather impact
-│   │   ├── amu.ts                   # Drug log + blockchain ledger
-│   │   ├── chat.ts                  # AI chatbot proxy
-│   │   ├── predict.ts               # Image upload → AI pest/disease prediction
-│   │   ├── market.ts                # Mandi market prices
-│   │   ├── weather.ts               # Weather data
-│   │   ├── profile.ts               # Advisory history + subscription
-│   │   ├── listings.ts              # Marketplace listings CRUD
-│   │   ├── neon.ts                  # Netlify Neon DB example route
-│   │   └── demo.ts                  # Health/demo endpoint
-│   │
-│   ├── lib/
-│   │   └── ledger.ts                # Hash-chain blockchain implementation
-│   └── utils/
-│       ├── cache.ts                 # Simple in-memory TTL cache
-│       ├── http.ts                  # HTTP fetch helper
-│       └── soilData.ts              # Soil data lookup utilities
-│
-├── ai_service/                      # Python FastAPI ML service
-│   ├── main.py                      # Pest/disease detection endpoint
-│   └── requirements.txt
-│
-├── shared/                          # Shared TypeScript types
-├── public/                          # PWA icons, manifest.json
-├── scripts/
-│   ├── migrate-to-atlas.js          # One-time MongoDB Compass → Atlas migration script
-│   └── seed.ts                      # Database seed script
-├── .env.example                     # Environment variable template
-└── PROJECT_DETAILS.md               # Full feature documentation
+    %% Connections
+    A & B & C & D -->|HTTP/REST Requests| E
+    E --> F
+    F --> G
+    G <-->|Mongoose ODM| H
+    G -->|Image Uploads| I
+    I --> J
+    J -->|Disease Classification| I
+    I -->|JSON Diagnosis| G
+    
+    classDef frontend fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff;
+    classDef backend fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef data fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff;
+    
+    class A,B,C,D frontend;
+    class E,F,G backend;
+    class H,I,J data;
 ```
 
 ---
 
-## API Endpoints Summary
+## 🔄 User Journey & Flowchart
 
-| Group        | Endpoint prefix     | Auth Required | Description                           |
-| ------------ | ------------------- | ------------- | ------------------------------------- |
-| Auth         | `/api/auth/*`       | No            | Register, login, guest login (JWT)    |
-| Farmers      | `/api/farmers/*`    | JWT           | CRUD, consultations, vet advisories   |
-| Appointments | `/api/appointments` | JWT           | Book, list, update appointments       |
-| Vet          | `/api/vet/*`        | JWT + vet     | Consultations, advisory management    |
-| Admin        | `/api/admin/*`      | JWT + admin   | User mgmt, broadcasts, overview KPIs  |
-| Advisory     | `/api/advisories`   | JWT           | Crop advisory generation              |
-| Analytics    | `/api/analytics/*`  | JWT           | Crop trends, soil health, weather     |
-| AMU          | `/api/amu/*`        | JWT           | Drug log, withdrawal tracking, ledger |
-| Market       | `/api/market`       | No            | Mandi market prices                   |
-| Weather      | `/api/weather`      | No            | Weather data                          |
-| Chatbot      | `/api/chat`         | JWT           | AI chatbot proxy                      |
-| Pest AI      | `/api/predict`      | No            | Image-based pest/disease prediction   |
-| Profile      | `/api/profile/*`    | JWT           | Advisory history, subscription        |
-| Listings     | `/api/listings`     | JWT (write)   | Marketplace listings CRUD             |
+The platform is designed to be intuitive and gamified, turning best farming practices into rewarding daily habits.
 
----
-
-## Troubleshooting
-
-| Problem                   | Solution                                                            |
-| ------------------------- | ------------------------------------------------------------------- |
-| Port 8080 already in use  | PowerShell: `$env:PORT=9090; npm run dev`                           |
-| AI Service not connecting | Make sure `python main.py` is running in `ai_service/` on port 8000 |
-| Analytics shows no charts | Click the tab — uses smart mock fallback data locally               |
-| MongoDB connection error  | Remove `MONGODB_URI` from `.env` to use in-memory mode              |
-| JWT auth errors           | Ensure `JWT_SECRET` is set in `.env`                                |
-| PWA icons missing         | Run `npm run build` once to generate PWA assets                     |
-| Consultations not showing | Ensure farmer is logged in (non-guest) and MongoDB is connected     |
-| Red underline in index.ts | Run `Ctrl+Shift+P → TypeScript: Restart TS Server` in VS Code       |
-| Render cold start delay   | Free tier sleeps after 15 min inactivity; first load = 30–60s       |
-| "Something went wrong"    | Clear browser cache or check Render logs for server errors          |
-| 401 Unauthorized errors   | Ensure `useAuth().authHeaders()` is appended to any new `fetch()`   |
-| "Failed to load" UI error | Verify the `/api` route is not crashing and returns valid JSON      |
+```mermaid
+flowchart TD
+    A([Farmer Opens App]) --> B{Has Account?}
+    B -->|No| C[Register Profile]
+    B -->|Yes| D[Login via JWT]
+    C --> D
+    
+    D --> E{Dashboard Actions}
+    
+    E --> F[Check Live Market/Weather]
+    E --> G[Scan Crop for Disease]
+    E --> H[Consult Vet / Book Appt.]
+    E --> I[View AI Advisory]
+    
+    G --> J[Upload Leaf Image]
+    J --> K[AI Returns Treatment Plan]
+    
+    H --> L[Vet Receives Request]
+    L --> M[Vet Approves & Prescribes]
+    
+    F & K & M --> N((Earn XP & Badges))
+    N --> O([Climb Leaderboard])
+    
+    classDef action fill:#f59e0b,stroke:#b45309,color:#fff;
+    classDef endpoint fill:#10b981,stroke:#047857,color:#fff;
+    
+    class J,K,L,M action;
+    class O endpoint;
+```
 
 ---
 
-## Author
+## 💻 Technology Stack
 
-**Puspal Das** · SOA University (ITER), Bhubaneswar, Odisha
-GitHub: [@Puspaldas17](https://github.com/Puspaldas17)
+| Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend Framework** | React 18 + Vite + TypeScript | Core UI with fast HMR |
+| **Styling** | TailwindCSS + CSS Variables | Design system + glassmorphism |
+| **UI Primitives** | Radix UI + shadcn/ui | Accessible, headless components (50+) |
+| **Data Visualization** | Recharts | Analytics charts (Line, Bar, Radar) |
+| **Backend Runtime** | Node.js + Express | REST API server |
+| **Database** | MongoDB Atlas + Mongoose | Cloud persistent storage |
+| **Authentication** | JWT + bcryptjs | Stateless role-based auth (farmer/vet/admin) |
+| **AI Service** | Python + FastAPI + TensorFlow | ML model API server for disease detection |
+| **PWA** | vite-plugin-pwa + Workbox | Offline caching + installability |
+| **Hosting** | Render.com | Full-stack cloud deployment |
 
 ---
 
-## License
+## 🗺️ Pages & Routes
 
-MIT License — see [LICENSE](LICENSE)
+| Route | Access | Description |
+| :--- | :--- | :--- |
+| `/` | Public | Landing page with featured tools |
+| `/login` | Public | Registration and JWT authentication |
+| `/dashboard` | Farmer | Core farmer dashboard (7 tabs) |
+| `/tools` | Farmer | Tools & Insights (IoT/Drone/Chain/PDF) |
+| `/vet` | Vet | Vet consultation & advisory management |
+| `/admin` | Admin | Platform admin panel |
+| `/amu` | Vet / Admin | AMU blockchain ledger |
+| `/leaderboard` | Authenticated | Community XP rankings with podium |
+| `/marketplace` | Authenticated | Farmer-to-Consumer produce exchange |
+| `/calendar` | Authenticated | Seasonal sowing & harvest planner |
+
+---
+
+## ✨ Feature Deep-Dive
+
+### 1. 🤖 AI Disease Detection & Smart Advisory
+- **Crop Disease AI:** Upload a photo of a diseased crop leaf. Our Python FastAPI service uses a CNN to identify the disease and return an actionable treatment plan.
+- **Predictive Pest Alert:** 14-day forecast calculating outbreak likelihood based on weather patterns and historical data.
+- **Voice-Enabled Chatbot:** Multilingual conversational Q&A with Web Speech API voice input for low-literacy users.
+
+### 2. 🎮 Gamification Engine
+- **Daily Missions:** 8 auto-resetting missions assigned each day.
+- **XP & Leveling:** Complete tasks to earn XP and unlock badges (e.g., Green Thumb, Market Guru).
+- **Leaderboard:** Animated Gold/Silver/Bronze podium for top farmers globally.
+
+### 3. 🩺 Integrated Veterinary Portal
+- **Farmer Inbox:** Submit consultation requests, book appointments, and track status.
+- **Vet Dashboard:** Manage patient queue, approve appointments, and broadcast health advisories.
+
+### 4. 📊 Real-Time Analytics Dashboards
+- **Overview:** KPI cards, grouped bar charts, radar charts.
+- **Crop Performance & Soil Health:** Track moisture, nitrogen, pH, and yield over 30 days.
+
+### 5. 🛠️ Advanced Farming Tools
+- **IoT Dashboard:** Live simulated telemetry (moisture, temp, pH) with auto-refresh and alerts.
+- **Drone Aerial Analysis:** Drag-and-drop aerial imagery for NDVI scoring and waterlogging risks.
+- **Produce Blockchain:** Tamper-evident ledger to trace harvests and Antimicrobial Usage (AMU).
+- **Gov Scheme Finder:** Match with PM-KISAN, PMFBY, etc. based on land-size.
+- **PDF Report Generation:** One-click A4 farm report download via jsPDF.
+
+### 6. 🌐 Multilingual & Accessible
+- **3 UI Languages:** Switch instantly between English, Hindi (हिंदी), and Odia (ଓଡ଼ିଆ).
+- **PWA:** Installable directly to mobile home screens with offline caching capabilities.
+
+### 7. 🛒 F2C Community Marketplace
+- **Direct Trade:** Eliminate middlemen through Farmer-to-Consumer commerce.
+- **Contact:** One-click WhatsApp deeplinks and UPI payment initiation.
+
+---
+
+## 🗄️ Data Models (MongoDB)
+
+| Model | Key Fields |
+| :--- | :--- |
+| `Farmer` | name, email, password, phone, soilType, landSize, role |
+| `Advisory` | farmerId, crop, summary, fertilizer, irrigation, pest |
+| `DrugLog` | animalId, drugName, dosage, withdrawalDays, applicator |
+| `Consultation` | farmerId, vetId, animalId, disease, message, status |
+| `Listing` | farmerId, cropName, quantity, price, category, organic |
+
+---
+
+## 🚀 How to Run Locally
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Puspaldas17/Smart-Crop-Tools.git
+   cd Smart-Crop-Tools
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up Environment Variables:**
+   Create a `.env` file in the root directory and add your MongoDB URI:
+   ```env
+   MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/agriverse
+   JWT_SECRET=your_super_secret_jwt_key_here
+   ```
+
+4. **Start the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   *The app will automatically compile both the React frontend and Express backend, making it available at `http://localhost:8080`.*
+
+---
+
+## 🌟 What Differentiates AgriVerse
+
+- **Voice-First Interface:** Removes literacy barrier; farmers speak, not type.
+- **Predictive Over Reactive:** 14-Day predictive pest forecast warns farmers ahead of time.
+- **Offline-First PWA:** Usable in areas with intermittent internet connectivity.
+- **Unified Ecosystem:** Weather + Soil + AI + Market + Vet + Community all in one app.
+
+---
+
+## 📝 License & Developer
+
+Developed by **Puspal Das** (SOA University, ITER) for SIH 2024.  
+[GitHub Profile](https://github.com/Puspaldas17) | [Live Application](https://agriverse-bwqw.onrender.com)
+
+*Licensed under the MIT License — open source for the benefit of India's farming community.*
