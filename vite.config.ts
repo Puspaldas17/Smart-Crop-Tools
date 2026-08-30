@@ -12,7 +12,6 @@ export default defineConfig(({ mode }) => ({
     port: Number(process.env.PORT) || 8080,
     // Allow serving files from project root (index.html) as well as client/shared
     fs: {
-      allow: ["./", "./client", "./shared"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
   },
