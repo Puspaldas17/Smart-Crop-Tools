@@ -21,6 +21,9 @@ import VetDashboard from "./pages/VetDashboard";
 import { AuthProvider } from "@/hooks/useAuth";
 import { GamificationProvider } from "@/context/GamificationContext";
 
+import About from "./pages/About";
+import Tools from "./pages/Tools";
+
 const queryClient = new QueryClient();
 
 // Patch global fetch in the browser to guard against preview or 3rd-party scripts
@@ -71,6 +74,8 @@ const App = () => (
                     <Route path="/amu" element={<AMUManager />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/vet" element={<VetDashboard />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/tools" element={<Tools />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Route>

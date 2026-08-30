@@ -3,9 +3,11 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { connectDB } from "./db";
-import { createFarmer, getFarmer } from "./routes/farmers";
+import { createFarmer, getFarmer, getAllFarmers, deleteFarmer, updateFarmerStatus } from "./routes/farmers";
+import { Farmer } from "./db";
+import bcrypt from "bcryptjs";
 import { getWeather } from "./routes/weather";
-import { createAdvisory } from "./routes/advisory";
+import { createAdvisory, submitFeedback } from "./routes/advisory";
 import { getMarketPrices } from "./routes/market";
 import { chatHandler } from "./routes/chat";
 import { predictHandler, uploadMiddleware } from "./routes/predict";
@@ -26,6 +28,7 @@ import {
 } from "./routes/analytics";
 import { getPostById } from "./routes/neon";
 import { logTreatment, getAnimalStatus, getLedger } from "./routes/amu";
+import { getActiveAlerts, createAlert, deleteAlert } from "./routes/alerts";
 
 export function createServer() {
   const app = express();
@@ -37,6 +40,31 @@ export function createServer() {
 
   // DB: ensure the connection is ready before handling domain routes
   const dbReady = connectDB();
+  
+  dbReady.then(async () => {
+    try {
+      // Seed permanent admin if not exists
+      const adminEmail = "admin.agri@agriverse.in";
+      const existingAdmin = await Farmer.findOne({ email: adminEmail });
+      if (!existingAdmin) {
+        const hashedPassword = await bcrypt.hash("Admin@2027", 10);
+        await Farmer.create({
+          name: "System Admin",
+          email: adminEmail,
+          password: hashedPassword,
+          phone: "0000000000",
+          soilType: "None",
+          landSize: 0,
+          location: "Headquarters",
+          role: "admin"
+        });
+        console.log("[db] Seeded permanent admin account: " + adminEmail);
+      }
+    } catch (err) {
+      console.error("[db] Error seeding admin:", err);
+    }
+  });
+
   app.use(async (_req, _res, next) => {
     try {
       await dbReady;
@@ -55,14 +83,21 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Domain routes
-  // Domain routes
   app.post("/api/farmers", createFarmer);
+  app.get("/api/farmers", getAllFarmers); // NEW
   app.get("/api/farmers/:id", getFarmer);
+  app.delete("/api/farmers/:id", deleteFarmer);
+  app.patch("/api/farmers/:id/status", updateFarmerStatus);
   app.get("/api/weather", getWeather);
   app.post("/api/advisories", createAdvisory);
   app.get("/api/market", getMarketPrices);
   app.post("/api/chat", chatHandler);
   app.post("/api/predict", uploadMiddleware, predictHandler);
+  
+  // Alerts
+  app.get("/api/alerts", getActiveAlerts);
+  app.post("/api/alerts", createAlert);
+  app.delete("/api/alerts/:id", deleteAlert);
   
   // Auth routes
   app.post("/api/auth/register", register);
@@ -79,6 +114,8 @@ export function createServer() {
 
   app.post("/api/advisory/history", saveAdvisoryHistory);
   app.get("/api/advisory/history/:farmerId", getAdvisoryHistory);
+  app.patch("/api/advisory/history/:id/feedback", submitFeedback);
+  
   app.get("/api/profile/:farmerId", getProfileData);
   app.put("/api/profile/:farmerId/subscription", updateSubscription);
 

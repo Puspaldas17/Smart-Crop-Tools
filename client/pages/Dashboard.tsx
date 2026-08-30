@@ -121,18 +121,19 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-8">
-        <div className="rounded-xl border border-border bg-card text-card-foreground p-6 shadow-sm">
+        <div className="glass-panel bento-card p-6 flex flex-col justify-between relative overflow-hidden animate-fade-in-up delay-100">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold">{farmer?.name}</h1>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold border border-yellow-200">
+              <div className="flex flex-wrap items-center gap-3 mt-1">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-xs font-bold border border-yellow-500/30 backdrop-blur-md">
                   <Star className="w-3 h-3 fill-yellow-800" /> {t('dash.level')} {level}
                 </span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 text-xs font-bold border border-orange-200">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/20 text-orange-700 dark:text-orange-400 text-xs font-bold border border-orange-500/30 backdrop-blur-md">
                   <Flame className="w-3 h-3 fill-orange-800" /> {streak} {t('dash.streak')}
                 </span>
-                <span className="text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20 backdrop-blur-md">
                   {xp} {t('dash.xp')}
                 </span>
               </div>
@@ -186,19 +187,18 @@ export default function Dashboard() {
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => navigate("/profile")}
-              className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-md hover:brightness-95"
+              className="px-4 py-2 bg-gradient-to-r from-primary to-green-500 text-white font-bold rounded-xl hover:shadow-lg transition-all"
             >
               {t('nav.profile')}
             </button>
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-card text-card-foreground overflow-hidden shadow-sm">
-          <div className="border-b border-border p-6">
-            <h2 className="text-xl font-bold">{t('dash.subscription.title')}</h2>
-          </div>
+        <div className="glass-panel bento-card p-6 flex flex-col relative overflow-hidden animate-fade-in-up delay-200">
+           <div className="absolute bottom-0 left-0 w-40 h-40 bg-accent/20 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none"></div>
+           <h2 className="text-xl font-bold mb-4 opacity-80">{t('dash.subscription.title')}</h2>
 
-          <div className="p-6">
+           <div className="flex-1 flex flex-col justify-center">
             <div className="flex items-center gap-4 mb-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary">
                 {isPremium ? (
@@ -259,8 +259,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-card text-card-foreground overflow-hidden shadow-sm">
-          <div className="border-b border-border p-6 flex gap-4 overflow-x-auto remove-scrollbar">
+        <div className="glass-panel bento-card overflow-hidden shadow-sm animate-fade-in-up delay-300">
+          <div className="border-b border-white/10 p-4 sm:p-6 flex gap-4 overflow-x-auto remove-scrollbar bg-black/5">
             <button
               onClick={() => setActiveTab("missions")}
               className={`font-medium pb-2 border-b-2 whitespace-nowrap inline-flex items-center gap-2 ${
@@ -345,7 +345,14 @@ export default function Dashboard() {
             )}
             
             {activeTab === "chat" && (
-              <Suspense fallback={<div>Loading Chat...</div>}>
+              <Suspense fallback={
+                <div className="flex items-center justify-center h-full min-h-[400px]">
+                  <div className="animate-pulse flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+                    <p className="text-muted-foreground font-medium">Loading module...</p>
+                  </div>
+                </div>
+              }>
                 <div className="h-[500px]">
                   <Chatbot />
                 </div>
