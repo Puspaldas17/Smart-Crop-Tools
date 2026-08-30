@@ -96,6 +96,7 @@ export default function RootLayout() {
     return [
       ...(farmer && !farmer.isGuest && !isAdmin ? [{ href: "/dashboard", label: t('nav.dashboard'), isRoute: true }] : []),
       ...(farmer && !isAdmin ? [{ href: "/tools", label: t('nav.tools'), isRoute: true }] : []),
+      ...(farmer && !isAdmin ? [{ href: "/marketplace", label: t('market.title') || "Marketplace", isRoute: true }] : []),
       ...(!isAdmin ? [{ href: "/about", label: t('nav.about'), isRoute: true }] : []),
     ];
   };

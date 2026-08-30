@@ -58,7 +58,13 @@ export default function Dashboard() {
   async function fetchHistory() {
     try {
       setLoading(true);
-      const res = await fetch(`/api/advisory/history/${farmer?._id}?limit=20`);
+      const fid = farmer?._id || (farmer as any)?.id;
+      if (!fid) {
+        setHistory([]);
+        setLoading(false);
+        return;
+      }
+      const res = await fetch(`/api/advisory/history/${fid}?limit=20`);
       const data = await res.json();
       if (res.ok) {
         setHistory(Array.isArray(data) ? data : []);

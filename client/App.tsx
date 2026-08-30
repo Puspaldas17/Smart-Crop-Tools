@@ -23,6 +23,7 @@ import { GamificationProvider } from "@/context/GamificationContext";
 
 import About from "./pages/About";
 import Tools from "./pages/Tools";
+import Marketplace from "./pages/Marketplace";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
                     <Route path="/vet" element={<VetDashboard />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/tools" element={<Tools />} />
+                    <Route path="/marketplace" element={<Marketplace />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Route>
