@@ -19,6 +19,7 @@ import { BadgesGallery } from "@/components/features/Gamification/BadgesGallery"
 const Analytics = lazy(() => import("@/components/features/Analytics"));
 const Chatbot = lazy(() => import("@/components/features/Chatbot"));
 const PestDetector = lazy(() => import("@/components/features/PestDetector"));
+const AdvisoryWidget = lazy(() => import("@/components/features/AdvisoryWidget"));
 const VetDashboard = lazy(() => import("./VetDashboard"));
 const AdminDashboard = lazy(() => import("./AdminDashboard"));
 
@@ -372,63 +373,70 @@ export default function Dashboard() {
             )}
 
             {activeTab === "history" && (
-              <div>
-                {farmer?.isGuest ? (
-                  <div className="text-center py-12">
-                     <Crop className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-                     <h3 className="text-lg font-medium text-foreground">{t('dash.guest_mode')}</h3>
-                     <p className="text-muted-foreground mb-4 max-w-xs mx-auto">
-                       {t('dash.guest_msg')}
-                     </p>
-                     <button 
-                       onClick={() => {
-                         logout();
-                         navigate("/login");
-                       }}
-                       className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium"
-                     >
-                       {t('dash.signup')}
-                     </button>
-                  </div>
-                ) : loading ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    {t('dash.history_loading')}
-                  </div>
-                ) : history.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Crop className="h-12 w-12 text-muted-foreground/50 mx-auto mb-3" />
-                    <p className="text-muted-foreground">
-                      {t('dash.no_history')}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
-                    {history.map((record) => (
-                      <div
-                        key={record._id}
-                        className="p-4 border border-border rounded-lg hover:bg-accent/50 transition"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Crop className="h-4 w-4 text-muted-foreground" />
-                              <p className="font-semibold text-foreground">
-                                {record.crop}
+              <div className="space-y-6">
+                <Suspense fallback={<div>Loading Advisory Tool...</div>}>
+                  <AdvisoryWidget onGenerate={fetchHistory} />
+                </Suspense>
+
+                <div>
+                  <h3 className="font-semibold text-lg mb-3">{t('dash.tab.history')}</h3>
+                  {farmer?.isGuest ? (
+                    <div className="text-center py-12">
+                       <Crop className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+                       <h3 className="text-lg font-medium text-foreground">{t('dash.guest_mode')}</h3>
+                       <p className="text-muted-foreground mb-4 max-w-xs mx-auto">
+                         {t('dash.guest_msg')}
+                       </p>
+                       <button 
+                         onClick={() => {
+                           logout();
+                           navigate("/login");
+                         }}
+                         className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium"
+                       >
+                         {t('dash.signup')}
+                       </button>
+                    </div>
+                  ) : loading ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      {t('dash.history_loading')}
+                    </div>
+                  ) : history.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Crop className="h-12 w-12 text-muted-foreground/50 mx-auto mb-3" />
+                      <p className="text-muted-foreground">
+                        {t('dash.no_history')}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {history.map((record) => (
+                        <div
+                          key={record._id}
+                          className="p-4 border border-border rounded-lg hover:bg-accent/50 transition"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Crop className="h-4 w-4 text-muted-foreground" />
+                                <p className="font-semibold text-foreground">
+                                  {record.crop}
+                                </p>
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {record.advisory}
                               </p>
-                            </div>
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {record.advisory}
-                            </p>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                              <Calendar className="h-3 w-3" />
-                              {formatDate(record.createdAt)}
+                              <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                                <Calendar className="h-3 w-3" />
+                                {formatDate(record.createdAt)}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -481,7 +489,7 @@ export default function Dashboard() {
               </div>
             )}
 
-            {activeTab === "analytics" && farmer?._id && (
+            {activeTab === "analytics" && (farmer?._id || (farmer as any)?.id) && (
               <Suspense
                 fallback={
                   <div className="animate-pulse space-y-3">
@@ -490,7 +498,7 @@ export default function Dashboard() {
                   </div>
                 }
               >
-                <Analytics farmerId={farmer._id} />
+                <Analytics farmerId={farmer._id || (farmer as any).id} />
               </Suspense>
             )}
           </div>

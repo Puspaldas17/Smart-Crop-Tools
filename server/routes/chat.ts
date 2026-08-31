@@ -70,7 +70,7 @@ export const chatHandler: RequestHandler = async (req, res) => {
       return entry.en;
     }
 
-    if (/(weather|temp|rain|mausam|paanipaag)/.test(m) && lat != null && lon != null) {
+    if (/(weather|temp|rain|mausam|paanipaag|मौसम|तापमान|ପାଣିପାଗ|ତାପମାତ୍ରା)/.test(m) && lat != null && lon != null) {
       const key = process.env.OPENWEATHER_API_KEY;
       if (key) {
         const r = await fetch(
@@ -84,22 +84,22 @@ export const chatHandler: RequestHandler = async (req, res) => {
       }
     }
 
-    if (/(price|mandi|market|bhav|daam|dar)/.test(m)) {
+    if (/(price|mandi|market|bhav|daam|dar|मंडी|भाव|दाम|ବଜାର|ଦର|ମୂଲ୍ୟ)/.test(m)) {
       replies.push(getText('market'));
     }
 
-    if (/(yield|production|harvest|pedavar|amal)/.test(m)) {
+    if (/(yield|production|harvest|pedavar|amal|पैदावार|उत्पादन|ଅମଳ|ଉତ୍ପାଦନ)/.test(m)) {
       replies.push(getText('yield'));
     }
 
-    if (/(irrigation|water|sinchai|pani|sechan)/.test(m)) {
+    if (/(irrigation|water|sinchai|pani|sechan|सिंचाई|पानी|ଜଳସେଚନ|ପାଣି)/.test(m)) {
       replies.push(getText('irrigation'));
     }
 
-    if (/(crop|fertilizer|advice|advisory|wheat|rice|corn|gehu|dhan|fasal)/.test(m)) {
-      if (m.includes("wheat") || m.includes("gehu")) {
+    if (/(crop|fertilizer|advice|advisory|wheat|rice|corn|gehu|dhan|fasal|फसल|गेहूं|धान|चावल|ଫସଲ|ଗହମ|ଧାନ)/.test(m)) {
+      if (m.includes("wheat") || m.includes("gehu") || m.includes("गेहूं") || m.includes("ଗହମ")) {
         replies.push(getText('wheat'));
-      } else if (m.includes("rice") || m.includes("paddy") || m.includes("dhan")) {
+      } else if (m.includes("rice") || m.includes("paddy") || m.includes("dhan") || m.includes("धान") || m.includes("चावल") || m.includes("ଧାନ")) {
         replies.push(getText('rice'));
       } else {
         replies.push(getText('general'));

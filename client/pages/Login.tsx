@@ -34,7 +34,7 @@ export default function Login() {
       
       if (!res.ok) throw new Error(data.error || "Login failed");
 
-      login(data);
+      login(data.user, data.token);
       toast.success("Welcome back!");
       navigate("/dashboard");
     } catch (err: any) {
@@ -60,7 +60,7 @@ export default function Login() {
 
       if (!res.ok) throw new Error(data.error || "Registration failed");
 
-      login(data);
+      login(data.user, data.token);
       toast.success("Account created successfully!");
       navigate("/dashboard");
     } catch (err: any) {
