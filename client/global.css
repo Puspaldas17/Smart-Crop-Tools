@@ -102,25 +102,31 @@
     overflow-y: scroll;
   }
 
-  /* suppress css-lint-unknown-at-rule */
+  /* ── Light Mode: Animated Mesh Gradient ── */
   body {
-    /* 
-     * Using linear-gradient as an overlay to ensure text readability 
-     * against the high-res background image.
-     */
-    background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/bg-agri-realistic.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    background-color: #f0faf0;
+    background-image:
+      radial-gradient(at 0% 0%, hsla(120, 70%, 82%, 0.7) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(43, 96%, 85%, 0.6) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, hsla(150, 60%, 85%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsla(120, 50%, 90%, 0.4) 0px, transparent 50%);
+    animation: mesh-shift-light 12s ease-in-out infinite alternate;
     color: hsl(var(--foreground));
     overflow-x: hidden;
     width: 100%;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  /* suppress css-lint-unknown-at-rule */
-  .dark body {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('/bg-agri-realistic.jpg');
+  /* ── Dark Mode: Animated Deep Dark Mesh ── */
+  html.dark body {
+    background-color: #050d05;
+    background-image:
+      radial-gradient(at 0% 0%, hsla(120, 60%, 8%, 0.9) 0px, transparent 55%),
+      radial-gradient(at 100% 0%, hsla(140, 50%, 5%, 0.8) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, hsla(120, 70%, 6%, 0.7) 0px, transparent 55%),
+      radial-gradient(at 80% 40%, hsla(90, 40%, 8%, 0.6) 0px, transparent 50%);
+    animation: mesh-shift-dark 12s ease-in-out infinite alternate;
+    color: hsl(var(--foreground));
   }
 
   h1 {
@@ -148,11 +154,25 @@
   }
 
   .glass-panel {
-    @apply backdrop-blur-xl bg-white/30 border border-white/30 shadow-glass;
+    @apply backdrop-blur-xl border shadow-glass;
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(200, 240, 200, 0.5);
+    transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
   }
-  
-  .dark .glass-panel {
-    @apply bg-black/40 border-white/10;
+
+  html.dark .glass-panel {
+    background: rgba(5, 18, 5, 0.75);
+    border-color: rgba(100, 180, 100, 0.12);
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(100, 200, 100, 0.08);
+  }
+
+  /* Navbar specific: slightly more transparent, pill-shaped */
+  html.dark header.glass-panel,
+  html.dark [class*="bg-background/80"] {
+    background: rgba(4, 12, 4, 0.85) !important;
+    border-color: rgba(80, 160, 80, 0.15) !important;
+    backdrop-filter: blur(20px) saturate(200%) !important;
   }
 
   .bento-card {
@@ -163,12 +183,136 @@
     @apply shadow-neo hover:shadow-neo-inset transition-shadow duration-300 rounded-xl border-none;
   }
 
-  .dark .neo-button {
+  html.dark .neo-button {
     @apply shadow-neo-dark hover:shadow-neo-inset-dark;
+  }
+
+  /* Kill all white neo-shadows in dark mode globally */
+  html.dark .shadow-neo,
+  html.dark [class*="shadow-neo"] {
+    box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.6), -4px -4px 12px rgba(30, 80, 30, 0.12) !important;
   }
 }
 
-/* Animations */
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL DARK MODE OVERRIDES
+   Fixes all white/light cards, inputs, tables, and text
+   visibility across the entire app when dark mode is active.
+═══════════════════════════════════════════════════════════ */
+html.dark {
+  color-scheme: dark;
+}
+
+/* Cards and panels with white/light backgrounds */
+html.dark .bg-white,
+html.dark [class*="bg-white"] {
+  background-color: rgba(8, 22, 8, 0.85) !important;
+  color: hsl(60, 10%, 90%) !important;
+}
+
+html.dark .bg-card,
+html.dark .bg-background {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+/* Fix light blue info cards (like "Broadcast Alert" card) */
+html.dark [class*="bg-blue-50"],
+html.dark [class*="bg-blue-100"],
+html.dark [class*="bg-green-50"],
+html.dark [class*="bg-green-100"],
+html.dark [class*="bg-yellow-50"],
+html.dark [class*="bg-amber-50"],
+html.dark [class*="bg-slate-50"],
+html.dark [class*="bg-gray-50"],
+html.dark [class*="bg-zinc-50"],
+html.dark [class*="bg-neutral-50"] {
+  background-color: rgba(10, 25, 10, 0.7) !important;
+  border-color: rgba(80, 160, 80, 0.15) !important;
+}
+
+/* Inputs, selects, textareas */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: rgba(5, 15, 5, 0.8) !important;
+  color: hsl(60, 10%, 90%) !important;
+  border-color: rgba(80, 160, 80, 0.2) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: rgba(180, 200, 180, 0.4) !important;
+}
+
+/* Tables */
+html.dark table,
+html.dark thead,
+html.dark tbody,
+html.dark tr {
+  background-color: transparent !important;
+  color: hsl(60, 10%, 88%) !important;
+}
+
+html.dark th {
+  color: rgba(180, 220, 180, 0.8) !important;
+  border-color: rgba(80, 160, 80, 0.15) !important;
+}
+
+html.dark td {
+  color: hsl(60, 10%, 88%) !important;
+  border-color: rgba(80, 160, 80, 0.1) !important;
+}
+
+html.dark tr:hover td {
+  background-color: rgba(30, 80, 30, 0.15) !important;
+}
+
+/* Labels */
+html.dark label {
+  color: rgba(200, 230, 200, 0.85) !important;
+}
+
+/* Fix any dark text-on-dark-background issues */
+html.dark .text-gray-900,
+html.dark .text-slate-900,
+html.dark .text-zinc-900,
+html.dark .text-neutral-900,
+html.dark .text-black {
+  color: hsl(60, 10%, 90%) !important;
+}
+
+html.dark .text-gray-800,
+html.dark .text-slate-800,
+html.dark .text-zinc-800 {
+  color: hsl(60, 8%, 82%) !important;
+}
+
+html.dark .text-gray-700,
+html.dark .text-slate-700,
+html.dark .text-zinc-700 {
+  color: hsl(60, 6%, 72%) !important;
+}
+
+html.dark .text-gray-600,
+html.dark .text-slate-600 {
+  color: hsl(60, 5%, 62%) !important;
+}
+
+/* Dividers / separators */
+html.dark hr,
+html.dark [class*="divide-"] > * + * {
+  border-color: rgba(80, 160, 80, 0.12) !important;
+}
+
+/* Borders */
+html.dark .border,
+html.dark [class*="border-gray"],
+html.dark [class*="border-slate"],
+html.dark [class*="border-zinc"] {
+  border-color: rgba(80, 160, 80, 0.15) !important;
+}
+
 @keyframes fade-in-up {
   0% {
     opacity: 0;
@@ -236,3 +380,70 @@
 .delay-300 { animation-delay: 300ms; }
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
+
+/* ── Animated Mesh Background Keyframes ── */
+@keyframes mesh-shift-light {
+  0% {
+    background-image:
+      radial-gradient(at 0% 0%, hsla(120, 70%, 82%, 0.7) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(43, 96%, 85%, 0.6) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, hsla(150, 60%, 85%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsla(120, 50%, 90%, 0.4) 0px, transparent 50%);
+  }
+  33% {
+    background-image:
+      radial-gradient(at 30% 20%, hsla(130, 60%, 80%, 0.65) 0px, transparent 50%),
+      radial-gradient(at 80% 10%, hsla(43, 80%, 88%, 0.55) 0px, transparent 50%),
+      radial-gradient(at 20% 80%, hsla(110, 55%, 88%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 70% 60%, hsla(140, 45%, 92%, 0.4) 0px, transparent 50%);
+  }
+  66% {
+    background-image:
+      radial-gradient(at 60% 10%, hsla(115, 65%, 83%, 0.7) 0px, transparent 50%),
+      radial-gradient(at 10% 90%, hsla(50, 90%, 86%, 0.6) 0px, transparent 50%),
+      radial-gradient(at 90% 70%, hsla(145, 58%, 87%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 40% 40%, hsla(125, 48%, 91%, 0.4) 0px, transparent 50%);
+  }
+  100% {
+    background-image:
+      radial-gradient(at 10% 60%, hsla(120, 68%, 81%, 0.7) 0px, transparent 50%),
+      radial-gradient(at 90% 30%, hsla(43, 96%, 84%, 0.6) 0px, transparent 50%),
+      radial-gradient(at 30% 90%, hsla(148, 62%, 86%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 60% 20%, hsla(122, 52%, 89%, 0.4) 0px, transparent 50%);
+  }
+}
+
+@keyframes mesh-shift-dark {
+  0% {
+    background-image:
+      radial-gradient(at 0% 0%, hsla(120, 60%, 8%, 0.95) 0px, transparent 55%),
+      radial-gradient(at 100% 0%, hsla(140, 50%, 5%, 0.85) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, hsla(120, 70%, 6%, 0.75) 0px, transparent 55%),
+      radial-gradient(at 80% 40%, hsla(90, 40%, 8%, 0.6) 0px, transparent 50%);
+  }
+  33% {
+    background-image:
+      radial-gradient(at 30% 20%, hsla(130, 55%, 9%, 0.95) 0px, transparent 55%),
+      radial-gradient(at 80% 10%, hsla(110, 45%, 6%, 0.85) 0px, transparent 50%),
+      radial-gradient(at 20% 80%, hsla(125, 60%, 7%, 0.75) 0px, transparent 55%),
+      radial-gradient(at 70% 60%, hsla(100, 38%, 9%, 0.6) 0px, transparent 50%);
+  }
+  66% {
+    background-image:
+      radial-gradient(at 60% 10%, hsla(115, 58%, 7%, 0.95) 0px, transparent 55%),
+      radial-gradient(at 10% 90%, hsla(140, 48%, 5%, 0.85) 0px, transparent 50%),
+      radial-gradient(at 90% 70%, hsla(120, 65%, 8%, 0.75) 0px, transparent 55%),
+      radial-gradient(at 40% 40%, hsla(95, 42%, 7%, 0.6) 0px, transparent 50%);
+  }
+  100% {
+    background-image:
+      radial-gradient(at 10% 60%, hsla(120, 62%, 9%, 0.95) 0px, transparent 55%),
+      radial-gradient(at 90% 30%, hsla(135, 52%, 6%, 0.85) 0px, transparent 50%),
+      radial-gradient(at 30% 90%, hsla(118, 68%, 7%, 0.75) 0px, transparent 55%),
+      radial-gradient(at 60% 20%, hsla(105, 40%, 8%, 0.6) 0px, transparent 50%);
+  }
+}
+
+/* ── Utility ── */
+.remove-scrollbar::-webkit-scrollbar { display: none; }
+.remove-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

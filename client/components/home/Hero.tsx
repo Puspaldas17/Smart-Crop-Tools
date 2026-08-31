@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-[2.5rem] bg-secondary/10 px-4 md:px-8 py-12 md:py-24 min-h-[50vh] lg:min-h-[75vh] border border-white/20 shadow-neo">
+    <section className="relative overflow-hidden rounded-[2.5rem] px-4 md:px-8 py-12 md:py-24 min-h-[50vh] lg:min-h-[75vh] border border-white/10 dark:border-green-900/30 shadow-neo bg-gradient-to-br from-white/40 via-green-50/20 to-amber-50/10 dark:from-green-950/60 dark:via-green-900/20 dark:to-transparent backdrop-blur-sm">
       {/* Dynamic Background Blurs */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden rounded-[2.5rem]">
         <div className="absolute -top-32 -left-32 h-[30rem] w-[30rem] rounded-full bg-accent/20 blur-[100px] mix-blend-multiply opacity-70 animate-pulse" />
