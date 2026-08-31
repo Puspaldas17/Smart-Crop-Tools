@@ -1,7 +1,9 @@
 
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function PestDetector() {
+  const { t } = useTranslation();
   const [preds, setPreds] = React.useState<
     { className: string; probability: number }[]
   >([]);
@@ -47,10 +49,10 @@ export default function PestDetector() {
   return (
     <div className="rounded-xl border border-border bg-card text-card-foreground p-8 shadow-sm">
       <h3 className="text-xl font-semibold">
-        Image-based Pest/Disease Detection
+        {t("pest.title")}
       </h3>
       <p className="mt-1 text-sm text-slate-600">
-        Upload a leaf/crop image. Analysis runs on the server.
+        {t("pest.subtitle")}
       </p>
       <div className="mt-4 flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
@@ -69,13 +71,13 @@ export default function PestDetector() {
             />
           </div>
           <div className="mt-2 rounded-md bg-emerald-50 p-2 text-sm text-emerald-800">
-            Using server-side prediction for reliability.
+            {t("pest.server_note")}
           </div>
         </div>
         <div className="flex-1 space-y-6">
           <div>
-            <h4 className="font-medium text-slate-900 mb-2">Analysis Results</h4>
-            {loading && <div className="text-sm text-slate-500">Analyzing…</div>}
+            <h4 className="font-medium text-slate-900 mb-2">{t("pest.results")}</h4>
+            {loading && <div className="text-sm text-slate-500">{t("common.loading")}</div>}
             {!loading && preds.length > 0 ? (
               <ul className="space-y-2">
                 {preds.slice(0, 5).map((p, i) => (
@@ -91,34 +93,34 @@ export default function PestDetector() {
                 ))}
               </ul>
             ) : (
-              !loading && <div className="text-sm text-slate-400">No results yet.</div>
+              !loading && <div className="text-sm text-slate-400">{t("pest.no_results")}</div>
             )}
           </div>
 
           {soilInfo && (
             <div className="border-t border-slate-100 pt-4">
-              <h4 className="font-medium text-slate-900 mb-2">Soil Recommendations (Based on Crop)</h4>
+              <h4 className="font-medium text-slate-900 mb-2">{t("pest.soil.title")}</h4>
               <div className="rounded-lg bg-slate-50 p-4 text-sm space-y-2">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <span className="text-slate-500 block text-xs">Soil Type</span>
+                    <span className="text-slate-500 block text-xs">{t("pest.soil.type")}</span>
                     <span className="font-medium">{soilInfo.type}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block text-xs">pH Level</span>
+                    <span className="text-slate-500 block text-xs">{t("pest.soil.ph")}</span>
                     <span className="font-medium">{soilInfo.ph}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block text-xs">Moisture</span>
+                    <span className="text-slate-500 block text-xs">{t("pest.soil.moisture")}</span>
                     <span className="font-medium">{soilInfo.moisture}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block text-xs">Temperature</span>
+                    <span className="text-slate-500 block text-xs">{t("pest.soil.temp")}</span>
                     <span className="font-medium">{soilInfo.temperature}</span>
                   </div>
                 </div>
                 <div className="pt-2 border-t border-slate-200 mt-2">
-                  <span className="text-slate-500 block text-xs">Notes</span>
+                  <span className="text-slate-500 block text-xs">{t("pest.soil.notes")}</span>
                   <p className="text-slate-700">{soilInfo.notes}</p>
                 </div>
               </div>

@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { AlertTriangle, CloudSun, Sprout, Bug, Store } from "lucide-react";
 import { INDIA_CENTROID } from "@/lib/geo";
+import { useTranslation } from "react-i18next";
 
 export default function UnifiedOverview() {
+  const { t } = useTranslation();
   const { farmer } = useAuth();
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
     null,
@@ -49,11 +51,11 @@ export default function UnifiedOverview() {
           setWeather(data);
         } catch {
           setWeather(null);
-          setWeatherError("Weather unavailable");
+          setWeatherError(t("common.error"));
         }
       } else {
         setWeather(null);
-        setWeatherError("Weather unavailable");
+        setWeatherError(t("common.error"));
       }
     })();
   }, [coords]);
@@ -73,49 +75,49 @@ export default function UnifiedOverview() {
     if (!weather) return null;
     const a: string[] = [];
     if (weather.tempC != null && (weather.tempC < 12 || weather.tempC > 35))
-      a.push("Extreme temperature");
+      a.push(t("tools.overview.high_temp"));
     if (weather.humidity != null && weather.humidity > 80)
-      a.push("High humidity");
-    if (weather.windKph != null && weather.windKph > 35) a.push("High wind");
+      a.push(t("tools.overview.high_humidity"));
+    if (weather.windKph != null && weather.windKph > 35) a.push(t("tools.overview.high_wind"));
     return a.join("; ") || null;
-  }, [weather]);
+  }, [weather, t]);
 
   return (
     <div className="rounded-xl border border-border bg-card text-card-foreground p-8 shadow-sm">
-      <h3 className="text-xl font-semibold">Unified Overview</h3>
+      <h3 className="text-xl font-semibold">{t("tools.overview.title")}</h3>
       <p className="mt-1 text-sm text-slate-600">
-        Soil, weather, pest and market — all in one place.
+        {t("tools.overview.desc")}
       </p>
       <div className="mt-4 grid gap-4 md:grid-cols-4">
         <div className="rounded-md border border-slate-200 p-3">
           <div className="flex items-center gap-2 text-sm font-semibold">
-            <Sprout className="h-4 w-4 text-emerald-600" /> Soil
+            <Sprout className="h-4 w-4 text-emerald-600" /> {t("tools.overview.soil")}
           </div>
           <div className="mt-2 text-sm text-slate-700">
-            <div>Farmer: {farmer?.name || "—"}</div>
-            <div>Soil type: {farmer?.soilType || "Unknown"}</div>
+            <div>{t("tools.overview.farmer")}: {farmer?.name || "—"}</div>
+            <div>{t("tools.overview.soil_type")}: {farmer?.soilType || t("tools.overview.unknown")}</div>
             <div>
-              Land size: {farmer?.landSize ? `${farmer.landSize} acres` : "—"}
+              {t("tools.overview.land_size")}: {farmer?.landSize ? `${farmer.landSize} ${t("tools.overview.acres")}` : "—"}
             </div>
             <a
               href="/login"
               className="mt-2 inline-block text-xs text-emerald-700 underline"
             >
-              Update profile
+              {t("tools.overview.update_profile")}
             </a>
           </div>
         </div>
         <div className="rounded-md border border-slate-200 p-3">
           <div className="flex items-center gap-2 text-sm font-semibold">
-            <CloudSun className="h-4 w-4 text-amber-600" /> Weather
+            <CloudSun className="h-4 w-4 text-amber-600" /> {t("tools.overview.weather")}
           </div>
           <div className="mt-2 text-sm text-slate-700">
             {weather ? (
               <>
-                <div>Temp: {weather.tempC}°C</div>
-                <div>Humidity: {weather.humidity}%</div>
-                <div>Wind: {Math.round(weather.windKph || 0)} km/h</div>
-                <div>Cond: {weather.conditions || "—"}</div>
+                <div>{t("tools.overview.temp")}: {weather.tempC}°C</div>
+                <div>{t("tools.overview.humidity")}: {weather.humidity}%</div>
+                <div>{t("tools.overview.wind")}: {Math.round(weather.windKph || 0)} km/h</div>
+                <div>{t("tools.overview.cond")}: {weather.conditions || "—"}</div>
                 {alertText && (
                   <div className="mt-2 inline-flex items-center gap-1 rounded bg-amber-100 px-2 py-1 text-xs text-amber-900">
                     <AlertTriangle className="h-3 w-3" /> {alertText}
@@ -124,14 +126,14 @@ export default function UnifiedOverview() {
               </>
             ) : (
               <div className="text-slate-500">
-                {weatherError || "Allow location for local weather."}
+                {weatherError || t("tools.overview.allow_location")}
               </div>
             )}
           </div>
         </div>
         <div className="rounded-md border border-slate-200 p-3">
           <div className="flex items-center gap-2 text-sm font-semibold">
-            <Store className="h-4 w-4 text-blue-600" /> Market
+            <Store className="h-4 w-4 text-blue-600" /> {t("tools.overview.market")}
           </div>
           <div className="mt-2 text-sm text-slate-700">
             {market.length ? (
@@ -144,27 +146,27 @@ export default function UnifiedOverview() {
                 ))}
               </ul>
             ) : (
-              <div className="text-slate-500">No data</div>
+              <div className="text-slate-500">{t("market.empty")}</div>
             )}
             <a
               href="#market"
               className="mt-2 inline-block text-xs text-blue-700 underline"
             >
-              Open market & weather
+              {t("tools.overview.open_market")}
             </a>
           </div>
         </div>
         <div className="rounded-md border border-slate-200 p-3">
           <div className="flex items-center gap-2 text-sm font-semibold">
-            <Bug className="h-4 w-4 text-rose-600" /> Pest
+            <Bug className="h-4 w-4 text-rose-600" /> {t("tools.overview.pest")}
           </div>
           <div className="mt-2 text-sm text-slate-700">
-            <div>Upload a leaf/crop image to analyze.</div>
+            <div>{t("tools.overview.upload_leaf")}</div>
             <a
               href="#pest"
               className="mt-2 inline-block text-xs text-rose-700 underline"
             >
-              Open detector
+              {t("tools.overview.open_detector")}
             </a>
           </div>
         </div>

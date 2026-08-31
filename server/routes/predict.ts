@@ -97,12 +97,12 @@ async function runLocalAIService(file: any) {
       const data = await res.json();
       const analysis = data.analysis || {};
       
-      // Map analysis to predictions format for frontend (Soil Analysis)
-      // The frontend displays "className" and "probability" (as percentage)
+      // Map analysis to predictions format for frontend
+      // The frontend displays "className" (as text) and "probability" (as percentage)
       const predictions = [
-        { className: `Status: ${analysis.status || 'Unknown'}`, probability: 1 },
-        { className: `Type: ${analysis.disease || 'General'}`, probability: 1 },
-        { className: `Details: ${analysis.recommendation || 'No details'}`, probability: 1 }
+        { className: `Leaf Type: ${analysis.leaf_type || 'Unknown'}`, probability: 1.0 },
+        { className: `Diagnosis: ${analysis.disease || 'Unknown'}`, probability: analysis.confidence || 0.95 },
+        { className: `Pesticide: ${analysis.recommendation || 'None'}`, probability: 1.0 }
       ];
 
       return {

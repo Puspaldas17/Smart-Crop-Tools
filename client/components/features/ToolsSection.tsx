@@ -1,9 +1,9 @@
 import React from "react";
 import { useInView } from "@/hooks/useInView";
 import { useHash } from "@/hooks/useHash";
-
 import { useEffect } from "react";
 import { getLastTool } from "@/hooks/useLastTool";
+import { useTranslation } from "react-i18next";
 
 export default function ToolsSection({
   show,
@@ -12,6 +12,7 @@ export default function ToolsSection({
   show: boolean;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   const hash = useHash();
   const { ref, inView } = useInView<HTMLDivElement>();
   const shouldMount = !!show && (hash === "#tools" || inView);
@@ -31,10 +32,9 @@ export default function ToolsSection({
   return (
     <section id="tools" className={`scroll-mt-24 ${!show ? "hidden" : ""}`}>
       <header className="mb-6">
-        <h2 className="text-2xl font-bold tracking-tight">Working Suite</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t("tools.suite.title")}</h2>
         <p className="mt-2 max-w-prose text-slate-600">
-          Chatbot, Market & Weather, Pest Detection, and Advisory demo — all
-          together.
+          {t("tools.suite.desc")}
         </p>
       </header>
       <div ref={ref} />
@@ -42,7 +42,7 @@ export default function ToolsSection({
         children
       ) : (
         <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-          Scroll here or click Open Tools to load…
+          {t("tools.suite.loading")}
         </div>
       )}
     </section>

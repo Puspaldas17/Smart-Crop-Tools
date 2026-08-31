@@ -21,7 +21,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(FARMER_KEY);
-      if (raw) setFarmer(JSON.parse(raw));
+      if (raw) {
+        let parsed = JSON.parse(raw);
+        // Heal malformed data from previous buggy login
+        if (parsed && parsed.user && !parsed._id && !parsed.id) {
+          parsed = parsed.user;
+          localStorage.setItem(FARMER_KEY, JSON.stringify(parsed));
+        }
+        setFarmer(parsed);
+      }
       const t = localStorage.getItem(TOKEN_KEY);
       if (t) setToken(t);
     } catch {}

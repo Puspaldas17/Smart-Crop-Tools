@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle, ThumbsUp, ThumbsDown } from "lucide-react";
 
-export default function AdvisoryWidget() {
+export default function AdvisoryWidget({ onGenerate }: { onGenerate?: () => void }) {
   const { farmer, authHeaders } = useAuth();
   const { t } = useTranslation();
   const [status, setStatus] = useState("");
@@ -64,6 +64,7 @@ export default function AdvisoryWidget() {
       if (r.ok) {
         setAdvisory(data);
         setStatus(t('advisory.ready'));
+        onGenerate?.();
 
         if (farmer && (!farmer.isGuest)) {
           const analyticsPayload = {

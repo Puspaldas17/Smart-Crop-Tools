@@ -80,7 +80,7 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
       const [summaryRes, weatherRes, cropRes] = await Promise.all([
         fetch(`/api/analytics/summary/${farmerId}?days=30`, { headers: authHeaders() }),
         fetch(`/api/analytics/weather-impact/${farmerId}?days=30`, { headers: authHeaders() }),
-        fetch(`/api/analytics/crop-trends/${farmerId}?crop=Wheat`, { headers: authHeaders() }),
+        fetch(`/api/analytics/crop-trends/${farmerId}`, { headers: authHeaders() }),
       ]);
 
       if (summaryRes.ok) {
@@ -144,6 +144,41 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
       {/* ── OVERVIEW ─────────────────────────────────────────────── */}
       {activeTab === "overview" && (
         <div className="space-y-6">
+          {/* Info Banner */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-100 dark:border-blue-900/50 rounded-xl p-5 mb-6 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="mt-1 bg-blue-100 dark:bg-blue-900/40 p-2 rounded-full text-blue-600 dark:text-blue-400">
+                <TrendingUp className="h-5 w-5" />
+              </div>
+              <div className="space-y-3 flex-1 text-sm text-slate-700 dark:text-slate-300">
+                <p className="text-base font-semibold text-slate-900 dark:text-white">
+                  What does the Analytics tab do?
+                </p>
+                <p>
+                  The <strong>Analytics</strong> tab serves as the "command center" for tracking your farm's long-term health and performance. Instead of just getting one-off advice for a single day, the Analytics system aggregates all the data you generate over time (from crop advisories, weather APIs, and pest scans) and turns it into easy-to-read visual charts.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div className="space-y-1 bg-white/50 dark:bg-black/20 p-3 rounded-lg">
+                    <p className="font-semibold text-blue-700 dark:text-blue-400 flex items-center gap-1.5"><TrendingUp className="h-4 w-4"/> 1. Overview</p>
+                    <p className="text-xs">Your high-level dashboard. Gives a snapshot of vital metrics. The <strong>Crop Performance Bar Chart</strong> compares crops vs health score. The <strong>Pest Risk Radar</strong> highlights which pests pose the highest risk.</p>
+                  </div>
+                  <div className="space-y-1 bg-white/50 dark:bg-black/20 p-3 rounded-lg">
+                    <p className="font-semibold text-green-700 dark:text-green-400 flex items-center gap-1.5"><Sprout className="h-4 w-4"/> 2. Crop Performance</p>
+                    <p className="text-xs">Tracks health scores over a 30-day period. Features a trend line overlaying <strong>Crop Health</strong>, <strong>Yield Index</strong>, and <strong>Pest Pressure</strong> to spot negative impacts early.</p>
+                  </div>
+                  <div className="space-y-1 bg-white/50 dark:bg-black/20 p-3 rounded-lg">
+                    <p className="font-semibold text-amber-700 dark:text-amber-500 flex items-center gap-1.5"><Droplets className="h-4 w-4"/> 3. Soil Health</p>
+                    <p className="text-xs">Graphs a 30-day rolling trend of <strong>Soil Moisture</strong>, <strong>Nitrogen levels</strong>, and <strong>Soil pH</strong> so you can catch nutrient drops before they damage crops.</p>
+                  </div>
+                  <div className="space-y-1 bg-white/50 dark:bg-black/20 p-3 rounded-lg">
+                    <p className="font-semibold text-cyan-700 dark:text-cyan-400 flex items-center gap-1.5"><Cloud className="h-4 w-4"/> 4. Weather Impact</p>
+                    <p className="text-xs">Correlates <strong>Temperature</strong> and <strong>Humidity</strong> directly against your <strong>Crop Health Score</strong>. Also tracks <strong>Rainfall Distribution</strong> naturally received over the last month.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Stat cards */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
