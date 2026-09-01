@@ -268,41 +268,61 @@ export const getSoilHealthTrend: RequestHandler = async (req, res) => {
 
     const existingData = await SoilHealth.findOne({ farmerId });
 
-    if (existingData && new Date(existingData.fetchedAt) >= thirtyDaysAgo) {
+    if (!req.query.refresh && existingData && new Date(existingData.fetchedAt) >= thirtyDaysAgo) {
       return res.json(existingData);
     }
 
-    // 3. Fetch from SoilGrids REST API
-    const url = `https://rest.isric.org/soilgrids/v2.0/properties/query?lon=${lon}&lat=${lat}&property=nitrogen&property=phh2o&property=soc&property=sand&property=silt&property=clay&property=cec&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm&value=mean`;
-    
-    // Add an 8-second timeout so the server doesn't hang indefinitely if the API is down
-    const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!response.ok) {
-      throw new Error(`SoilGrids API error: ${response.statusText}`);
-    }
-    
-    const rawData = await response.json();
-    const props = rawData.properties?.layers || [];
-    
-    // Helper to extract and scale SoilGrids properties
-    const extractProperty = (propName: string, scaleFactor: number = 10) => {
-      const layer = props.find((p: any) => p.name === propName);
-      if (!layer) return [];
-      return layer.depths.map((d: any) => ({
-        depth: d.label, // e.g., "0-5cm"
-        value: d.values.mean ? parseFloat((d.values.mean / scaleFactor).toFixed(2)) : null
-      }));
+    // 3. Fetch from SoilGrids WMS (MapServer) directly to avoid REST API timeouts
+    const depths = ["0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm"];
+    const properties = ["cec", "nitrogen", "soc", "phh2o"];
+
+    // Helper to fetch WMS point data
+    const fetchWMSLayer = async (mapName: string, layer: string): Promise<number | string | null> => {
+      // Use a very small bounding box around the point
+      const delta = 0.0001; 
+      const bbox = `${lat - delta},${lon - delta},${lat + delta},${lon + delta}`;
+      const url = `https://maps.isric.org/mapserv?map=/map/${mapName}.map&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&CRS=EPSG:4326&BBOX=${bbox}&WIDTH=10&HEIGHT=10&LAYERS=${layer}&QUERY_LAYERS=${layer}&INFO_FORMAT=application/geo%2Bjson&I=5&J=5&STYLES=`;
+      
+      try {
+        const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+        if (!response.ok) return null;
+        const text = await response.text();
+        
+        // MapServer sometimes returns multiple JSONs concatenated if multiple layers are queried,
+        // but since we query 1 layer at a time, it should be a single FeatureCollection.
+        try {
+          const data = JSON.parse(text);
+          const pixelValue = data?.features?.[0]?.properties?.pixel_value;
+          return pixelValue !== undefined ? pixelValue : null;
+        } catch {
+          // If JSON parse fails, WMS might have returned an XML error or empty response
+          return null;
+        }
+      } catch {
+        return null; // Timeout or network error
+      }
     };
 
-    const soilProperties = {
-      nitrogen: extractProperty("nitrogen", 10), // converted from cg/kg? Wait, standard is 10 for most except a few. The API docs say division by 10 is common for units.
-      phh2o: extractProperty("phh2o", 10),       // pH * 10 -> pH
-      soc: extractProperty("soc", 10),           // dg/kg -> g/kg
-      sand: extractProperty("sand", 10),         // g/kg -> %
-      silt: extractProperty("silt", 10),         // g/kg -> %
-      clay: extractProperty("clay", 10),         // g/kg -> %
-      cec: extractProperty("cec", 10),           // mmol(c)/kg
-    };
+    // Fetch all depths for all required chemical properties while preserving depth order
+    const soilProperties: Record<string, any[]> = {};
+
+    await Promise.all(
+      properties.map(async (prop) => {
+        const depthValues = await Promise.all(
+          depths.map(async (depth) => {
+            const layerName = `${prop}_${depth}_mean`;
+            const val = await fetchWMSLayer(prop, layerName);
+            return { depth, value: typeof val === 'number' ? val : null };
+          })
+        );
+        soilProperties[prop] = depthValues;
+      })
+    );
+
+    // Fetch Soil Classification (WRB)
+    let wrbClass: string | null = null;
+    const wrbVal = await fetchWMSLayer("wrb", "MostProbable");
+    if (typeof wrbVal === 'string') wrbClass = wrbVal;
 
     // 4. Save to MongoDB
     const newData = await SoilHealth.findOneAndUpdate(
@@ -310,10 +330,13 @@ export const getSoilHealthTrend: RequestHandler = async (req, res) => {
       {
         farmerId,
         location: { lat, lon },
-        source: "SoilGrids",
+        source: "SoilGrids WMS",
         dataType: "Estimated",
         fetchedAt: new Date(),
-        properties: soilProperties
+        properties: {
+          ...soilProperties,
+          wrb: wrbClass
+        }
       },
       { upsert: true, new: true }
     );
