@@ -244,49 +244,84 @@ export const getSoilHealthTrend: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "farmerId is required" });
     }
 
-    let data: any[] = [];
-    if (mongoose.isValidObjectId(farmerId)) {
-      data = await AnalyticsData.find({ farmerId })
-        .sort({ createdAt: 1 })
-        .limit(30);
+    // 1. Fetch Farmer to get location
+    const farmer = await Farmer.findById(farmerId);
+    if (!farmer) {
+      return res.status(404).json({ error: "Farmer not found" });
     }
 
-    let trend = (data || [])
-      .filter(
-        (d: any) =>
-          d.soilMoisture !== undefined ||
-          d.soilNitrogen !== undefined ||
-          d.soilPH !== undefined,
-      )
-      .slice(-30)
-      .map((d: any) => ({
-        date: new Date(d.createdAt).toLocaleDateString("en-IN"),
-        moisture: d.soilMoisture || 0,
-        nitrogen: d.soilNitrogen || 0,
-        pH: d.soilPH || 0,
+    const lat = farmer.location?.lat;
+    const lon = farmer.location?.lon;
+
+    if (lat == null || lon == null) {
+      return res.status(400).json({ 
+        error: "Location not set. Please update your profile with your location." 
+      });
+    }
+
+    // 2. Check if we already have recent data (less than 30 days old)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    // Using dynamic import of SoilHealth to avoid cyclic deps if not exported properly, but it is exported.
+    const { SoilHealth } = require("../db");
+
+    const existingData = await SoilHealth.findOne({ farmerId });
+
+    if (existingData && new Date(existingData.fetchedAt) >= thirtyDaysAgo) {
+      return res.json(existingData);
+    }
+
+    // 3. Fetch from SoilGrids REST API
+    const url = `https://rest.isric.org/soilgrids/v2.0/properties/query?lon=${lon}&lat=${lat}&property=nitrogen&property=phh2o&property=soc&property=sand&property=silt&property=clay&property=cec&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm&value=mean`;
+    
+    // Add an 8-second timeout so the server doesn't hang indefinitely if the API is down
+    const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!response.ok) {
+      throw new Error(`SoilGrids API error: ${response.statusText}`);
+    }
+    
+    const rawData = await response.json();
+    const props = rawData.properties?.layers || [];
+    
+    // Helper to extract and scale SoilGrids properties
+    const extractProperty = (propName: string, scaleFactor: number = 10) => {
+      const layer = props.find((p: any) => p.name === propName);
+      if (!layer) return [];
+      return layer.depths.map((d: any) => ({
+        depth: d.label, // e.g., "0-5cm"
+        value: d.values.mean ? parseFloat((d.values.mean / scaleFactor).toFixed(2)) : null
       }));
+    };
 
-    // Backfill to ensure we have at least 15 points for a good chart
-    if (trend.length < 15) {
-      const needed = 15 - trend.length;
-      const synthetic = [];
-      for (let i = 0; i < needed; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() - (15 - i));
-        synthetic.push({
-          date: date.toLocaleDateString("en-IN"),
-          moisture: 30 + (i % 5) * 10, // deterministic
-          nitrogen: 20 + (i % 4) * 12,
-          pH: 5.8 + (i % 3) * 0.6,
-        });
-      }
-      trend = [...synthetic, ...trend];
-    }
+    const soilProperties = {
+      nitrogen: extractProperty("nitrogen", 10), // converted from cg/kg? Wait, standard is 10 for most except a few. The API docs say division by 10 is common for units.
+      phh2o: extractProperty("phh2o", 10),       // pH * 10 -> pH
+      soc: extractProperty("soc", 10),           // dg/kg -> g/kg
+      sand: extractProperty("sand", 10),         // g/kg -> %
+      silt: extractProperty("silt", 10),         // g/kg -> %
+      clay: extractProperty("clay", 10),         // g/kg -> %
+      cec: extractProperty("cec", 10),           // mmol(c)/kg
+    };
 
-    res.json(trend);
+    // 4. Save to MongoDB
+    const newData = await SoilHealth.findOneAndUpdate(
+      { farmerId },
+      {
+        farmerId,
+        location: { lat, lon },
+        source: "SoilGrids",
+        dataType: "Estimated",
+        fetchedAt: new Date(),
+        properties: soilProperties
+      },
+      { upsert: true, new: true }
+    );
+
+    res.json(newData);
   } catch (e) {
-    console.error("[analytics] Error:", e);
-    res.status(500).json({ error: "Failed to fetch soil health trend" });
+    console.error("[analytics] Error fetching SoilGrids:", e);
+    res.status(500).json({ error: "Failed to fetch soil health data from SoilGrids" });
   }
 };
 

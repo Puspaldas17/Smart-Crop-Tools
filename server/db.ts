@@ -280,11 +280,39 @@ const analyticsDataSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+const soilHealthSchema = new mongoose.Schema(
+  {
+    farmerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Farmer",
+      required: true,
+    },
+    location: {
+      lat: { type: Number, required: true },
+      lon: { type: Number, required: true },
+    },
+    source: { type: String, default: "SoilGrids" },
+    dataType: { type: String, default: "Estimated" },
+    fetchedAt: { type: Date, default: Date.now },
+    properties: {
+      nitrogen: [mongoose.Schema.Types.Mixed],
+      phh2o: [mongoose.Schema.Types.Mixed],
+      soc: [mongoose.Schema.Types.Mixed],
+      sand: [mongoose.Schema.Types.Mixed],
+      silt: [mongoose.Schema.Types.Mixed],
+      clay: [mongoose.Schema.Types.Mixed],
+      cec: [mongoose.Schema.Types.Mixed],
+    }
+  },
+  { timestamps: true }
+);
+
 // --- In-memory fallback instances (always created as backup) ---
 const _inMemFarmer = new InMemoryCollection<any>("Farmer");
 const _inMemAdvisory = new InMemoryCollection<any>("Advisory");
 const _inMemAdvisoryHistory = new InMemoryCollection<any>("AdvisoryHistory");
 const _inMemAnalyticsData = new InMemoryCollection<any>("AnalyticsData");
+const _inMemSoilHealth = new InMemoryCollection<any>("SoilHealth");
 const _inMemDrugLog = new InMemoryCollection<any>("DrugLog");
 const _inMemSystemAlert = new InMemoryCollection<any>("SystemAlert");
 const _inMemBlock = new InMemoryCollection<any>("Block");
@@ -298,6 +326,7 @@ const _mongoFarmer = USE_MEMORY ? null : (mongoose.models.Farmer || mongoose.mod
 const _mongoAdvisory = USE_MEMORY ? null : (mongoose.models.Advisory || mongoose.model("Advisory", advisorySchema));
 const _mongoAdvisoryHistory = USE_MEMORY ? null : (mongoose.models.AdvisoryHistory || mongoose.model("AdvisoryHistory", advisoryHistorySchema));
 const _mongoAnalyticsData = USE_MEMORY ? null : (mongoose.models.AnalyticsData || mongoose.model("AnalyticsData", analyticsDataSchema));
+const _mongoSoilHealth = USE_MEMORY ? null : (mongoose.models.SoilHealth || mongoose.model("SoilHealth", soilHealthSchema));
 
 const drugLogSchema = new mongoose.Schema(
   {
@@ -414,6 +443,7 @@ export const Farmer: any = makeProxy(_mongoFarmer, _inMemFarmer);
 export const Advisory: any = makeProxy(_mongoAdvisory, _inMemAdvisory);
 export const AdvisoryHistory: any = makeProxy(_mongoAdvisoryHistory, _inMemAdvisoryHistory);
 export const AnalyticsData: any = makeProxy(_mongoAnalyticsData, _inMemAnalyticsData);
+export const SoilHealth: any = makeProxy(_mongoSoilHealth, _inMemSoilHealth);
 export const DrugLog: any = makeProxy(_mongoDrugLog, _inMemDrugLog);
 export const SystemAlert: any = makeProxy(_mongoSystemAlert, _inMemSystemAlert);
 export const Block: any = makeProxy(_mongoBlock, _inMemBlock);
