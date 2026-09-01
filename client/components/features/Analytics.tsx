@@ -67,6 +67,12 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
   const [summary, setSummary] = useState(MOCK_SUMMARY);
   const [weatherData, setWeatherData] = useState(MOCK_WEATHER);
   const [cropTrends, setCropTrends] = useState(MOCK_CROP_TRENDS);
+  
+  // New state for real SoilGrids data
+  const [soilData, setSoilData] = useState<any>(null);
+  const [soilError, setSoilError] = useState<string | null>(null);
+  const [soilLoading, setSoilLoading] = useState(true);
+
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"overview" | "crop" | "soil" | "weather">("overview");
 
@@ -77,10 +83,11 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
   async function fetchAnalytics() {
     try {
       setLoading(true);
-      const [summaryRes, weatherRes, cropRes] = await Promise.all([
+      const [summaryRes, weatherRes, cropRes, soilRes] = await Promise.all([
         fetch(`/api/analytics/summary/${farmerId}?days=30`, { headers: authHeaders() }),
         fetch(`/api/analytics/weather-impact/${farmerId}?days=30`, { headers: authHeaders() }),
         fetch(`/api/analytics/crop-trends/${farmerId}`, { headers: authHeaders() }),
+        fetch(`/api/analytics/soil-health/${farmerId}`, { headers: authHeaders() }),
       ]);
 
       if (summaryRes.ok) {
@@ -96,10 +103,26 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
         const data = await cropRes.json();
         if (Array.isArray(data) && data.length > 0) setCropTrends(data);
       }
+      
+      // Handle SoilGrids data
+      if (soilRes.ok) {
+        const data = await soilRes.json();
+        if (data.error) {
+          setSoilError(data.error);
+        } else {
+          setSoilData(data);
+        }
+      } else {
+        const err = await soilRes.json().catch(() => ({}));
+        setSoilError(err.error || "Failed to fetch soil data");
+      }
+
     } catch {
-      // Silently fall through to mock data
+      // Silently fall through to mock data for other tabs, but set error for soil
+      setSoilError("Failed to connect to server");
     } finally {
       setLoading(false);
+      setSoilLoading(false);
     }
   }
 
@@ -280,46 +303,120 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
       {/* ── SOIL HEALTH ──────────────────────────────────────────── */}
       {activeTab === "soil" && (
         <div className="space-y-5">
-          <div className="rounded-xl border border-border bg-card p-5">
-            <h3 className="font-semibold mb-1">Soil Moisture & Nitrogen Trend</h3>
-            <p className="text-xs text-muted-foreground mb-4">30-day rolling values from sensor data</p>
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={summary.soilHealthTrend}>
-                <defs>
-                  <linearGradient id="moistureGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.02} />
-                  </linearGradient>
-                  <linearGradient id="nitrogenGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Area type="monotone" dataKey="moisture" stroke="#06b6d4" fill="url(#moistureGrad)" strokeWidth={2} name="Moisture %" />
-                <Area type="monotone" dataKey="nitrogen" stroke="#f59e0b" fill="url(#nitrogenGrad)" strokeWidth={2} name="Nitrogen %" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-100 dark:border-amber-900/50 rounded-xl p-5 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="mt-1 bg-amber-100 dark:bg-amber-900/40 p-2 rounded-full text-amber-600 dark:text-amber-400">
+                <Droplets className="h-5 w-5" />
+              </div>
+              <div className="space-y-1 flex-1 text-sm text-slate-700 dark:text-slate-300">
+                <p className="text-base font-semibold text-slate-900 dark:text-white">
+                  Soil Profile Analysis
+                </p>
+                <p>
+                  This data is retrieved dynamically from the global <strong>ISRIC SoilGrids API</strong> based on your specific farm coordinates. It represents estimated soil properties at varying depths (0-200cm).
+                </p>
+                {soilData && (
+                  <div className="flex flex-wrap gap-3 mt-3 text-xs">
+                    <span className="bg-white/60 dark:bg-black/30 px-2 py-1 rounded border">Source: {soilData.source} ({soilData.dataType})</span>
+                    <span className="bg-white/60 dark:bg-black/30 px-2 py-1 rounded border">Lat: {soilData.location?.lat.toFixed(4)}, Lon: {soilData.location?.lon.toFixed(4)}</span>
+                    <span className="bg-white/60 dark:bg-black/30 px-2 py-1 rounded border">Updated: {new Date(soilData.fetchedAt).toLocaleDateString()}</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-5">
-            <h3 className="font-semibold mb-1">Soil pH Level</h3>
-            <p className="text-xs text-muted-foreground mb-4">Ideal range: 6.0 – 7.0 for most crops</p>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={summary.soilHealthTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                <YAxis domain={[5, 8]} tick={{ fontSize: 11 }} />
-                <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Line type="monotone" dataKey="pH" stroke="#8b5cf6" strokeWidth={2.5} name="pH Level" dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          {soilLoading ? (
+            <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-xl">
+              <div className="animate-spin h-8 w-8 border-4 border-amber-500 border-t-transparent rounded-full mb-4"></div>
+              <p className="text-muted-foreground">Fetching global soil data...</p>
+            </div>
+          ) : soilError ? (
+            <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-xl text-center bg-red-50/50 dark:bg-red-950/10 border-red-200 dark:border-red-900/50">
+              <p className="font-semibold text-red-600 dark:text-red-400 mb-2">Unable to load soil data</p>
+              <p className="text-sm text-muted-foreground max-w-md">{soilError}</p>
+            </div>
+          ) : !soilData ? (
+            <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-xl">
+              <p className="text-muted-foreground">No soil data available.</p>
+            </div>
+          ) : (
+            <div className="grid gap-5 lg:grid-cols-2">
+              
+              {/* Nitrogen & Carbon Chart */}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-semibold mb-1">Nutrients by Depth</h3>
+                <p className="text-xs text-muted-foreground mb-4">Nitrogen (cg/kg) and Organic Carbon (dg/kg)</p>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart 
+                    data={soilData.properties.nitrogen?.map((n: any, i: number) => ({
+                      depth: n.depth,
+                      nitrogen: n.value,
+                      soc: soilData.properties.soc?.[i]?.value || 0
+                    }))}
+                    layout="vertical"
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                    <XAxis type="number" tick={{ fontSize: 11 }} />
+                    <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
+                    <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Line dataKey="nitrogen" name="Nitrogen" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
+                    <Line dataKey="soc" name="Organic Carbon" stroke="#f59e0b" strokeWidth={2} dot={{ r: 4 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* pH Chart */}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-semibold mb-1">Soil pH Profile</h3>
+                <p className="text-xs text-muted-foreground mb-4">Acidity/Alkalinity across depths (Ideal: 6.0 - 7.0)</p>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart 
+                    data={soilData.properties.phh2o}
+                    layout="vertical"
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                    <XAxis type="number" domain={[4, 9]} tick={{ fontSize: 11 }} />
+                    <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
+                    <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Line dataKey="value" name="pH Level" stroke="#8b5cf6" strokeWidth={2.5} dot={{ r: 4 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Soil Texture (Sand/Silt/Clay) Stacked Bar */}
+              <div className="rounded-xl border border-border bg-card p-5 lg:col-span-2">
+                <h3 className="font-semibold mb-1">Soil Texture Composition</h3>
+                <p className="text-xs text-muted-foreground mb-4">Percentage of Sand, Silt, and Clay at varying depths</p>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart 
+                    data={soilData.properties.sand?.map((s: any, i: number) => {
+                      const total = s.value + (soilData.properties.silt?.[i]?.value || 0) + (soilData.properties.clay?.[i]?.value || 0);
+                      return {
+                        depth: s.depth,
+                        sand: parseFloat(((s.value / total) * 100).toFixed(1)),
+                        silt: parseFloat((((soilData.properties.silt?.[i]?.value || 0) / total) * 100).toFixed(1)),
+                        clay: parseFloat((((soilData.properties.clay?.[i]?.value || 0) / total) * 100).toFixed(1)),
+                      };
+                    })}
+                    layout="vertical"
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                    <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
+                    <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
+                    <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} formatter={(value) => `${value}%`} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Bar dataKey="sand" name="Sand" stackId="a" fill="#eab308" radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="silt" name="Silt" stackId="a" fill="#a8a29e" radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="clay" name="Clay" stackId="a" fill="#78350f" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+            </div>
+          )}
         </div>
       )}
 

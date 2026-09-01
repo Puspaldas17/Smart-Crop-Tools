@@ -5,7 +5,7 @@ import { useGamification } from "@/context/GamificationContext";
 import { toast } from "sonner";
 import {
   User, Phone, Sprout, Ruler, Globe, Save, ArrowLeft,
-  Flame, Star, Trophy, CheckCircle2, Lock, LogOut,
+  Flame, Star, Trophy, CheckCircle2, Lock, LogOut, MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +33,7 @@ export default function Profile() {
     soilType: farmer?.soilType || "",
     landSize: farmer?.landSize?.toString() || "",
     language: farmer?.language || "en-IN",
+    location: farmer?.location || { lat: null, lon: null },
   }));
 
   useEffect(() => {
@@ -42,8 +43,36 @@ export default function Profile() {
       soilType: farmer?.soilType || "",
       landSize: farmer?.landSize?.toString() || "",
       language: farmer?.language || "en-IN",
+      location: farmer?.location || { lat: null, lon: null },
     });
   }, [farmer]);
+
+  const [detectingLoc, setDetectingLoc] = useState(false);
+  function detectLocation() {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser");
+      return;
+    }
+    setDetectingLoc(true);
+    const toastId = toast.loading("Detecting your farm location...");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        toast.dismiss(toastId);
+        setForm(f => ({
+          ...f,
+          location: { ...f.location, lat: pos.coords.latitude, lon: pos.coords.longitude }
+        }));
+        toast.success("Location coordinates detected successfully!");
+        setDetectingLoc(false);
+      },
+      (err) => {
+        toast.dismiss(toastId);
+        toast.error("Failed to detect location. Please enable location access in your browser.");
+        setDetectingLoc(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }
 
   const fetchWithTimeout = useMemo(
     () =>
@@ -77,6 +106,7 @@ export default function Profile() {
           soilType: form.soilType || undefined,
           landSize: Number(form.landSize || 0),
           language: form.language || "en-IN",
+          location: form.location?.lat ? form.location : undefined,
         }),
         timeoutMs: 8000,
       });
@@ -202,6 +232,33 @@ export default function Profile() {
                     <option key={l.value} value={l.value}>{l.label}</option>
                   ))}
                 </select>
+              </div>
+
+              {/* Location */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" /> Farm Coordinates
+                </label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={detectLocation}
+                    disabled={detectingLoc || submitting}
+                    className="flex-1 rounded-xl border border-input px-3 py-2.5 text-sm bg-background hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60 transition-all flex items-center justify-center gap-2 font-medium"
+                  >
+                    {detectingLoc ? (
+                      <span className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                    ) : (
+                      <MapPin className="h-4 w-4 text-blue-500" />
+                    )}
+                    {form.location?.lat ? "Update Coordinates" : "Detect My Location"}
+                  </button>
+                </div>
+                {form.location?.lat && (
+                  <p className="text-[11px] text-muted-foreground mt-1 px-1">
+                    Saved: Lat {form.location.lat.toFixed(5)}, Lon {form.location.lon.toFixed(5)}
+                  </p>
+                )}
               </div>
 
               {/* Buttons */}
