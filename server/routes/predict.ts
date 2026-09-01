@@ -11,10 +11,28 @@ export const predictHandler: RequestHandler = async (req, res) => {
   const file = (req as any).file;
   if (!file) return res.status(400).json({ error: "file required" });
 
+  // --- Mock fallback (used when no GEMINI_API_KEY is configured) ---
+  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "your_gemini_api_key_here") {
+    const crops = [
+      { label: "Tomato – Early Blight", prob: 0.92, cure: "Copper Fungicide / Chlorothalonil", soil: { type: "Loamy", ph: "6.0-6.8", moisture: "Moderate", temperature: "21-27°C", notes: "Well-drained soil. Avoid overhead watering to reduce blight spread." } },
+      { label: "Rice – Rice Blast", prob: 0.89, cure: "Tricyclazole or Isoprothiolane", soil: { type: "Clay/Loam", ph: "5.5-6.5", moisture: "High (Flooded)", temperature: "20-35°C", notes: "Maintain standing water at tillering stage. Ensure good water retention." } },
+      { label: "Corn – Common Rust", prob: 0.94, cure: "Fungicide with Pyraclostrobin", soil: { type: "Sandy Loam", ph: "5.8-7.0", moisture: "Moderate", temperature: "18-27°C", notes: "Well-drained, organic-rich soil. Avoid waterlogging." } },
+      { label: "Cotton – Aphids Infestation", prob: 0.87, cure: "Imidacloprid or Neem Oil spray", soil: { type: "Deep Sandy Loam", ph: "5.8-8.0", moisture: "Low to Moderate", temperature: "25-35°C", notes: "Cotton prefers deep soils. Monitor aphid colonies weekly." } },
+      { label: "Wheat – Leaf Rust", prob: 0.91, cure: "Propiconazole or Tebuconazole", soil: { type: "Loamy / Clay Loam", ph: "6.0-7.5", moisture: "Moderate", temperature: "15-24°C", notes: "Ensure good drainage. Apply fungicide at first sign of rust pustules." } },
+    ];
+    const picked = crops[Math.floor(Math.random() * crops.length)];
+    return res.json({
+      source: "mock-fallback",
+      predictions: [
+        { className: picked.label, probability: picked.prob },
+        { className: `Recommended Treatment: ${picked.cure}`, probability: 1.0 },
+        { className: "Tip: Add GEMINI_API_KEY in .env for real AI vision analysis", probability: 0.0 },
+      ],
+      soilInfo: picked.soil,
+    });
+  }
+
   try {
-    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "your_gemini_api_key_here") {
-      return res.status(500).json({ error: "Missing GEMINI_API_KEY for vision prediction." });
-    }
 
     const base64Image = file.buffer.toString("base64");
     
