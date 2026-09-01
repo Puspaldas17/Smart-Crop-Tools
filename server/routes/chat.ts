@@ -70,17 +70,30 @@ export const chatHandler: RequestHandler = async (req, res) => {
       return entry.en;
     }
 
-    if (/(weather|temp|rain|mausam|paanipaag|मौसम|तापमान|ପାଣିପାଗ|ତାପମାତ୍ରା)/.test(m) && lat != null && lon != null) {
+    if (/(weather|temp|rain|mausam|paanipaag|tapamatra|मौसम|तापमान|ପାଣିପାଗ|ତାପମାତ୍ରା)/.test(m)) {
       const key = process.env.OPENWEATHER_API_KEY;
-      if (key) {
-        const r = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=metric`,
-        );
-        if (r.ok) {
-          const w = await r.json();
-          const getWText = t.weather[isHi ? 'hi' : isOr ? 'or' : 'en'];
-          replies.push(getWText(w.weather?.[0]?.description || "", w.main?.temp ?? "?", w.main?.humidity ?? "?"));
+      let weatherFound = false;
+
+      if (key && key !== "your_openweather_api_key_here" && lat != null && lon != null) {
+        try {
+          const r = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=metric`,
+          );
+          if (r.ok) {
+            const w = await r.json();
+            const getWText = t.weather[isHi ? 'hi' : isOr ? 'or' : 'en'];
+            replies.push(getWText(w.weather?.[0]?.description || "", w.main?.temp ?? "?", w.main?.humidity ?? "?"));
+            weatherFound = true;
+          }
+        } catch (e) {
+          console.error("Weather fetch failed", e);
         }
+      }
+
+      // Hackathon Mock Fallback if API key is dummy/missing or location fails
+      if (!weatherFound) {
+        const getWText = t.weather[isHi ? 'hi' : isOr ? 'or' : 'en'];
+        replies.push(getWText("clear sky (mock data)", 32, 60));
       }
     }
 
