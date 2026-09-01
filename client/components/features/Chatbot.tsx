@@ -29,10 +29,15 @@ export default function Chatbot() {
 
   useEffect(() => {
     if (transcript) {
-      setInput(transcript);
+      if (voiceMode) {
+        send(transcript);
+      } else {
+        setInput(transcript);
+      }
       setTranscript("");
     }
-  }, [transcript, setTranscript]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transcript, voiceMode]);
 
   useEffect(() => {
     if (farmer?.language && farmer.language !== lang) setLang(farmer.language);
@@ -87,11 +92,13 @@ export default function Chatbot() {
     };
   }, [speak, t]);
 
-  async function send() {
-    if (!input.trim()) return;
-    const msg = input.trim();
+  async function send(directMsg?: any) {
+    const isDirectString = typeof directMsg === 'string';
+    const textToSubmit = isDirectString ? directMsg : input;
+    if (!textToSubmit.trim()) return;
+    const msg = textToSubmit.trim();
     setMessages((m) => [...m, { role: "user", content: msg }]);
-    setInput("");
+    if (!isDirectString) setInput("");
     try {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), 8000);
