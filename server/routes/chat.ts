@@ -10,11 +10,12 @@ const ai = new GoogleGenAI({
 
 export const chatHandler: RequestHandler = async (req, res) => {
   try {
-    const { message, lat, lon, lang = "en" } = req.body as {
+    const { message, lat, lon, lang = "en", history = [] } = req.body as {
       message?: string;
       lat?: number;
       lon?: number;
       lang?: string;
+      history?: { role: string; content: string }[];
     };
     
     if (!message) return res.status(400).json({ error: "message required" });
@@ -31,7 +32,7 @@ export const chatHandler: RequestHandler = async (req, res) => {
     const targetLang = shortLang === "or" ? "Odia" : shortLang === "hi" ? "Hindi" : "English";
 
     // 3. Optional: Fetch local weather to give Gemini more context
-    let weatherContext = "";
+    let weatherContext = "Current User Weather: clear sky (mock data), Temp: 32°C, Humidity: 60%.";
     if (lat != null && lon != null) {
       const key = process.env.OPENWEATHER_API_KEY;
       if (key && key !== "your_openweather_api_key_here") {
@@ -55,12 +56,21 @@ Your goal is to provide concise, practical, and highly accurate advice regarding
 Keep your answers very brief (2-4 short sentences max). Do not use markdown formatting like bolding or asterisks.
 If the user provides location or weather data, use it to give contextual advice.
 ${weatherContext}
-IMPORTANT: You MUST reply in the ${targetLang} language.`;
+IMPORTANT: You MUST reply in the ${targetLang} language using its native script (e.g., Odia script for Odia, Devanagari for Hindi). Even if the user types in English letters (Romanized), you must still reply in ${targetLang}.`;
 
-    // 5. Generate Response using Gemini 2.5 Flash
+    // 5. Format history for Gemini (user and model roles)
+    const contents = history.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }]
+    }));
+    
+    // Add the new message to the end of the history
+    contents.push({ role: "user", parts: [{ text: message }] });
+
+    // 6. Generate Response using Gemini 2.5 Flash
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: message,
+      contents: contents,
       config: {
         systemInstruction,
         temperature: 0.3,

@@ -10,7 +10,18 @@ export default function Chatbot() {
     { role: "user" | "assistant"; content: string }[]
   >([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading]);
+
   const { farmer, authHeaders } = useAuth();
   const [lang, setLang] = useState("en-IN");
   const {
@@ -40,8 +51,8 @@ export default function Chatbot() {
   }, [transcript, voiceMode]);
 
   useEffect(() => {
-    if (farmer?.language && farmer.language !== lang) setLang(farmer.language);
-  }, [farmer, lang]);
+    if (farmer?.language) setLang(farmer.language);
+  }, [farmer]);
 
   // Load previous chat messages for this user
   useEffect(() => {
@@ -99,14 +110,15 @@ export default function Chatbot() {
     const msg = textToSubmit.trim();
     setMessages((m) => [...m, { role: "user", content: msg }]);
     if (!isDirectString) setInput("");
+    setIsLoading(true);
     try {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), 8000);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
-        // Pass 'lang' to server so it knows which language to reply in
-        body: JSON.stringify({ message: msg, lang, ...(coords || {}) }),
+        // Pass 'lang' and recent history to server
+        body: JSON.stringify({ message: msg, lang, history: messages.slice(-4), ...(coords || {}) }),
         signal: controller.signal,
       });
       clearTimeout(id);
@@ -121,6 +133,8 @@ export default function Chatbot() {
     } catch (e) {
       const reply = "Network unavailable — please try again later.";
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -192,6 +206,16 @@ export default function Chatbot() {
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-muted text-foreground max-w-[80%] rounded-lg px-4 py-2.5 text-sm animate-pulse flex space-x-1 items-center h-10">
+              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
       <div className="flex items-center gap-2 border-t border-slate-200 p-4">
         {!voiceMode && (
