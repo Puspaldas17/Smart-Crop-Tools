@@ -83,16 +83,18 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
   async function fetchAnalytics() {
     try {
       setLoading(true);
-      const [summaryRes, weatherRes, cropRes, soilRes] = await Promise.all([
-        fetch(`/api/analytics/summary/${farmerId}?days=30`, { headers: authHeaders() }),
-        fetch(`/api/analytics/weather-impact/${farmerId}?days=30`, { headers: authHeaders() }),
-        fetch(`/api/analytics/crop-trends/${farmerId}`, { headers: authHeaders() }),
-        fetch(`/api/analytics/soil-health/${farmerId}`, { headers: authHeaders() }),
-      ]);
+      setSoilLoading(true);
+
+      const pSummary = fetch(`/api/analytics/summary/${farmerId}?days=30`, { headers: authHeaders() });
+      const pWeather = fetch(`/api/analytics/weather-impact/${farmerId}?days=30`, { headers: authHeaders() });
+      const pCrop = fetch(`/api/analytics/crop-trends/${farmerId}`, { headers: authHeaders() });
+      const pSoil = fetch(`/api/analytics/soil-health/${farmerId}?refresh=true`, { headers: authHeaders() });
+
+      // Wait for fast local APIs first
+      const [summaryRes, weatherRes, cropRes] = await Promise.all([pSummary, pWeather, pCrop]);
 
       if (summaryRes.ok) {
         const data = await summaryRes.json();
-        // Only override if API returned meaningful data
         if (data?.cropPerformance?.length > 0) setSummary(data);
       }
       if (weatherRes.ok) {
@@ -103,24 +105,31 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
         const data = await cropRes.json();
         if (Array.isArray(data) && data.length > 0) setCropTrends(data);
       }
-      
-      // Handle SoilGrids data
-      if (soilRes.ok) {
-        const data = await soilRes.json();
-        if (data.error) {
-          setSoilError(data.error);
+
+      // Hide global skeleton loader immediately after fast APIs complete
+      setLoading(false);
+
+      // Await the slow SoilGrids API independently
+      try {
+        const soilRes = await pSoil;
+        if (soilRes.ok) {
+          const data = await soilRes.json();
+          if (data.error) {
+            setSoilError(data.error);
+          } else {
+            setSoilData(data);
+          }
         } else {
-          setSoilData(data);
+          const err = await soilRes.json().catch(() => ({}));
+          setSoilError(err.error || "Failed to fetch soil data");
         }
-      } else {
-        const err = await soilRes.json().catch(() => ({}));
-        setSoilError(err.error || "Failed to fetch soil data");
+      } catch (err) {
+        setSoilError("Failed to connect to server");
+      } finally {
+        setSoilLoading(false);
       }
 
     } catch {
-      // Silently fall through to mock data for other tabs, but set error for soil
-      setSoilError("Failed to connect to server");
-    } finally {
       setLoading(false);
       setSoilLoading(false);
     }
@@ -336,86 +345,119 @@ export default function Analytics({ farmerId }: { farmerId: string }) {
               <p className="font-semibold text-red-600 dark:text-red-400 mb-2">Unable to load soil data</p>
               <p className="text-sm text-muted-foreground max-w-md">{soilError}</p>
             </div>
-          ) : !soilData ? (
-            <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-xl">
-              <p className="text-muted-foreground">No soil data available.</p>
-            </div>
           ) : (
-            <div className="grid gap-5 lg:grid-cols-2">
-              
-              {/* Nitrogen & Carbon Chart */}
-              <div className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-semibold mb-1">Nutrients by Depth</h3>
-                <p className="text-xs text-muted-foreground mb-4">Nitrogen (cg/kg) and Organic Carbon (dg/kg)</p>
-                <ResponsiveContainer width="100%" height={280}>
-                  <LineChart 
-                    data={soilData.properties.nitrogen?.map((n: any, i: number) => ({
-                      depth: n.depth,
-                      nitrogen: n.value,
-                      soc: soilData.properties.soc?.[i]?.value || 0
-                    }))}
-                    layout="vertical"
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
-                    <XAxis type="number" tick={{ fontSize: 11 }} />
-                    <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
-                    <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line dataKey="nitrogen" name="Nitrogen" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
-                    <Line dataKey="soc" name="Organic Carbon" stroke="#f59e0b" strokeWidth={2} dot={{ r: 4 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+            (() => {
+              const hasValidData = soilData?.properties && (
+                soilData.properties.cec?.some((p: any) => p.value !== null) ||
+                soilData.properties.nitrogen?.some((p: any) => p.value !== null) ||
+                soilData.properties.soc?.some((p: any) => p.value !== null) ||
+                soilData.properties.phh2o?.some((p: any) => p.value !== null)
+              );
 
-              {/* pH Chart */}
-              <div className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-semibold mb-1">Soil pH Profile</h3>
-                <p className="text-xs text-muted-foreground mb-4">Acidity/Alkalinity across depths (Ideal: 6.0 - 7.0)</p>
-                <ResponsiveContainer width="100%" height={280}>
-                  <LineChart 
-                    data={soilData.properties.phh2o}
-                    layout="vertical"
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
-                    <XAxis type="number" domain={[4, 9]} tick={{ fontSize: 11 }} />
-                    <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
-                    <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line dataKey="value" name="pH Level" stroke="#8b5cf6" strokeWidth={2.5} dot={{ r: 4 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              if (!hasValidData) {
+                return (
+                  <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-xl text-center bg-muted/50">
+                    <p className="font-semibold text-slate-700 dark:text-slate-300 mb-2">No SoilGrids data available for this location.</p>
+                    <p className="text-sm text-muted-foreground max-w-md">The global ISRIC SoilGrids database does not contain soil coverage for this exact coordinate (e.g., it may be an urban area, city center, or water body). Please try a rural farm location.</p>
+                  </div>
+                );
+              }
 
-              {/* Soil Texture (Sand/Silt/Clay) Stacked Bar */}
-              <div className="rounded-xl border border-border bg-card p-5 lg:col-span-2">
-                <h3 className="font-semibold mb-1">Soil Texture Composition</h3>
-                <p className="text-xs text-muted-foreground mb-4">Percentage of Sand, Silt, and Clay at varying depths</p>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart 
-                    data={soilData.properties.sand?.map((s: any, i: number) => {
-                      const total = s.value + (soilData.properties.silt?.[i]?.value || 0) + (soilData.properties.clay?.[i]?.value || 0);
-                      return {
-                        depth: s.depth,
-                        sand: parseFloat(((s.value / total) * 100).toFixed(1)),
-                        silt: parseFloat((((soilData.properties.silt?.[i]?.value || 0) / total) * 100).toFixed(1)),
-                        clay: parseFloat((((soilData.properties.clay?.[i]?.value || 0) / total) * 100).toFixed(1)),
-                      };
-                    })}
-                    layout="vertical"
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
-                    <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
-                    <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
-                    <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} formatter={(value) => `${value}%`} />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Bar dataKey="sand" name="Sand" stackId="a" fill="#eab308" radius={[0, 0, 0, 0]} />
-                    <Bar dataKey="silt" name="Silt" stackId="a" fill="#a8a29e" radius={[0, 0, 0, 0]} />
-                    <Bar dataKey="clay" name="Clay" stackId="a" fill="#78350f" radius={[0, 4, 4, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              return (
+                <div className="space-y-6">
+                  {/* WRB Classification */}
+                  {soilData.properties.wrb && (
+                    <div className="rounded-xl border border-border bg-emerald-50/50 dark:bg-emerald-950/20 p-5">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                          <Sprout className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Soil Classification</h3>
+                          <p className="text-sm text-emerald-700/80 dark:text-emerald-300/80">World Reference Base (WRB 2006) Soil Groups</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between p-3 rounded-lg bg-white/60 dark:bg-black/20 border border-emerald-100 dark:border-emerald-900/30">
+                        <span className="font-medium text-slate-700 dark:text-slate-300">Most Probable Group:</span>
+                        <span className="font-bold text-emerald-700 dark:text-emerald-400 text-lg px-3 py-1 bg-emerald-100/50 dark:bg-emerald-900/40 rounded-md">
+                          {soilData.properties.wrb}
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
-            </div>
+                  <div className="grid gap-5 lg:grid-cols-2">
+                    
+                    {/* CEC Chart */}
+                  <div className="rounded-xl border border-border bg-card p-5">
+                    <h3 className="font-semibold mb-1 text-slate-800 dark:text-slate-100">Cation exchange capacity (at pH 7)</h3>
+                    <p className="text-xs text-muted-foreground mb-4">in mmol(c)/kg</p>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={soilData.properties.cec} layout="vertical">
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                        <XAxis type="number" tick={{ fontSize: 11 }} />
+                        <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
+                        <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
+                        <Line dataKey="value" name="CEC" stroke="#3b82f6" strokeWidth={2.5} dot={{ r: 5 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Nitrogen Chart */}
+                  <div className="rounded-xl border border-border bg-card p-5">
+                    <h3 className="font-semibold mb-1 text-slate-800 dark:text-slate-100">Nitrogen</h3>
+                    <p className="text-xs text-muted-foreground mb-4">in cg/kg</p>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={soilData.properties.nitrogen} layout="vertical">
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                        <XAxis type="number" tick={{ fontSize: 11 }} />
+                        <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
+                        <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
+                        <Line dataKey="value" name="Nitrogen" stroke="#10b981" strokeWidth={2.5} dot={{ r: 5 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* SOC Chart */}
+                  <div className="rounded-xl border border-border bg-card p-5">
+                    <h3 className="font-semibold mb-1 text-slate-800 dark:text-slate-100">Soil organic carbon</h3>
+                    <p className="text-xs text-muted-foreground mb-4">in dg/kg</p>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={soilData.properties.soc} layout="vertical">
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                        <XAxis type="number" tick={{ fontSize: 11 }} />
+                        <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
+                        <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
+                        <Line dataKey="value" name="SOC" stroke="#f59e0b" strokeWidth={2.5} dot={{ r: 5 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* pH Chart */}
+                  <div className="rounded-xl border border-border bg-card p-5">
+                    <h3 className="font-semibold mb-1 text-slate-800 dark:text-slate-100">pH water</h3>
+                    <p className="text-xs text-muted-foreground mb-4">in pH (Converted from pH × 10)</p>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart 
+                        data={soilData.properties.phh2o?.map((p: any) => ({
+                          depth: p.depth,
+                          value: p.value !== null ? parseFloat((p.value / 10).toFixed(1)) : null
+                        }))} 
+                        layout="vertical"
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                        <XAxis type="number" domain={['auto', 'auto']} tick={{ fontSize: 11 }} />
+                        <YAxis dataKey="depth" type="category" tick={{ fontSize: 11 }} reversed />
+                        <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
+                        <Line dataKey="value" name="pH Water" stroke="#8b5cf6" strokeWidth={2.5} dot={{ r: 5 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  </div>
+                </div>
+              );
+            })()
           )}
         </div>
       )}

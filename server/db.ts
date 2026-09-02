@@ -302,6 +302,7 @@ const soilHealthSchema = new mongoose.Schema(
       silt: [mongoose.Schema.Types.Mixed],
       clay: [mongoose.Schema.Types.Mixed],
       cec: [mongoose.Schema.Types.Mixed],
+      wrb: mongoose.Schema.Types.Mixed, // Storing classification string or object
     }
   },
   { timestamps: true }

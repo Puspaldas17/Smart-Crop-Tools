@@ -48,6 +48,42 @@ export default function Profile() {
   }, [farmer]);
 
   const [detectingLoc, setDetectingLoc] = useState(false);
+  const [locationQuery, setLocationQuery] = useState("");
+  const [searchingLoc, setSearchingLoc] = useState(false);
+
+  async function searchLocation() {
+    if (!locationQuery.trim()) return;
+    setSearchingLoc(true);
+    const toastId = toast.loading("Searching for location...");
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationQuery)}&limit=1`, {
+        headers: { "User-Agent": "SmartCropTools" }
+      });
+      const data = await res.json();
+      if (data && data.length > 0) {
+        const place = data[0];
+        setForm(f => ({
+          ...f,
+          location: { 
+            ...f.location, 
+            lat: parseFloat(place.lat), 
+            lon: parseFloat(place.lon),
+            village: place.name,
+            state: place.display_name.split(",").slice(-2)[0]?.trim() || "Location detected"
+          }
+        }));
+        toast.success("Location found!");
+      } else {
+        toast.error("Unable to determine coordinates for this location.");
+      }
+    } catch (e) {
+      toast.error("Network error during location search.");
+    } finally {
+      toast.dismiss(toastId);
+      setSearchingLoc(false);
+    }
+  }
+
   function detectLocation() {
     if (!navigator.geolocation) {
       toast.error("Geolocation is not supported by your browser");
@@ -60,7 +96,7 @@ export default function Profile() {
         toast.dismiss(toastId);
         setForm(f => ({
           ...f,
-          location: { ...f.location, lat: pos.coords.latitude, lon: pos.coords.longitude }
+          location: { ...f.location, lat: pos.coords.latitude, lon: pos.coords.longitude, village: "", state: "Current Location" }
         }));
         toast.success("Location coordinates detected successfully!");
         setDetectingLoc(false);
@@ -237,27 +273,66 @@ export default function Profile() {
               {/* Location */}
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5" /> Farm Coordinates
+                  <MapPin className="h-3.5 w-3.5" /> Farm Location
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <input
+                      value={locationQuery}
+                      onChange={(e) => setLocationQuery(e.target.value)}
+                      placeholder="e.g. Bhubaneswar, Odisha"
+                      disabled={searchingLoc || submitting}
+                      className="flex-1 rounded-xl border border-input px-3 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          searchLocation();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={searchLocation}
+                      disabled={!locationQuery.trim() || searchingLoc || submitting}
+                      className="px-4 rounded-xl border border-input text-sm bg-muted/50 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60 transition-all font-medium whitespace-nowrap"
+                    >
+                      {searchingLoc ? "Searching..." : "Search"}
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="h-px bg-border flex-1"></div>
+                    <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">OR</span>
+                    <div className="h-px bg-border flex-1"></div>
+                  </div>
+
                   <button
                     type="button"
                     onClick={detectLocation}
                     disabled={detectingLoc || submitting}
-                    className="flex-1 rounded-xl border border-input px-3 py-2.5 text-sm bg-background hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60 transition-all flex items-center justify-center gap-2 font-medium"
+                    className="w-full rounded-xl border border-input px-3 py-2.5 text-sm bg-background hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60 transition-all flex items-center justify-center gap-2 font-medium"
                   >
                     {detectingLoc ? (
                       <span className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
                     ) : (
                       <MapPin className="h-4 w-4 text-blue-500" />
                     )}
-                    {form.location?.lat ? "Update Coordinates" : "Detect My Location"}
+                    Use my current location
                   </button>
                 </div>
+                
                 {form.location?.lat && (
-                  <p className="text-[11px] text-muted-foreground mt-1 px-1">
-                    Saved: Lat {form.location.lat.toFixed(5)}, Lon {form.location.lon.toFixed(5)}
-                  </p>
+                  <div className="mt-2 p-2 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/50 flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] font-medium text-green-800 dark:text-green-300">
+                        {form.location.village ? form.location.village + ", " : ""}{form.location.state || "Location saved"}
+                      </p>
+                      <p className="text-[10px] text-green-600 dark:text-green-400">
+                        Lat {form.location.lat.toFixed(5)}, Lon {form.location.lon.toFixed(5)}
+                      </p>
+                    </div>
+                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  </div>
                 )}
               </div>
 
